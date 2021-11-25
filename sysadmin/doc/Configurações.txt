@@ -1,0 +1,16 @@
+#Configuração de uma nova Empresa
+
+(1) Cadastro da empresa, entidade Company
+
+(2) Cadastro dos custos
+
+
+#Configuração da integração com o Mercado Livre
+
+(1) Cadastrar o app id (https://developers.mercadolivre.com.br/devcenter/)
+
+(2) Cadastrar as URLs na app do portal do Mercado Livre
+	Redirect: https://<url da app>/api/mercado-livre/authorization/{companyId}
+	Notification: https://<url da app>/api/mercado-livre/notification/{companyId}
+	
+(3) Criar o cadatro da integração, entidade MktPlaceIntegrationConfig 
