@@ -1,0 +1,38 @@
+package br.silveira.conciliador.integrator.dto;
+
+import java.time.LocalDateTime;
+
+import br.silveira.conciliador.common.enums.MktPlaceEnum;
+import lombok.Data;
+
+@Data
+public class MktPlaceIntegrationConfigDto {
+	
+	
+	private String id;
+	
+	private String companyId;
+	
+	private MktPlaceEnum marketPlace;
+	
+	private String applicationId;
+	
+	private String clientSecret;
+	
+	private String authorizationCode;
+	
+	private String apiToken;	
+	
+	private LocalDateTime insertDate;
+	
+	private String insertId;
+	
+	private LocalDateTime updateDate;
+	
+	private String updateId;
+	
+	private Boolean enable;
+	
+	
+
+}
