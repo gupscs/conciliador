@@ -1,6 +1,8 @@
 package br.silveira.conciliador.integrator.mercadolivre.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.silveira.conciliador.integrator.dto.OrderProcessDto;
 import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.mapper.QueueDtoMapper;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreNotificationDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.mapper.MercadoLivreOrderDtoMapper;
 import br.silveira.conciliador.integrator.service.OrderService;
@@ -57,7 +60,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			log.info(String.format(PROCESS_MSG_START, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
 			dto = QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto);
 			updateProcessStatusOnGoing(dto);
-			MercadoLivreOrderDto order = mercadoLivreService.getOrder(BEARER + orderProcessDto.getApiToken(),orderProcessDto.getApiToken());
+			MercadoLivreOrderDto order = mercadoLivreService.getOrder(BEARER + orderProcessDto.getApiToken(),orderProcessDto.getDocumentId());
 			if (order == null) {
 				updateQueueErrorNotFound(dto);
 				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()));
@@ -100,16 +103,31 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
 	}
 
+
 	@Override
-	public void processOrder(List<OrderProcessDto> dto , String companyId) throws Exception {
-		String token = getToken(companyId);
+	public void processOrder(List<OrderProcessDto> dto) throws Exception {
+		Map<Long, String> tokens = getTokensByUserId(dto);
 		for (OrderProcessDto orderProcessDto : dto) {
 			try {
-				orderProcessDto.setApiToken(token);
+				MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
+				orderProcessDto.setApiToken(tokens.get(notificDto.getUser_id()));
 				processOrder(orderProcessDto);
 			}catch(Exception e) {
 				log.warn("Error during process, check the logs!!!");
 			}
 		}
+		
 	}
+
+	private Map<Long, String> getTokensByUserId(List<OrderProcessDto> dto) throws Exception {
+		Map<Long, String> tokens = new HashMap<Long, String>();
+		for (OrderProcessDto orderProcessDto : dto) {
+			MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
+			if(!tokens.containsKey(notificDto.getUser_id())) {
+				tokens.put(notificDto.getUser_id(), getToken(orderProcessDto.getCompanyId(), notificDto.getUser_id()));
+			}
+		}
+		return tokens;
+	}
+
 }

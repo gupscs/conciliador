@@ -23,8 +23,8 @@ public class MercadoLivreServiceCommon {
 	MercadoLivreRestService mercadoLivreService;
 	
 	
-	public String getToken(String companyId) throws Exception {
-		Optional<MktPlaceIntegrationConfig> mktPlaceInteg = mktPlaceIntegrationConfigRepository.findByCompanyIdAndMktPlace(companyId, MktPlaceEnum.MERCADO_LIVRE);
+	public String getToken(String companyId, Long mktPlaceUserId) throws Exception {
+		Optional<MktPlaceIntegrationConfig> mktPlaceInteg = mktPlaceIntegrationConfigRepository.findByCompanyIdAndMktPlaceAndMktPlaceUserId(companyId, MktPlaceEnum.MERCADO_LIVRE, ""+mktPlaceUserId);
 		if(!mktPlaceInteg.isPresent()) throw new Exception("Missing Mkt Place Integration Config for Mercado Livre : Company Id: "+companyId);
 		
 		MktPlaceIntegrationConfig entity = mktPlaceInteg.get();

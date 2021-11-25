@@ -76,7 +76,7 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 			Map<MktPlaceEnum, List<OrderProcessDto>> orderSeparatedByMktPlace = converteEntityToMap(queueOrdersPending);
 			for (MktPlaceEnum mktPlaceEnum : orderSeparatedByMktPlace.keySet()) {
 				try {
-					orderServiceFactory.getImpl(mktPlaceEnum).processOrder( orderSeparatedByMktPlace.get(mktPlaceEnum), companyId);
+					orderServiceFactory.getImpl(mktPlaceEnum).processOrder( orderSeparatedByMktPlace.get(mktPlaceEnum));
 				}catch(Exception e) {
 					log.error("Error to process All Queueu Order for Company Id: "+companyId, e);
 				}

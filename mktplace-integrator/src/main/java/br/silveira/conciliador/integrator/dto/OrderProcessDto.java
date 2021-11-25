@@ -21,6 +21,10 @@ public class OrderProcessDto {
 	
 	private String executionId;
 	
+	private Object notificationOriginalData;
+	
+	private Object documentOriginalData;
+	
 	
 
 }

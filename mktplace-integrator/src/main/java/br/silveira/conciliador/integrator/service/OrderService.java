@@ -8,6 +8,6 @@ public interface OrderService {
 	
 	public void processOrder(OrderProcessDto dto);
 
-	public void processOrder(List<OrderProcessDto> dto, String companyId) throws Exception;
+	public void processOrder(List<OrderProcessDto> dto) throws Exception;
 
 }

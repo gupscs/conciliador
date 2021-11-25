@@ -26,7 +26,7 @@ public class CommonServiceImpl {
 			return dto;
 		}
 		if(dto.getMarketPlace().equals(MktPlaceEnum.MERCADO_LIVRE)) {
-			Optional<MktPlaceIntegrationConfig> config = mktPlaceIntegrationConfigRepository.findByMktPlaceUserIdAndMktPlace(dto.getMktPlaceUserId(), dto.getMarketPlace());
+			Optional<MktPlaceIntegrationConfig> config = mktPlaceIntegrationConfigRepository.findByCompanyIdAndMktPlaceAndMktPlaceUserId(dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId());
 			if(config.isPresent() && config.get().getEnable()) {
 				dto.setCompanyId(config.get().getCompanyId());
 			}else {
@@ -35,6 +35,11 @@ public class CommonServiceImpl {
 			}
 		}
 		return dto;
+	}
+	
+	public String getCompanyId() {
+		//TODO IMPLEMENTAR LEITURA DO COMPANY ID A PARTIR DO JWT TOKEN / SPRING SECURITY CONTEXT
+		return "2";
 	}
 	
 }

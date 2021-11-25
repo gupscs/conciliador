@@ -162,6 +162,8 @@ public class QueueDtoMapper {
 		dto.setExecutionId("");
 		dto.setMarketPlace(queueOrder.getMarketPlace());
 		dto.setQueueOrdersId(queueOrder.getId());
+		dto.setNotificationOriginalData(queueOrder.getNotificationOriginalData());
+		dto.setDocumentOriginalData(queueOrder.getDocumentOriginalData());
 		return dto;
 	}
 

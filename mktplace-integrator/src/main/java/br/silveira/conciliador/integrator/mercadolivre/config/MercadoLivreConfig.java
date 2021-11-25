@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource(value = {"classpath:app.properties"})
+@PropertySource(value = {"classpath:config.properties"})
 public class MercadoLivreConfig {
 	
 	@Value("${mercadolivre.notification.topic.orders}")
@@ -22,5 +22,14 @@ public class MercadoLivreConfig {
 	
 	@Value("${mercadolivre.notification.topic.feedback}")
 	public String TOPIC_FEEDBACK;
+	
+	@Value("${meracodlivre.appId}")
+	public String APP_ID;
+	
+	@Value("${mercadolivre.client-secret}")
+	public String CLIENT_SECRET;
+	
+	@Value("${mercadolivre.redirect-url}")
+	public String REDIRECT_URL;
 
 }

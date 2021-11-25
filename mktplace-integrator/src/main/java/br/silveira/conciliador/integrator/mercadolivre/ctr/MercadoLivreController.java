@@ -79,6 +79,16 @@ public class MercadoLivreController {
 
 	}
 	
+	@GetMapping("/token-redirect")
+	public ResponseEntity<String> tokenRedirect(@RequestParam(name = "code", required = false) String authCode, @RequestParam(name = "error", required = false) String error, @RequestParam(name = "error_description", required = false) String errorDescription) {
+		if(StringUtils.hasLength(error)) {
+			log.error("Authorization Code from Mercado Livre error - Error: "+error+" - Error Description: "+errorDescription);
+			return ResponseEntity.badRequest().body(new String("Error: "+error+" - Error Description: "+errorDescription));
+		}else {
+			return ResponseEntity.ok().build();
+		}
+	}
+	
 	@GetMapping("/authorization")
 	public ResponseEntity<String> authorization(@RequestParam(name = "code", required = false) String authCode, @RequestParam(name = "error", required = false) String error, @RequestParam(name = "error_description", required = false) String errorDescription) {
 		if(StringUtils.hasLength(error)) {

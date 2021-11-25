@@ -1,6 +1,7 @@
 package br.silveira.conciliador.integrator.mercadolivre.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
@@ -8,49 +9,75 @@ import lombok.Data;
 public class MercadoLivreUserInfoDto {
 	
 	
-	public int id;
+    public int id;
     public int user_id;
-    public String contact;
-    public String phone;
+    public Object contact;
+    public Object phone;
     public String address_line;
-    public String floor;
-    public String apartment;
+    public Object floor;
+    public Object apartment;
     public String street_number;
     public String street_name;
     public String zip_code;
     public City city;
     public State state;
     public Country country;
+    public Neighborhood neighborhood;
     public Municipality municipality;
+    public SearchLocation search_location;
+    public List<Object> types;
     public String comment;
     public String geolocation_type;
     public double latitude;
     public double longitude;
-    public String status;
+    public Object status;
     public LocalDateTime date_created;
     public boolean normalized;
-    
-    @Data
+    public OpenHours open_hours;
+	
+	
 	public class City{
 	    public String id;
 	    public String name;
 	}
 
-    @Data
 	public class State{
 	    public String id;
 	    public String name;
 	}
 
-    @Data
 	public class Country{
 	    public String id;
 	    public String name;
 	}
-    
-    @Data
-	public class Municipality{
-	    public String id;
-	    public String name;
+
+	public class Neighborhood{
+	    public Object id;
+	    public Object name;
 	}
+
+	public class Municipality{
+	    public Object id;
+	    public Object name;
+	}
+
+	public class SearchLocation{
+	    public State state;
+	    public City city;
+	    public Neighborhood neighborhood;
+	}
+
+	public class OnHolidays{
+	    public List<Object> hours;
+	    public String status;
+	}
+
+	public class OpenHours{
+	    public OnHolidays on_holidays;
+	}
+
+	
+
+
+	
 }

@@ -11,13 +11,12 @@ import br.silveira.conciliador.integrator.entity.MktPlaceIntegrationConfig;
 
 @Repository
 public interface MktPlaceIntegrationConfigRepository  extends MongoRepository<MktPlaceIntegrationConfig, String>{
-	
-	
-	@Query("{companyId: ?0, marketPlace: ?1}")      
-	public Optional<MktPlaceIntegrationConfig> findByCompanyIdAndMktPlace(String companyId, MktPlaceEnum marketPlace); 
-	
-	@Query("{mktPlaceUserId: ?0, marketPlace: ?1}")      
-	public Optional<MktPlaceIntegrationConfig> findByMktPlaceUserIdAndMktPlace(String mktPlaceUserId, MktPlaceEnum marketPlace); 
+
+	@Query("{companyId: ?0, marketPlace: ?1, authorizationCode: ?2 }")
+	public Optional<MktPlaceIntegrationConfig> findByCompanyIdAndMktPlaceAndAuthorizationCode(String companyId, MktPlaceEnum marketPlace, String authorizationCode);
+
+	@Query("{companyId: ?0, marketPlace: ?1, mktPlaceUserId: ?2}")      
+	public Optional<MktPlaceIntegrationConfig> findByCompanyIdAndMktPlaceAndMktPlaceUserId(String companyId, MktPlaceEnum mercadoLivre, String mktPlaceUserId );
 	
 
 }

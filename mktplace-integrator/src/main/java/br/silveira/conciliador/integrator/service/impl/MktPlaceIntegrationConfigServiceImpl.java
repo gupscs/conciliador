@@ -12,8 +12,8 @@ import org.springframework.util.StringUtils;
 import br.silveira.conciliador.integrator.dto.MktPlaceIntegrationConfigDto;
 import br.silveira.conciliador.integrator.entity.MktPlaceIntegrationConfig;
 import br.silveira.conciliador.integrator.mapper.MktPlaceIntegrationConfigMapper;
+import br.silveira.conciliador.integrator.mercadolivre.config.MercadoLivreConfig;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
-import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserInfoDto;
 import br.silveira.conciliador.integrator.mercadolivre.service.MercadoLivreRestService;
 import br.silveira.conciliador.integrator.repository.MktPlaceIntegrationConfigRepository;
 import br.silveira.conciliador.integrator.service.MktPlaceIntegrationConfigService;
@@ -23,48 +23,59 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 	
 	private static final Logger log = LogManager.getLogger(MktPlaceIntegrationConfigServiceImpl.class);
 	
-	private static final String BEARER = "Bearer ";
-	
-	private static final String MKT_PLACE_INTEG_DISABLE = "Market Place Integration is disable for Company Id: %s and Market Place: %s - Check with System Administrator";
-	private static final String MKT_PLACE_INTEG_NOT_EXIST = "Market Place Integration not exist for Company Id: %s and Market Place: %s - Check with System Administrator";
-	private static final String AUTH_CODE_UPDATE_SUCCESSFULLY = "Authorization Code and First Token sucessfully updated for Company Id: %s and Mkt Place: %s";
+	private static final String MKT_PLACE_INTEG_DISABLE = "Market Place Integration is disable for Company Id: %s and Market Place: %s  and User Id: %s - Check with System Administrator";
+	private static final String MKT_PLACE_USER_ALREADY_REGISTERED = "User Id: %s is already registered for Company Id: %s and Market Place: %s";
+	private static final String AUTH_CODE_UPDATE_SUCCESSFULLY = "Authorization Code and First Token sucessfully registered for Company Id: %s and Mkt Place: %s and User Id: %s";
+	private static final String MERCADO_LIVRE_AUTHORIZATION_REDIRECT = "MERCADO_LIVRE_AUTHORIZATION_REDIRECT";
 	
 	@Autowired
 	private MktPlaceIntegrationConfigRepository repository;
 	
 	@Autowired
 	private MercadoLivreRestService  mercadoLivreRestService;
+	
+	@Autowired
+	private MercadoLivreConfig mercadoLivreConfig;
 
 	@Override
 	public void createMktPlaceIntegratioinConfigForMercadoLivre(MktPlaceIntegrationConfigDto dto) throws Exception {
+
 		checkDtoForAuthorizationCodeUpdate(dto);
-		Optional<MktPlaceIntegrationConfig> mktPlaceInteg = repository.findByCompanyIdAndMktPlace(dto.getCompanyId(), dto.getMarketPlace());
+		dto.setCompanyId(getCompanyId());
+		
+		if(checkConfigIfAlreadyExistOrIsDisable(dto)) {		
+			dto.setApplicationId(mercadoLivreConfig.APP_ID);
+			dto.setClientSecret(mercadoLivreConfig.CLIENT_SECRET);
+			dto.setRedirectUrl(mercadoLivreConfig.REDIRECT_URL);
+				
+			MercadoLivreTokenDto token = mercadoLivreRestService.getToken(MktPlaceIntegrationConfigMapper.mapperToTokenFormMercadoLivre(dto));
+			
+			dto.setMktPlaceUserId(""+token.getUser_id());
+			dto.setApiToken(token.getAccess_token());
+			dto.setApiRefreshToken(token.getRefresh_token());
+			dto.setLastApiTokenUpdated(LocalDateTime.now());
+			dto.setExpiresIn(token.getExpires_in());
+			dto.setInsertDate(LocalDateTime.now());
+			dto.setInsertId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
+	
+			repository.save(MktPlaceIntegrationConfigMapper.mapperToEntity(dto));
+			
+			log.info(String.format(AUTH_CODE_UPDATE_SUCCESSFULLY, dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId()));
+		}
+		
+	}
+
+	private Boolean checkConfigIfAlreadyExistOrIsDisable(MktPlaceIntegrationConfigDto dto) throws Exception {
+		Optional<MktPlaceIntegrationConfig> mktPlaceInteg = repository.findByCompanyIdAndMktPlaceAndAuthorizationCode(dto.getCompanyId(), dto.getMarketPlace(), dto.getAuthorizationCode());
 		if(mktPlaceInteg.isPresent()) {
 			if(!mktPlaceInteg.get().getEnable()) {
-				throw new Exception(String.format(MKT_PLACE_INTEG_DISABLE, dto.getCompanyId(), dto.getMarketPlace()));
+				throw new Exception(String.format(MKT_PLACE_INTEG_DISABLE, dto.getCompanyId(), dto.getMarketPlace(), mktPlaceInteg.get().getMktPlaceUserId()));
+			}else {
+				log.warn(String.format(MKT_PLACE_USER_ALREADY_REGISTERED, mktPlaceInteg.get().getMktPlaceUserId(), dto.getCompanyId(), dto.getMarketPlace()));
+				return false;
 			}
-			
-			MktPlaceIntegrationConfig entity = mktPlaceInteg.get();
-			entity.setAuthorizationCode(dto.getAuthorizationCode());
-			entity.setUpdateDate(LocalDateTime.now());
-			entity.setUpdateId(dto.getUpdateId());
-			
-			MercadoLivreTokenDto token = mercadoLivreRestService.getToken(MktPlaceIntegrationConfigMapper.mapperToTokenFormMercadoLivre(entity));
-			MercadoLivreUserInfoDto userInfo = mercadoLivreRestService.getUserInfo(BEARER+token.getAccess_token());
-			
-			entity.setMktPlaceUserId(""+userInfo.getUser_id());
-			entity.setApiToken(token.getAccess_token());
-			entity.setApiRefreshToken(token.getRefresh_token());
-			entity.setLastApiTokenUpdated(LocalDateTime.now());
-			entity.setExpiresIn(token.getExpires_in());
-			entity.setUpdateDate(LocalDateTime.now());
-			entity.setUpdateId("AUTO");
-			repository.save(entity);
-			log.info(String.format(AUTH_CODE_UPDATE_SUCCESSFULLY, dto.getCompanyId(), dto.getMarketPlace()));
-			
-		}else {
-			throw new Exception(String.format(MKT_PLACE_INTEG_NOT_EXIST, dto.getCompanyId(), dto.getMarketPlace()));
 		}
+		return true;
 	}
 
 	private void checkDtoForAuthorizationCodeUpdate(MktPlaceIntegrationConfigDto dto) throws Exception {

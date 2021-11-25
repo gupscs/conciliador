@@ -23,6 +23,16 @@ public class MktPlaceIntegrationConfigDto {
 	
 	private String apiToken;	
 	
+	private String mktPlaceUserId;
+	
+	private String apiRefreshToken;
+	
+	private LocalDateTime lastApiTokenUpdated;
+	
+	private Integer expiresIn;
+	
+	private String redirectUrl;
+	
 	private LocalDateTime insertDate;
 	
 	private String insertId;
