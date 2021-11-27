@@ -1,0 +1,28 @@
+-------- Banco de dados Mongo DB na nuvem --------  
+
+Acesso pela conta do google = gupscs@gmail.com
+https://cloud.mongodb.com/v2/61803ccf9b15a06dbf59cad5#setup/access?includeToast=true
+admin/123
+
+Conexão do banco estava com problema de SSL HandShake ou usar jdk 15
+Adicionar -Djdk.tls.client.protocols=TLSv1.2 no parametro de conexão 
+
+
+-------- Usuários de Testes no Mercado Livre -------- 
+
+{
+    "id": 1026474580,
+    "nickname": "TESTHKNXHBWR",
+    "password": "qatest53",
+    "site_status": "active",
+    "email": "test_user_1384831@testuser.com"
+}
+
+
+{
+    "id": 1026477511,
+    "nickname": "TETE7635363",
+    "password": "qatest2645",
+    "site_status": "active",
+    "email": "test_user_28285680@testuser.com"
+}

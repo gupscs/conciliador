@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource(value = {"classpath:config.properties"})
+@PropertySource(value = {"classpath:app.properties"})
 public class MercadoLivreConfig {
 	
 	@Value("${mercadolivre.notification.topic.orders}")

@@ -39,7 +39,7 @@ public class CommonServiceImpl {
 	
 	public String getCompanyId() {
 		//TODO IMPLEMENTAR LEITURA DO COMPANY ID A PARTIR DO JWT TOKEN / SPRING SECURITY CONTEXT
-		return "2";
+		return "61a24909b2929f5834275ca5";
 	}
 	
 }

@@ -7,5 +7,7 @@ import br.silveira.conciliador.organizational.dto.CompanyDto;
 public interface CompanyService {
 	
 	public List<CompanyDto> findByEnable(Boolean enable);
+	
+	public void saveCompany(CompanyDto dto);
 
 }

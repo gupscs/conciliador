@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
 import br.silveira.conciliador.organizational.dto.CompanyDto;
 import br.silveira.conciliador.organizational.entity.Company;
@@ -18,8 +19,12 @@ public class CompanyMapper {
 	}
 
 	public static CompanyDto mapperCompanyDto(Company entity) {
-		CompanyDto dto = mapper.map(entity, CompanyDto.class);
-		return dto;
+		return mapper.map(entity, CompanyDto.class);
+	}
+
+	public static Company mapperToEntity(CompanyDto dto) {
+		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		return mapper.map(dto, Company.class);
 	}
 
 }
