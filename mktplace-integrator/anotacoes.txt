@@ -7,6 +7,10 @@ admin/123
 Conexão do banco estava com problema de SSL HandShake ou usar jdk 15
 Adicionar -Djdk.tls.client.protocols=TLSv1.2 no parametro de conexão 
 
+Colocar a configuração na variavel de ambiente
+MONGO_DB_URI
+Heroku -> Setting -> Config Vars
+
 
 -------- Usuários de Testes no Mercado Livre -------- 
 
