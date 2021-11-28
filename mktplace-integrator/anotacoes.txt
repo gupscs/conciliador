@@ -12,6 +12,12 @@ MONGO_DB_URI
 Heroku -> Setting -> Config Vars
 
 
+----------- Heroku -----------
+instalar o heroku cli
+problema: Error: EROFS: read-only file system, open 'M:/_netrc'
+Solução: set env: set HomeDrive=c:/users/g.silveira
+
+
 -------- Usuários de Testes no Mercado Livre -------- 
 
 {

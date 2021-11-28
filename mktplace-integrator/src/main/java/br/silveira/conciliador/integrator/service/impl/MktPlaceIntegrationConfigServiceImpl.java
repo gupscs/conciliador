@@ -49,20 +49,35 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 			dto.setRedirectUrl(mercadoLivreConfig.REDIRECT_URL);
 				
 			MercadoLivreTokenDto token = mercadoLivreRestService.getToken(MktPlaceIntegrationConfigMapper.mapperToTokenFormMercadoLivre(dto));
-			
 			dto.setMktPlaceUserId(""+token.getUser_id());
+			
+			dto = checkConfigAlreadyExistByUserId(dto);
+			
 			dto.setApiToken(token.getAccess_token());
 			dto.setApiRefreshToken(token.getRefresh_token());
 			dto.setLastApiTokenUpdated(LocalDateTime.now());
 			dto.setExpiresIn(token.getExpires_in());
-			dto.setInsertDate(LocalDateTime.now());
-			dto.setInsertId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
-	
+			
 			repository.save(MktPlaceIntegrationConfigMapper.mapperToEntity(dto));
 			
 			log.info(String.format(AUTH_CODE_UPDATE_SUCCESSFULLY, dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId()));
 		}
 		
+	}
+
+	private MktPlaceIntegrationConfigDto checkConfigAlreadyExistByUserId(MktPlaceIntegrationConfigDto dto) {
+		Optional<MktPlaceIntegrationConfig> mktConfigEntity = repository.findByCompanyIdAndMktPlaceAndMktPlaceUserId(dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId());
+		if(mktConfigEntity.isPresent()) {
+			MktPlaceIntegrationConfigDto mapperToDto = MktPlaceIntegrationConfigMapper.mapperToDto(mktConfigEntity.get());
+			mapperToDto.setAuthorizationCode(dto.getAuthorizationCode());
+			dto.setUpdateDate(LocalDateTime.now());
+			dto.setUpdateId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
+			return mapperToDto;
+		}else {
+			dto.setInsertDate(LocalDateTime.now());
+			dto.setInsertId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
+			return dto;
+		}
 	}
 
 	private Boolean checkConfigIfAlreadyExistOrIsDisable(MktPlaceIntegrationConfigDto dto) throws Exception {
