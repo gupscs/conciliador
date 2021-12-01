@@ -17,6 +17,9 @@ public interface MktPlaceIntegrationConfigRepository  extends MongoRepository<Mk
 
 	@Query("{companyId: ?0, marketPlace: ?1, mktPlaceUserId: ?2}")      
 	public Optional<MktPlaceIntegrationConfig> findByCompanyIdAndMktPlaceAndMktPlaceUserId(String companyId, MktPlaceEnum mercadoLivre, String mktPlaceUserId );
+
+	@Query("{marketPlace: ?0, mktPlaceUserId: ?1}")    
+	public Optional<MktPlaceIntegrationConfig> findByMktPlaceAndMktPlaceUserId(MktPlaceEnum marketPlace, String mktPlaceUserId);
 	
 
 }

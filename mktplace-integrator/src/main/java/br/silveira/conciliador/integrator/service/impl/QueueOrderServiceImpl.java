@@ -27,6 +27,8 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 	
 	private static final Integer PENDING_PROCESS_STATUS = 0;
 	
+	private static final String QUEUE_ID_NOT_FOUND = "Order Queue Id: %s not found";
+	
 	@Autowired
 	private OrderServiceFactory orderServiceFactory;
 	
@@ -98,8 +100,14 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 	}
 
 	@Override
-	public void processQueueOrder(String id) {
-		// TODO Auto-generated method stub
+	public void processQueueOrder(String id) throws Exception {
+		Optional<QueueOrders> entity = queueOrdersRepository.findById(id);
+		if(entity.isPresent()) {
+			 OrderProcessDto dto = QueueDtoMapper.mapperToOrderProcessDto(entity.get());
+			 orderServiceFactory.getImpl(dto.getMarketPlace()).processOrder(dto);	
+		}else {
+			throw new Exception(String.format(QUEUE_ID_NOT_FOUND, id));
+		}
 
 	}
 

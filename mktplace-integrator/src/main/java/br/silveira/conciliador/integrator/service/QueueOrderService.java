@@ -6,7 +6,7 @@ public interface QueueOrderService {
 	
 	public void processAllQueueOrder(String companyId);
 	
-	public void processQueueOrder(String id);
+	public void processQueueOrder(String id) throws Exception;
 
 	public void saveQueueOrders(QueueDto dto);
 

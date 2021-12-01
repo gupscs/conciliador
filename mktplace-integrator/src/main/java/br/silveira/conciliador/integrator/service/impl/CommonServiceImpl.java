@@ -26,7 +26,7 @@ public class CommonServiceImpl {
 			return dto;
 		}
 		if(dto.getMarketPlace().equals(MktPlaceEnum.MERCADO_LIVRE)) {
-			Optional<MktPlaceIntegrationConfig> config = mktPlaceIntegrationConfigRepository.findByCompanyIdAndMktPlaceAndMktPlaceUserId(dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId());
+			Optional<MktPlaceIntegrationConfig> config = mktPlaceIntegrationConfigRepository.findByMktPlaceAndMktPlaceUserId( dto.getMarketPlace(), dto.getMktPlaceUserId());
 			if(config.isPresent() && config.get().getEnable()) {
 				dto.setCompanyId(config.get().getCompanyId());
 			}else {

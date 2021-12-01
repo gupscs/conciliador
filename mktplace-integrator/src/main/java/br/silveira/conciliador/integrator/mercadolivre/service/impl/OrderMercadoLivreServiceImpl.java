@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import br.silveira.conciliador.integrator.dto.OrderProcessDto;
 import br.silveira.conciliador.integrator.dto.QueueDto;
@@ -52,6 +53,15 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		if (orderProcessDto == null) {
 			log.warn("Emtpy DTO!!!");
 			return;
+		}else if(!StringUtils.hasLength(orderProcessDto.getApiToken())) {
+			try {
+				MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
+				orderProcessDto.setApiToken(getToken(orderProcessDto.getCompanyId(), notificDto.getUser_id()));
+			} catch (Exception e) {
+				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()), e);
+				updateQueueExceptionError(QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto), e);
+				return;
+			}
 		}
 		
 		QueueDto dto = null;
