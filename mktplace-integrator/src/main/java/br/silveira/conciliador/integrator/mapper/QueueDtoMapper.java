@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.mapper;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class QueueDtoMapper {
 		QueueDto dto = new QueueDto();
 		dto.setMktPlaceUserId(""+notificationDto.getUser_id());
 		dto.setDocumentId(parseDocumentId(notificationDto));
-		dto.setInsertDate(LocalDateTime.now());
+		dto.setInsertDate(new Date());
 		dto.setMarketPlace(MktPlaceEnum.MERCADO_LIVRE);
 		dto.setNotificationOriginalData(notificationDto);
 		dto.setProcessStatus(0);
@@ -68,7 +68,7 @@ public class QueueDtoMapper {
 		entity.setDocumentId(dto.getDocumentId());
 		entity.setProcessStatus(dto.getProcessStatus()==null?0:dto.getProcessStatus());
 		entity.setProcessMsg(dto.getProcessMsg());
-		entity.setInsertDate(dto.getInsertDate()==null?LocalDateTime.now():dto.getInsertDate());
+		entity.setInsertDate(dto.getInsertDate()==null?new Date():dto.getInsertDate());
 		entity.setInsertId(dto.getInsertId()==null?INSERT_ID_AUTO:dto.getInsertId());
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setUpdateId(dto.getUpdateId());
@@ -87,7 +87,7 @@ public class QueueDtoMapper {
 		entity.setDocumentId(dto.getDocumentId());
 		entity.setProcessStatus(dto.getProcessStatus()==null?0:dto.getProcessStatus());
 		entity.setProcessMsg(dto.getProcessMsg());
-		entity.setInsertDate(dto.getInsertDate()==null?LocalDateTime.now():dto.getInsertDate());
+		entity.setInsertDate(dto.getInsertDate()==null?new Date():dto.getInsertDate());
 		entity.setInsertId(dto.getInsertId()==null?INSERT_ID_AUTO:dto.getInsertId());
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setUpdateId(dto.getUpdateId());
@@ -105,7 +105,7 @@ public class QueueDtoMapper {
 		entity.setDocumentId(dto.getDocumentId());
 		entity.setProcessStatus(dto.getProcessStatus()==null?0:dto.getProcessStatus());
 		entity.setProcessMsg(dto.getProcessMsg());
-		entity.setInsertDate(dto.getInsertDate()==null?LocalDateTime.now():dto.getInsertDate());
+		entity.setInsertDate(dto.getInsertDate()==null?new Date():dto.getInsertDate());
 		entity.setInsertId(dto.getInsertId()==null?INSERT_ID_AUTO:dto.getInsertId());
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setUpdateId(dto.getUpdateId());
@@ -123,7 +123,7 @@ public class QueueDtoMapper {
 		entity.setDocumentId(dto.getDocumentId());
 		entity.setProcessStatus(dto.getProcessStatus()==null?0:dto.getProcessStatus());
 		entity.setProcessMsg(dto.getProcessMsg());
-		entity.setInsertDate(dto.getInsertDate()==null?LocalDateTime.now():dto.getInsertDate());
+		entity.setInsertDate(dto.getInsertDate()==null?new Date():dto.getInsertDate());
 		entity.setInsertId(dto.getInsertId()==null?INSERT_ID_AUTO:dto.getInsertId());
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setUpdateId(dto.getUpdateId());
@@ -141,7 +141,7 @@ public class QueueDtoMapper {
 		entity.setDocumentId(dto.getDocumentId());
 		entity.setProcessStatus(dto.getProcessStatus()==null?0:dto.getProcessStatus());
 		entity.setProcessMsg(dto.getProcessMsg());
-		entity.setInsertDate(dto.getInsertDate()==null?LocalDateTime.now():dto.getInsertDate());
+		entity.setInsertDate(dto.getInsertDate()==null?new Date():dto.getInsertDate());
 		entity.setInsertId(dto.getInsertId()==null?INSERT_ID_AUTO:dto.getInsertId());
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setUpdateId(dto.getUpdateId());

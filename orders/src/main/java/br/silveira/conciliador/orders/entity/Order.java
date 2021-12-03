@@ -1,6 +1,5 @@
 package br.silveira.conciliador.orders.entity;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -44,13 +43,13 @@ public class Order {
 	
 	private String currency;
 	
-	private LocalDate closedDate;
+	private Date closedDate;
 	
-	private LocalDate createdDate;
+	private Date createdDate;
 	
-	private LocalDate expirationDate;
+	private Date expirationDate;
 	
-	private LocalDate lastUpdatedDate;
+	private Date lastUpdatedDate;
 	
 	private Double totalAmount;
 	
@@ -64,7 +63,7 @@ public class Order {
 	private List<OrderItem> orderItems;
 	
 	@NotEmpty(message = "insert date required")
-	private LocalDate insertDate;
+	private Date insertDate;
 	
 	@NotEmpty(message = "insert id required")
 	private String insertId;

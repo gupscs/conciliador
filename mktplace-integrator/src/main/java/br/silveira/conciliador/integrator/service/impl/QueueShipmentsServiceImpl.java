@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.service.impl;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +43,7 @@ public class QueueShipmentsServiceImpl extends CommonServiceImpl implements Queu
 		QueueShipments queue = update.get();
 		queue.setProcessStatus(dto.getProcessStatus());
 		queue.setProcessMsg(dto.getProcessMsg());
-		queue.setUpdateDate(LocalDateTime.now());
+		queue.setUpdateDate(new Date());
 		queue.setUpdateId(dto.getUpdateId());
 		queueShipmentsRepository.save(queue);
 	}
@@ -57,7 +57,7 @@ public class QueueShipmentsServiceImpl extends CommonServiceImpl implements Queu
 		}
 		QueueShipments queue = update.get();
 		queue.setDocumentOriginalData(dto.getDocumentOriginalData());
-		queue.setUpdateDate(LocalDateTime.now());
+		queue.setUpdateDate(new Date());
 		queue.setUpdateId(dto.getUpdateId());
 		queueShipmentsRepository.save(queue);
 	}

@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.mercadolivre.dto;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -31,7 +31,7 @@ public class MercadoLivreUserInfoDto {
     public double latitude;
     public double longitude;
     public Object status;
-    public LocalDateTime date_created;
+    public Date date_created;
     public boolean normalized;
     public OpenHours open_hours;
 	

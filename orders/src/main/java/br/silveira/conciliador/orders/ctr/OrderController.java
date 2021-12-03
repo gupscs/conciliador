@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,9 +26,9 @@ public class OrderController {
 
 	
 	
-	@PostMapping
+	@PostMapping("/saveOrder")
 	// @PreAutorize("hasAnyRole('ORDERS')")
-	public ResponseEntity<RestResponseDto<?>> saveOrder(OrderDto orderDto) {
+	public ResponseEntity<RestResponseDto<?>> saveOrder(@RequestBody OrderDto orderDto) {
 		try {
 			orderService.saveOrder(orderDto);
 			return ResponseEntity.ok().build();

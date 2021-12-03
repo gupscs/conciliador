@@ -12,6 +12,7 @@ public class OrderItemDto {
 	@NotNull(message = "sku required")
 	private Double totalPrice;
 	
+	private String mktPlaceItemId;
 	
 	@NotNull(message = "sku required")
 	private String sku;

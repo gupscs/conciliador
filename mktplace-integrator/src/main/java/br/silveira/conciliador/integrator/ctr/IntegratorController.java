@@ -40,7 +40,7 @@ public class IntegratorController {
 		}
 	}
 	
-	@PostMapping("/processOrder/{companyId}")
+	@PostMapping("/processAllOrder/{companyId}")
 	public ResponseEntity<RestResponseDto<?>> processAllOrder(@PathVariable(value="companyId") String companyId) {
 		try {
 			queueOrderService.processAllQueueOrder(companyId);

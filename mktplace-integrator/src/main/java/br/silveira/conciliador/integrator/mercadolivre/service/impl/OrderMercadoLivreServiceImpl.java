@@ -1,5 +1,6 @@
 package br.silveira.conciliador.integrator.mercadolivre.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,9 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 
 	private static final Integer PROCESS_STATUS_ERROR = 99;
 
-	//@Autowired
+	private static final Integer PROCESS_STATUS_SUCCESS = 2;
+
+	@Autowired
 	private OrderController orderController;
 
 	@Autowired
@@ -50,47 +53,62 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 
 	@Override
 	public void processOrder(OrderProcessDto orderProcessDto) {
-		if (orderProcessDto == null) {
-			log.warn("Emtpy DTO!!!");
-			return;
-		}else if(!StringUtils.hasLength(orderProcessDto.getApiToken())) {
-			try {
-				MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
-				orderProcessDto.setApiToken(getToken(orderProcessDto.getCompanyId(), notificDto.getUser_id()));
-			} catch (Exception e) {
-				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()), e);
-				updateQueueExceptionError(QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto), e);
-				return;
-			}
-		}
-		
-		QueueDto dto = null;
+		log.info(String.format(PROCESS_MSG_START, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
+		QueueDto dto = validateAndMapperToDto(orderProcessDto);
+		if(dto == null) return;
 		
 		try {
-			log.info(String.format(PROCESS_MSG_START, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
-			dto = QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto);
 			updateProcessStatusOnGoing(dto);
 			MercadoLivreOrderDto order = mercadoLivreService.getOrder(BEARER + orderProcessDto.getApiToken(),orderProcessDto.getDocumentId());
 			if (order == null) {
 				updateQueueErrorNotFound(dto);
-				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()));
+				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()));
 			} else {
 				dto.setDocumentOriginalData(order);
-				queueOrderService.updateDocumentOriginalData(dto);
-				OrderDto orderDto = MercadoLivreOrderDtoMapper.mapperToOrderDto(order.getResults().get(0));
+				OrderDto orderDto = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
 				orderController.saveOrder(orderDto);
-				log.info(String.format(PROCESS_MSG_END, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()));
+				updateQueueSuccessProcess(dto);
+				log.info(String.format(PROCESS_MSG_END, dto.getId(),dto.getDocumentId()));
 			}
 		} catch (Exception e) {
-			log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()), e);
+			log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()), e);
 			updateQueueExceptionError(dto, e);
 		}
+	}
+
+	private QueueDto validateAndMapperToDto(OrderProcessDto orderProcessDto) {
+		if (orderProcessDto == null) {
+			log.warn("Emtpy DTO!!!");
+		}else if(!StringUtils.hasLength(orderProcessDto.getApiToken())) {
+			try {
+				MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
+				orderProcessDto.setApiToken(getToken(orderProcessDto.getCompanyId(), notificDto.getUser_id()));
+				return QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto);
+			} catch (Exception e) {
+				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, orderProcessDto.getQueueOrdersId(),	orderProcessDto.getDocumentId()), e);
+				updateQueueExceptionError(QueueDtoMapper.mapperFromOrderProcessDto(orderProcessDto), e);
+			}
+		}
+		return null;
+	}
+
+	private void updateQueueSuccessProcess(QueueDto queueDto) {
+		try {
+			queueDto.setProcessMsg("");
+			queueDto.setProcessStatus(PROCESS_STATUS_SUCCESS);
+			queueDto.setUpdateDate(new Date());
+			queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
+		} catch (Exception e1) {
+			log.error("ERROR TO UPDATE STATUS", e1);
+		}
+		
 	}
 
 	private void updateQueueExceptionError(QueueDto queueDto, Exception e) {
 		try {
 			queueDto.setProcessMsg(e.getMessage());
 			queueDto.setProcessStatus(PROCESS_STATUS_ERROR);
+			queueDto.setUpdateDate(new Date());
 			queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
 		} catch (Exception e1) {
 			log.error("ERROR TO UPDATE STATUS", e1);
@@ -99,9 +117,9 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 
 	private void updateProcessStatusOnGoing(QueueDto queueDto) throws Exception {
 		String msg = String.format(PROCESS_MSG_ON_GOING, queueDto.getId(), queueDto.getDocumentId());
-		log.info(msg);
 		queueDto.setProcessMsg(msg);
 		queueDto.setProcessStatus(PROCESS_STATUS_ON_GOING);
+		queueDto.setUpdateDate(new Date());
 		queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
 	}
 
@@ -110,6 +128,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		log.warn(msg);
 		queueDto.setProcessMsg(msg);
 		queueDto.setProcessStatus(PROCESS_STATUS_ERROR);
+		queueDto.setUpdateDate(new Date());
 		queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
 	}
 

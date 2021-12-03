@@ -1,6 +1,6 @@
 package br.silveira.conciliador.organizational.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.Email;
@@ -62,12 +62,12 @@ public class Company {
 	private List<ItemAverageCost> itemAverageCost;
 	
 	@NotEmpty(message = "insert date required")
-	private LocalDate insertDate;
+	private Date insertDate;
 	
 	@NotEmpty(message = "insert id required")
 	private String insertId;
 	
-	private LocalDate updateDate;
+	private Date updateDate;
 	
 	private String updateId;
 	

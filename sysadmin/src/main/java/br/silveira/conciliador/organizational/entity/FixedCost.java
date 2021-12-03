@@ -1,6 +1,6 @@
 package br.silveira.conciliador.organizational.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import br.silveira.conciliador.common.enums.RatioType;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class FixedCost {
 	
-	private LocalDate costStart;
+	private Date costStart;
 	
 	private String costName;
 	

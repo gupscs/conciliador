@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.dto;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import lombok.Data;
@@ -28,11 +28,11 @@ public class QueueDto {
 	
 	private String processMsg;
 	
-	private LocalDateTime insertDate;
+	private Date insertDate;
 	
 	private String insertId;
 	
-	private LocalDateTime updateDate;
+	private Date updateDate;
 	
 	private String updateId;
 

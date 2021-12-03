@@ -1,11 +1,12 @@
 package br.silveira.conciliador.integrator.mercadolivre.service.impl;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.silveira.conciliador.common.enums.MktPlaceEnum;
+import br.silveira.conciliador.common.util.DateUtil;
 import br.silveira.conciliador.integrator.entity.MktPlaceIntegrationConfig;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
 import br.silveira.conciliador.integrator.mercadolivre.service.MercadoLivreRestService;
@@ -29,18 +30,18 @@ public class MercadoLivreServiceCommon {
 		
 		MktPlaceIntegrationConfig entity = mktPlaceInteg.get();
 		String apiToken = entity.getApiToken();
-		String apiRefreshToken = entity.getApiToken();
-		LocalDateTime lastUpdate = entity.getLastApiTokenUpdated();
+		String apiRefreshToken = entity.getApiRefreshToken();
+		Date lastUpdate = entity.getLastApiTokenUpdated();
 		Integer expireIn = entity.getExpiresIn();
 		String clientId = entity.getApplicationId();
 		String clientSecret = entity.getClientSecret();
-		if(lastUpdate.plusSeconds(expireIn).isBefore(LocalDateTime.now())) {
+		if(DateUtil.isExpiredToken(lastUpdate, expireIn)) {
 			MercadoLivreTokenDto token = mercadoLivreService.refreshToken(REFRESH_TOKEN, clientId, clientSecret, apiRefreshToken);
 			entity.setApiToken(token.getAccess_token());
 			entity.setApiRefreshToken(token.getRefresh_token());
-			entity.setLastApiTokenUpdated(LocalDateTime.now());
+			entity.setLastApiTokenUpdated(new Date());
 			entity.setExpiresIn(token.getExpires_in());
-			entity.setUpdateDate(LocalDateTime.now());
+			entity.setUpdateDate(new Date());
 			entity.setUpdateId("AUTO");
 			mktPlaceIntegrationConfigRepository.save(entity);
 			apiToken = token.getAccess_token();

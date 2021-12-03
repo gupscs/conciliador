@@ -1,6 +1,6 @@
 package br.silveira.conciliador.organizational.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -18,12 +18,12 @@ public class MktPlaceFee {
 	private Double fee;
 	
 	@NotEmpty(message = "insert date required")
-	private LocalDate insertDate;
+	private Date insertDate;
 	
 	@NotEmpty(message = "insert id required")
 	private String insertId;
 	
-	private LocalDate updateDate;
+	private Date updateDate;
 	
 	private String updateId;
 	

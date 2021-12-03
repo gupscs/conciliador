@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.service.impl;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,7 +55,7 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 			
 			dto.setApiToken(token.getAccess_token());
 			dto.setApiRefreshToken(token.getRefresh_token());
-			dto.setLastApiTokenUpdated(LocalDateTime.now());
+			dto.setLastApiTokenUpdated(new Date());
 			dto.setExpiresIn(token.getExpires_in());
 			
 			repository.save(MktPlaceIntegrationConfigMapper.mapperToEntity(dto));
@@ -70,11 +70,11 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 		if(mktConfigEntity.isPresent()) {
 			MktPlaceIntegrationConfigDto mapperToDto = MktPlaceIntegrationConfigMapper.mapperToDto(mktConfigEntity.get());
 			mapperToDto.setAuthorizationCode(dto.getAuthorizationCode());
-			dto.setUpdateDate(LocalDateTime.now());
+			dto.setUpdateDate(new Date());
 			dto.setUpdateId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
 			return mapperToDto;
 		}else {
-			dto.setInsertDate(LocalDateTime.now());
+			dto.setInsertDate(new Date());
 			dto.setInsertId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
 			return dto;
 		}

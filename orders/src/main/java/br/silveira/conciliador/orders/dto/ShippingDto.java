@@ -1,7 +1,6 @@
 package br.silveira.conciliador.orders.dto;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 
 import lombok.Data;
 
@@ -17,11 +16,11 @@ public class ShippingDto {
     private String shipmentType;
     private String senderId;
     private String pickingType;
-    private LocalDate createdDate;
+    private Date createdDate;
     private Double cost;
-    private LocalDate firstPrintedDate;
-    private LocalDate estimatedDeliveryDate;
-    private LocalTime estimatedDeliveryTimeFrom;
-    private LocalTime estimatedDeliveryTimeTo;
+    private Date firstPrintedDate;
+    private Date estimatedDeliveryDate;
+    private String estimatedDeliveryTimeFrom;
+    private String estimatedDeliveryTimeTo;
 
 }

@@ -1,6 +1,6 @@
 package br.silveira.conciliador.organizational.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,7 +13,7 @@ public class ItemAverageCost {
 	//TODO ESTE DOCUMENTO DEVE SER POPULADO PELA INTEGRAÇÃO COM O BLING
 	
 	@NotNull(message = "start Date required")
-	private LocalDate startDate;
+	private Date startDate;
 	
 	@NotNull(message = "sku required")
 	private String sku;

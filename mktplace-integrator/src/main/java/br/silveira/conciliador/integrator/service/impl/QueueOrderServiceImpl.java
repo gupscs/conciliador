@@ -1,7 +1,7 @@
 package br.silveira.conciliador.integrator.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 		QueueOrders queueOrders = update.get();
 		queueOrders.setProcessStatus(dto.getProcessStatus());
 		queueOrders.setProcessMsg(dto.getProcessMsg());
-		queueOrders.setUpdateDate(LocalDateTime.now());
+		queueOrders.setUpdateDate(new Date());
 		queueOrders.setUpdateId(dto.getUpdateId());
 		queueOrdersRepository.save(queueOrders);
 	}
@@ -66,7 +66,7 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 		}
 		QueueOrders queueOrders = update.get();
 		queueOrders.setDocumentOriginalData(dto.getDocumentOriginalData());
-		queueOrders.setUpdateDate(LocalDateTime.now());
+		queueOrders.setUpdateDate(new Date());
 		queueOrders.setUpdateId(dto.getUpdateId());
 		queueOrdersRepository.save(queueOrders);
 	}

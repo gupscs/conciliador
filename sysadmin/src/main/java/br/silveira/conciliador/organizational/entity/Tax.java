@@ -1,13 +1,13 @@
 package br.silveira.conciliador.organizational.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.Data;
 
 @Data
 public class Tax {
 	
-	private LocalDate taxStart;
+	private Date taxStart;
 	
 	private String taxName;
 	

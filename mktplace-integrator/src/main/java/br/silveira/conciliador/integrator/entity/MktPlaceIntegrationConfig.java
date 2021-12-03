@@ -1,6 +1,6 @@
 package br.silveira.conciliador.integrator.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -39,17 +39,17 @@ public class MktPlaceIntegrationConfig {
 	
 	private String apiRefreshToken;
 	
-	private LocalDateTime lastApiTokenUpdated;
+	private Date lastApiTokenUpdated;
 	
 	private Integer expiresIn;
 	
 	@NotEmpty(message = "insert date required")
-	private LocalDateTime insertDate;
+	private Date insertDate;
 	
 	@NotEmpty(message = "insert id required")
 	private String insertId;
 	
-	private LocalDateTime updateDate;
+	private Date updateDate;
 	
 	private String updateId;
 	

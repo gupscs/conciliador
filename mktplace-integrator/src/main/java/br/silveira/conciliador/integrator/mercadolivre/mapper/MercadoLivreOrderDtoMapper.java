@@ -1,16 +1,17 @@
 package br.silveira.conciliador.integrator.mercadolivre.mapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
 
-import br.silveira.conciliador.common.util.DateUtil;
+import br.silveira.conciliador.integrator.dto.QueueDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.AlternativePhone;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Buyer;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.OrderItem;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Phone;
-import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Result;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Seller;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Shipping;
 import br.silveira.conciliador.orders.dto.LocationDto;
@@ -20,19 +21,23 @@ import br.silveira.conciliador.orders.dto.ShippingDto;
 
 public class MercadoLivreOrderDtoMapper {
 
-	public static OrderDto mapperToOrderDto(Result order) {
+	public static OrderDto mapperToOrderDto(MercadoLivreOrderDto order, QueueDto dto) {
 		OrderDto d = new OrderDto();
+		d.setCompanyId(dto.getCompanyId());
+		d.setMktPlace(dto.getMarketPlace());
 		d.setOrderId(String.valueOf(order.getId()) );
 		d.setCurrency(order.getCurrency_id() );
-		d.setClosedDate(order.getDate_closed() );
+		d.setClosedDate(order.getDate_closed());
 		d.setCreatedDate(order.getDate_created() );
 		d.setExpirationDate(order.getExpiration_date() );
-		d.setLastUpdatedDate(order.getDate_last_updated() );
+		d.setLastUpdatedDate(order.getLast_updated() );
 		d.setTotalAmount(order.getTotal_amount() );
 		d.setStatus(order.getStatus() );
 		d.setShipping(mapperToShippingDto(order.getShipping()));
 		d.setBuyer(mapperToLocationDto(order.getBuyer()));
 	    d.setSeller(mapperToLocationDto(order.getSeller()));
+	    d.setInsertDate(new Date());
+	    d.setInsertId("AUTO");
 	    //TODO VERIFICAR O FEEDBACK COMO TRATAR
 	    d.setOrderItems(mapperToOrderItemDto(order.getOrder_items()));
 
@@ -43,13 +48,14 @@ public class MercadoLivreOrderDtoMapper {
 		List<OrderItemDto> dto = new ArrayList<OrderItemDto>();
 		for (OrderItem i : order_items) {
 			OrderItemDto d = new OrderItemDto();
+			d.setMktPlaceItemId(i.getItem().getId());
 			d.setCategory(i.getItem().getCategory_id());
 			d.setCurrency(i.getCurrency_id());
 			d.setQuantity(i.getQuantity());
-			d.setSaleFee(null);
-			d.setSku(i.getItem().getId());
+			d.setSaleFee(i.getSale_fee());
+			d.setSku(i.getItem().getSeller_sku());
 			d.setTitle(i.getItem().getTitle());
-			d.setTotalPrice(null);
+			d.setTotalPrice(i.getFull_unit_price());
 			d.setTypeId(null);
 			d.setUnitPrice(i.getUnit_price());
 			dto.add(d);
@@ -109,13 +115,13 @@ public class MercadoLivreOrderDtoMapper {
 	    dto.setShipmentType(shipment.getShipment_type());
 	    dto.setSenderId(String.valueOf(shipment.getSender_id()));
 	    dto.setPickingType(String.valueOf(shipment.getPicking_type()));
-	    dto.setCreatedDate(DateUtil.convertDateToLocalDate(shipment.getDate_created()));
+	    dto.setCreatedDate(shipment.getDate_created());
 	    dto.setCost(shipment.getCost());
-	    dto.setFirstPrintedDate(DateUtil.convertDateToLocalDate(shipment.getDate_first_printed()));
+	    dto.setFirstPrintedDate(shipment.getDate_first_printed());
 	    if(shipment.getShipping_option() != null && shipment.getShipping_option().getEstimated_delivery() != null) {
-		    dto.setEstimatedDeliveryDate(DateUtil.convertDateToLocalDate(shipment.getShipping_option().getEstimated_delivery().getDate()));
-		    dto.setEstimatedDeliveryTimeFrom(DateUtil.StringToLocalTime(shipment.getShipping_option().getEstimated_delivery().getTime_from()));
-		    dto.setEstimatedDeliveryTimeTo(DateUtil.StringToLocalTime(shipment.getShipping_option().getEstimated_delivery().getTime_to()));
+		    dto.setEstimatedDeliveryDate(shipment.getShipping_option().getEstimated_delivery().getDate());
+		    dto.setEstimatedDeliveryTimeFrom(shipment.getShipping_option().getEstimated_delivery().getTime_from());
+		    dto.setEstimatedDeliveryTimeTo(shipment.getShipping_option().getEstimated_delivery().getTime_to());
 	    }
 		return dto;
 	}
