@@ -42,6 +42,7 @@ public class Company {
 	
 	private String country;
 	
+	
 	private Long phone1;
 	
 	private Long phone2;
