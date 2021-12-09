@@ -2,7 +2,7 @@ package br.silveira.conciliador.organizational.entity;
 
 import java.util.Date;
 
-import br.silveira.conciliador.common.enums.RatioType;
+import br.silveira.conciliador.common.enums.RatioTypeEnum;
 import lombok.Data;
 
 @Data
@@ -14,6 +14,6 @@ public class FixedCost {
 	
 	private Double cost;
 	
-	private RatioType ratioType;
+	private RatioTypeEnum ratioType;
 
 }

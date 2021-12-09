@@ -1,0 +1,147 @@
+package br.silveira.conciliador.costcalc.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import br.silveira.conciliador.costcalc.dto.CalculationDto;
+import br.silveira.conciliador.costcalc.dto.FixedCostDto;
+import br.silveira.conciliador.costcalc.dto.ItemAverageCostDto;
+import br.silveira.conciliador.costcalc.dto.ItemCostDetailDto;
+import br.silveira.conciliador.costcalc.dto.OrderCalculationDto;
+import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
+import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
+import br.silveira.conciliador.costcalc.service.OrderCostCalculationService;
+
+@Service
+public class OrderCostCalculationServiceImpl implements OrderCostCalculationService{
+
+	private static final Logger log = LogManager.getLogger(OrderCostCalculationServiceImpl.class);
+	
+	@Override
+	public void calculateReturnOrder(OrderCalculationDto dto) {
+		
+		
+	}
+
+	@Override
+	public void calculateOrder(OrderCalculationDto dto) {
+		//Ler os valores
+				//chamar o calculo
+				OrderCalculationValuesDto dto;
+				OrderCalculationResultDto ret = calculateOrder(dto);
+				//salvar os valores
+	}
+
+	@Override
+	public void recalculateAllPendingOrder(String companyId) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public OrderCalculationResultDto calculateOrder(OrderCalculationValuesDto dto) {
+		CalculationDto mktPlaceFee = calculateMktPlaceFee(dto);
+		List<ItemCostDetailDto> itemCostDetail = calculateItemCost(dto);
+		CalculationDto tax = calculationTax(dto);
+		List<CalculationDto> fixedCost = calculationFixedCost(dto);
+		CalculationDto shippingCost = calculationShippingCost(dto);
+		Double totalItemCost = calculateTotalItemCost(itemCostDetail);
+		Double totalFixedCost = calculateTotalFixedCost(fixedCost);
+		Double netAmount = calculateNetAmount(dto.getOrderAmount(), tax, shippingCost, totalItemCost, totalFixedCost);
+		OrderCalculationResultDto ret = new OrderCalculationResultDto(dto.getOrderId(), dto.getCompanyId(), dto.getOrderAmount(), mktPlaceFee, totalItemCost, itemCostDetail, tax, totalFixedCost, fixedCost, shippingCost, netAmount);
+		return ret;
+	}
+
+	private Double calculateNetAmount(Double orderAmount, CalculationDto tax, CalculationDto shippingCost, Double totalItemCost, Double totalFixedCost) {
+		Double ret = orderAmount - tax.getValue() - shippingCost.getValue() - totalItemCost - totalFixedCost;
+		return ret;
+	}
+
+	private Double calculateTotalFixedCost(List<CalculationDto> fixedCost) {
+		if(fixedCost == null || fixedCost.isEmpty()) return 0.0;
+		return fixedCost.stream().mapToDouble(f -> f.getValue()).sum();
+	}
+
+	private Double calculateTotalItemCost(List<ItemCostDetailDto> itemCostDetail) {
+		if(itemCostDetail == null || itemCostDetail.isEmpty()) return 0.0;
+		return itemCostDetail.stream().mapToDouble(f -> f.getCost()).sum();
+	}
+
+	private CalculationDto calculationShippingCost(OrderCalculationValuesDto dto) {
+		// TODO Verificar a logica de calculo do shipping
+		CalculationDto ret = new CalculationDto();
+		ret.setValue(0.0);
+		ret.setCalculationName("Shipping Cost not implemented");
+		ret.setCalculationDetail("Shipping Cost not implemented");
+		return ret;
+	}
+
+	private List<CalculationDto> calculationFixedCost(OrderCalculationValuesDto dto) {
+		List<CalculationDto> ret = new ArrayList<CalculationDto>();
+		for (FixedCostDto fixedCostDto : dto.getFixedCost()) {
+			CalculationDto calc = new CalculationDto();
+			calc.setCalculationName(fixedCostDto.getCostName());
+			calc.setValue(fixedCostDto.getCostRateValue());
+			calc.setCalculationDetail("RatioType: "+fixedCostDto.getRatioType());
+			ret.add(calc);
+		}
+		
+		return ret;
+	}
+
+	private CalculationDto calculationTax(OrderCalculationValuesDto dto) {
+		CalculationDto calc = new CalculationDto();
+		calc.setCalculationName(dto.getTax().getTaxName());
+		calc.setCalculationDetail(getTaxDetail(dto));
+		//Tax Cost deve ser salvo como % em decimal 0,01 = 1%
+		Double taxCalc = dto.getOrderAmount() * dto.getTax().getCost();
+		calc.setValue(taxCalc);
+		return calc;
+	}
+
+	private String getTaxDetail(OrderCalculationValuesDto dto) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(dto.getOrderAmount());
+		sb.append("(Order Amount) x ");
+		sb.append(dto.getTax().getCost());
+		sb.append("(Tax %)");
+		return sb.toString();
+	}
+
+	private List<ItemCostDetailDto> calculateItemCost(OrderCalculationValuesDto dto) {
+		List<ItemCostDetailDto> ret = new ArrayList<ItemCostDetailDto>();
+		for (ItemAverageCostDto item : dto.getItemAverageCost()) {
+			ItemCostDetailDto d = new ItemCostDetailDto();
+			d.setSku(item.getSku());
+			d.setCost(item.getAverageCost());
+			d.setCalculationDetail("-");
+			ret.add(d);
+		}
+		
+		return ret;
+	}
+
+	private CalculationDto calculateMktPlaceFee(OrderCalculationValuesDto dto) {
+		CalculationDto calc = new CalculationDto();
+		calc.setCalculationName(dto.getFeeType());
+		calc.setCalculationDetail(getFeeDetail(dto));
+		//Tax Cost deve ser salvo como % em decimal 0,01 = 1%
+		Double feeCalc = dto.getOrderAmount() * dto.getFeeAmount();
+		calc.setValue(feeCalc);
+		return calc;
+	}
+
+	private String getFeeDetail(OrderCalculationValuesDto dto) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(dto.getOrderAmount());
+		sb.append("(Order Amount) x ");
+		sb.append(dto.getFeeAmount());
+		sb.append("(Fee %) | Fee Type: ");
+		sb.append(dto.getFeeType());
+		return sb.toString();
+	}
+
+}

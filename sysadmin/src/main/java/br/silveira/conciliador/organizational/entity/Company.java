@@ -56,7 +56,7 @@ public class Company {
 	private List<FixedCost> fixedCost;
 	
 	//Impostos por pedido
-	private List<Tax> taxes;
+	private Tax tax;
 	
 	//Custo médio dos itens a partir das notas de inbound ou integração com o Bling
 	private List<ItemAverageCost> itemAverageCost;

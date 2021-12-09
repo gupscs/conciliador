@@ -58,6 +58,8 @@ public class Order {
 	private OrderStatusEnum orderStatus;
 	
 	private Shipping shipping;
+
+	private OrderCost orderCost;
 	
 	@NotNull(message = "item required")
 	private List<OrderItem> orderItems;
