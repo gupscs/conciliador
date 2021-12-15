@@ -14,6 +14,11 @@ public class RestResponseDto<T> {
 
 	public RestResponseDto() {}
 	
+	public RestResponseDto(T data) {
+		super();
+		this.data = data;
+	}
+	
 	public RestResponseDto(T data, List<String> errors) {
 		super();
 		this.data = data;

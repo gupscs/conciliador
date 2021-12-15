@@ -39,7 +39,8 @@ public class Order {
 	@NotNull(message = "Seller required")
 	private Location seller;
 	
-	private String orderType;
+	//Order Type tipo do pedido criado no mkt place, define as tarifas a serem utilizadas
+	private String feeType;
 	
 	private String currency;
 	

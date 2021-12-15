@@ -33,6 +33,8 @@ public class OrderDto {
 	
 	private OrderStatusEnum orderStatus;
 	
+	private String feeType;
+	
 	private String currency;
 	
 	private Date closedDate;

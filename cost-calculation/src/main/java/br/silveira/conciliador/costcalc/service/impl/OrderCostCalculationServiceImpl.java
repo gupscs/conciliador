@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import br.silveira.conciliador.common.dto.RestResponseDto;
 import br.silveira.conciliador.costcalc.dto.CalculationDto;
 import br.silveira.conciliador.costcalc.dto.FixedCostDto;
 import br.silveira.conciliador.costcalc.dto.ItemAverageCostDto;
@@ -14,12 +17,32 @@ import br.silveira.conciliador.costcalc.dto.ItemCostDetailDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
+import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
+import br.silveira.conciliador.costcalc.mapper.OrderMapper;
+import br.silveira.conciliador.costcalc.repository.OrderCostCalculationRepository;
 import br.silveira.conciliador.costcalc.service.OrderCostCalculationService;
+import br.silveira.conciliador.orders.ctr.OrderController;
+import br.silveira.conciliador.orders.dto.OrderCostDto;
+import br.silveira.conciliador.orders.dto.OrderValuesDto;
+import br.silveira.conciliador.organizational.ctr.OrganizationalController;
+import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
+import javassist.NotFoundException;
 
 @Service
 public class OrderCostCalculationServiceImpl implements OrderCostCalculationService{
 
 	private static final Logger log = LogManager.getLogger(OrderCostCalculationServiceImpl.class);
+	
+	private static final String MSG_CALCULATION_ORDER_SUCESS = "Order Id: %s calculate sucessfully"; 
+	
+	@Autowired
+	private OrderController orderController ;
+	
+	@Autowired
+	private OrganizationalController organizationalController;
+	
+	@Autowired
+	private OrderCostCalculationRepository orderCostCalculationRepository; 
 	
 	@Override
 	public void calculateReturnOrder(OrderCalculationDto dto) {
@@ -28,13 +51,24 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	}
 
 	@Override
-	public void calculateOrder(OrderCalculationDto dto) {
-		//Ler os valores
-				//chamar o calculo
-				OrderCalculationValuesDto dto;
-				OrderCalculationResultDto ret = calculateOrder(dto);
-				//salvar os valores
+	public void calculateOrder(OrderCalculationDto dto) throws Exception {
+		OrderValuesDto orderValues = getOrderValues(dto);
+		CompanyCostValuesDto companyCostValues = getCompanyCostValues(orderValues);
+		
+		OrderCalculationValuesDto calculationDto = OrderMapper.mapperToOrderCalculationValuesDto(orderValues, companyCostValues);
+		OrderCalculationResultDto calculationRes = calculateOrder(calculationDto);
+		
+		OrderCostCalcuation orderSaved = orderCostCalculationRepository.save(OrderMapper.mapperToOrderCostCalculationEntity(calculationRes));
+		
+		OrderCostDto orderCost = OrderMapper.mapperToOrderCostDto(calculationRes);
+		orderCost.setOrderCostCalcuationId(orderSaved.getId());
+		orderCost.setUserId(dto.getUserId());
+		orderController.saveOrderCost(orderCost);
+		
+		log.info(String.format(MSG_CALCULATION_ORDER_SUCESS, dto.getId()));
+		
 	}
+
 
 	@Override
 	public void recalculateAllPendingOrder(String companyId) {
@@ -144,4 +178,23 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		return sb.toString();
 	}
 
+	private CompanyCostValuesDto getCompanyCostValues(OrderValuesDto orderValues) throws Exception, NotFoundException {
+		RestResponseDto<CompanyCostValuesDto> companyCostValues = organizationalController.getCompanyCostValues(OrderMapper.mapperToCompanyCostValuesRequestDto(orderValues));
+		if(!CollectionUtils.isEmpty(companyCostValues.getErrors())) {
+			throw new Exception("get company cost values - Company ID: "+orderValues.getCompanyId()+" - Errors: "+companyCostValues.getErrors());
+		}else if(companyCostValues.getData() == null) {
+			throw new NotFoundException("Order not found for Company ID: "+orderValues.getCompanyId());	
+		}
+		return companyCostValues.getData();
+	}
+	
+	private OrderValuesDto getOrderValues(OrderCalculationDto dto) throws Exception, NotFoundException {
+		RestResponseDto<OrderValuesDto> orderValues = orderController.getOrderValues(dto.getId());		
+		if(!CollectionUtils.isEmpty(orderValues.getErrors())) {
+			throw new Exception("get order values error - ID: "+dto.getId()+" - Errors: "+orderValues.getErrors());
+		}else if(orderValues.getData() == null) {
+			throw new NotFoundException("Order not found - ID: "+dto.getId());	
+		}
+		return orderValues.getData();
+	}
 }

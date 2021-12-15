@@ -38,6 +38,7 @@ public class MercadoLivreOrderDtoMapper {
 	    d.setSeller(mapperToLocationDto(order.getSeller()));
 	    d.setInsertDate(new Date());
 	    d.setInsertId("AUTO");
+	    d.setFeeType("mapear com o pedido - pendente");
 	    //TODO VERIFICAR O FEEDBACK COMO TRATAR
 	    d.setOrderItems(mapperToOrderItemDto(order.getOrder_items()));
 

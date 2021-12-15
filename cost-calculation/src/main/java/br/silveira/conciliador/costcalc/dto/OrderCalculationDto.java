@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class OrderCalculationDto {
 	
-	private String orderId;
+	private String id;
 	
 	private String companyId;
 	
