@@ -7,23 +7,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import br.silveira.conciliador.common.dto.RestResponseDto;
 import br.silveira.conciliador.orders.dto.OrderCostDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
 
 @FeignClient(name = "orderController", url = "${order.url}")
 public interface OrderController {
-	
-	
+
+
 	@PostMapping("/saveOrder")
-	public void saveOrder(@RequestBody OrderDto orderDto);
-	
+	public ResponseEntity<Void> saveOrder(@RequestBody OrderDto orderDto) ;
+
+	@PostMapping("/saveOrderCost")
+	public ResponseEntity<Void> saveOrderCost(@RequestBody OrderCostDto orderCostDto) ;
 
 	@GetMapping("/getOrderValues/{id}")
-	public RestResponseDto<OrderValuesDto> getOrderValues(@PathVariable(value="id") String orderId);
-	
-	@PostMapping("/saveOrderCost")
-	public void saveOrderCost(@RequestBody OrderCostDto orderCostDto) ;
-
+	public ResponseEntity<OrderValuesDto> getOrderValues(@PathVariable(value = "id") String orderId) ;
 }

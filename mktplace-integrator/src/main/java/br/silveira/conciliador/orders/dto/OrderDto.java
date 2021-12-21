@@ -31,9 +31,9 @@ public class OrderDto {
 
 	private String mktPlaceStatus;
 	
-	private String feeType;
-	
 	private OrderStatusEnum orderStatus;
+	
+	private String feeType;
 	
 	private String currency;
 	

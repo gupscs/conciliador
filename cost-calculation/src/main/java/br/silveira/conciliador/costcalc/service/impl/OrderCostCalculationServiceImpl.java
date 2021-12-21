@@ -6,10 +6,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import br.silveira.conciliador.common.dto.RestResponseDto;
+import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.costcalc.dto.CalculationDto;
 import br.silveira.conciliador.costcalc.dto.FixedCostDto;
 import br.silveira.conciliador.costcalc.dto.ItemAverageCostDto;
@@ -179,22 +180,22 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	}
 
 	private CompanyCostValuesDto getCompanyCostValues(OrderValuesDto orderValues) throws Exception, NotFoundException {
-		RestResponseDto<CompanyCostValuesDto> companyCostValues = organizationalController.getCompanyCostValues(OrderMapper.mapperToCompanyCostValuesRequestDto(orderValues));
-		if(!CollectionUtils.isEmpty(companyCostValues.getErrors())) {
-			throw new Exception("get company cost values - Company ID: "+orderValues.getCompanyId()+" - Errors: "+companyCostValues.getErrors());
-		}else if(companyCostValues.getData() == null) {
+		ResponseEntity<CompanyCostValuesDto> companyCostValues = organizationalController.getCompanyCostValues(OrderMapper.mapperToCompanyCostValuesRequestDto(orderValues));
+		if(companyCostValues.getStatusCode().isError()) {
+			throw new Exception("get company cost values - Company ID: "+orderValues.getCompanyId()+" - Errors: "+companyCostValues.getHeaders().getFirst(RestTagConstant.HD_ERROR_MSG_TAG));
+		}else if(companyCostValues.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 			throw new NotFoundException("Order not found for Company ID: "+orderValues.getCompanyId());	
 		}
-		return companyCostValues.getData();
+		return companyCostValues.getBody();
 	}
 	
 	private OrderValuesDto getOrderValues(OrderCalculationDto dto) throws Exception, NotFoundException {
-		RestResponseDto<OrderValuesDto> orderValues = orderController.getOrderValues(dto.getId());		
-		if(!CollectionUtils.isEmpty(orderValues.getErrors())) {
-			throw new Exception("get order values error - ID: "+dto.getId()+" - Errors: "+orderValues.getErrors());
-		}else if(orderValues.getData() == null) {
+		ResponseEntity<OrderValuesDto> orderValues = orderController.getOrderValues(dto.getId());		
+		if(orderValues.getStatusCode().isError()) {
+			throw new Exception("get order values error - ID: "+dto.getId()+" - Errors: "+orderValues.getHeaders().getFirst(RestTagConstant.HD_ERROR_MSG_TAG));
+		}else if(orderValues.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 			throw new NotFoundException("Order not found - ID: "+dto.getId());	
 		}
-		return orderValues.getData();
+		return orderValues.getBody();
 	}
 }

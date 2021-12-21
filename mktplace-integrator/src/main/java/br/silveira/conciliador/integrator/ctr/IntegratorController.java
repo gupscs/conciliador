@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.silveira.conciliador.common.dto.RestResponseDto;
+import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.integrator.dto.MktPlaceIntegrationConfigDto;
 import br.silveira.conciliador.integrator.service.MktPlaceIntegrationConfigService;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
@@ -30,34 +30,34 @@ public class IntegratorController {
 	private MktPlaceIntegrationConfigService mktPlaceIntegrationConfigService;
 
 	@PostMapping("/processOrder/{queueOrderId}")
-	public ResponseEntity<RestResponseDto<?>> processOrder(@PathVariable(value="queueOrderId") String queueOrderId) {
+	public ResponseEntity<Void> processOrder(@PathVariable(value="queueOrderId") String queueOrderId) {
 		try {
 			queueOrderService.processQueueOrder(queueOrderId);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			log.error("Error to save Queue Order Id: " + queueOrderId, e);
-			return ResponseEntity.badRequest().body(new RestResponseDto<>(e.getMessage()));
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
 	
 	@PostMapping("/processAllOrder/{companyId}")
-	public ResponseEntity<RestResponseDto<?>> processAllOrder(@PathVariable(value="companyId") String companyId) {
+	public ResponseEntity<Void> processAllOrder(@PathVariable(value="companyId") String companyId) {
 		try {
 			queueOrderService.processAllQueueOrder(companyId);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			log.error("Error to save Orders - Company Id: " + companyId, e);
-			return ResponseEntity.badRequest().body(new RestResponseDto<>(e.getMessage()));
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
 	
 	@PostMapping("/createMktPlaceIntegrationConfig")
-	public ResponseEntity<RestResponseDto<?>> createMktPlaceIntegrationConfig(@RequestBody MktPlaceIntegrationConfigDto dto){
+	public ResponseEntity<Void> createMktPlaceIntegrationConfig(@RequestBody MktPlaceIntegrationConfigDto dto){
 		try {
 			mktPlaceIntegrationConfigService.save(dto);
 			return ResponseEntity.ok().build();
 		}catch(Exception e) {
-			return ResponseEntity.badRequest().body(new RestResponseDto<>(e.getMessage()));
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
 
