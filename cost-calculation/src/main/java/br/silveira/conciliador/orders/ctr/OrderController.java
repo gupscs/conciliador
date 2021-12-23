@@ -11,16 +11,16 @@ import br.silveira.conciliador.orders.dto.OrderCostDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
 
-@FeignClient(name = "orderController", url = "${order.url}")
+@FeignClient(name = "orders")
 public interface OrderController {
 
 
-	@PostMapping("/saveOrder")
+	@PostMapping("/orders/saveOrder")
 	public ResponseEntity<Void> saveOrder(@RequestBody OrderDto orderDto) ;
 
-	@PostMapping("/saveOrderCost")
+	@PostMapping("/orders/saveOrderCost")
 	public ResponseEntity<Void> saveOrderCost(@RequestBody OrderCostDto orderCostDto) ;
 
-	@GetMapping("/getOrderValues/{id}")
+	@GetMapping("/orders/getOrderValues/{id}")
 	public ResponseEntity<OrderValuesDto> getOrderValues(@PathVariable(value = "id") String orderId) ;
 }

@@ -19,7 +19,7 @@ import br.silveira.conciliador.orders.dto.OrderValuesDto;
 import br.silveira.conciliador.orders.service.OrderService;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 @CrossOrigin(origins = "*")
 public class OrderController {
 

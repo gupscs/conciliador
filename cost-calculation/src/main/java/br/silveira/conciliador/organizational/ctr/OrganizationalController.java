@@ -9,13 +9,13 @@ import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
 
 
-@FeignClient(name = "organizationalController", url = "${sysadmin.url}")
+@FeignClient(name = "sysadmin")
 public interface OrganizationalController {
 	
 	
-	@PostMapping("/saveCompany")
+	@PostMapping("/organizational/saveCompany")
 	public ResponseEntity<Void> saveCompany(CompanyDto companyDto);
 	
-	@PostMapping("/getCompanyCostValues")
+	@PostMapping("/organizational/getCompanyCostValues")
 	public ResponseEntity<CompanyCostValuesDto> getCompanyCostValues(CompanyCostValuesRequestDto dto);
 }

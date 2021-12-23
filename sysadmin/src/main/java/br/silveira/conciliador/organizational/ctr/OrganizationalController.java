@@ -14,7 +14,7 @@ import br.silveira.conciliador.organizational.dto.CompanyDto;
 import br.silveira.conciliador.organizational.service.CompanyService;
 
 @RestController
-@RequestMapping("/api/organizational")
+@RequestMapping("/organizational")
 @CrossOrigin(origins = "*")
 public class OrganizationalController {
 
