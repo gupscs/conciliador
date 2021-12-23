@@ -1,4 +1,4 @@
-package br.silveira.conciliador;
+package br.silveira.conciliador.sysadmin;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

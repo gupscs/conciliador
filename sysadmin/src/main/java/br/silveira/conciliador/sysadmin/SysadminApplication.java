@@ -1,4 +1,4 @@
-package br.silveira.conciliador;
+package br.silveira.conciliador.sysadmin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

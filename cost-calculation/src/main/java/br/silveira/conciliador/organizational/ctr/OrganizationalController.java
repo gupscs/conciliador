@@ -9,7 +9,7 @@ import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
 
 
-@FeignClient(name = "sysadmin")
+@FeignClient(name = "organizational")
 public interface OrganizationalController {
 	
 	
