@@ -18,6 +18,12 @@
 		<spring-cloud.version>2020.0.4</spring-cloud.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>local-file-repo</id>
+			<url>file://${basedir}/lib</url>
+		</repository>
+	</repositories>
 	<dependencies>
 <!-- 		<dependency> -->
 <!-- 			<groupId>br.silveira.conciliador</groupId> -->
@@ -80,6 +86,12 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>br.silveira.conciliador</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
