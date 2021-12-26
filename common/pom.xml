@@ -106,6 +106,18 @@
 						</configuration>
 						<goals><goal>run</goal></goals>
 					</execution>
+					<!-- OAuth common lib -->
+					<execution>
+						<id>copy-jar-oauth</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+									toDir="${basedir}\..\oauth\lib" />
+							</target>
+						</configuration>
+						<goals><goal>run</goal></goals>
+					</execution>
 	
 				</executions>
 			</plugin>
