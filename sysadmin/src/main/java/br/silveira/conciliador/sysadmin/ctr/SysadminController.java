@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/sysadmin")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class SysadminController {
 	
 	private static final Logger log = LogManager.getLogger(SysadminController.class);

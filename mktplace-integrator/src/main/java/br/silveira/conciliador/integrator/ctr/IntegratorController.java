@@ -18,7 +18,7 @@ import br.silveira.conciliador.integrator.service.QueueOrderService;
 
 @RestController
 @RequestMapping("/api/integrator")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class IntegratorController {
 	
 	private static final Logger log = LogManager.getLogger(IntegratorController.class);

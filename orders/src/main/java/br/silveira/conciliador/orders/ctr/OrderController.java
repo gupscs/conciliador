@@ -20,7 +20,7 @@ import br.silveira.conciliador.orders.service.OrderService;
 
 @RestController
 @RequestMapping("/orders")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class OrderController {
 
 	private static final Logger log = LogManager.getLogger(OrderController.class);

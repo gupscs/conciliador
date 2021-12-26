@@ -13,7 +13,7 @@ import br.silveira.conciliador.costcalc.service.OrderCostCalculationService;
 
 @RestController
 @RequestMapping("/api/cost-calculation")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class CostCalculationController {
 
 	private static final Logger log = LogManager.getLogger(CostCalculationController.class);

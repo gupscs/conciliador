@@ -15,7 +15,7 @@ import br.silveira.conciliador.organizational.service.CompanyService;
 
 @RestController
 @RequestMapping("/organizational")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class OrganizationalController {
 
 	@Autowired

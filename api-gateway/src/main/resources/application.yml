@@ -5,10 +5,15 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka 
+      
+ 
 
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
   boot:
     admin:
       client:
@@ -49,6 +54,9 @@ management:
     health:
       show-details: always
 
+
+jwt:
+  secret: segredo
 ## puxa informacoes do projeto do pom.xml
 #info:
 #  app:
