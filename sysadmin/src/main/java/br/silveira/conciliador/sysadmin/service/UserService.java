@@ -6,4 +6,8 @@ public interface UserService {
 	
 	public UserDto findByUsername(String username);
 
+	public void saveUser(UserDto dto) throws Exception;
+
+	public void updateUser(UserDto dto) throws Exception;
+
 }

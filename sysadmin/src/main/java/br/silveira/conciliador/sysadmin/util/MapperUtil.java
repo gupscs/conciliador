@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper;
 import br.silveira.conciliador.sysadmin.dto.UserDto;
 import br.silveira.conciliador.sysadmin.entity.User;
 
-public class MapperUtil {
+public class MapperUtil<T,X> {
 	
 	private static ModelMapper mapper = new ModelMapper();
 	
@@ -14,5 +14,15 @@ public class MapperUtil {
 		UserDto dto = mapper.map(entity, UserDto.class);
 		return dto;
 	}
+
+
+	public static User mapperToEntity(UserDto dto) {
+		User user =  mapper.map(dto, User.class);
+		user.setRoles(dto.getRoles());
+		return user;
+	}
+	
+	
+	
 
 }

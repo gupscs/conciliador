@@ -1,6 +1,7 @@
-package br.silveira.conciliador.sysadmin.entity;
+  package br.silveira.conciliador.sysadmin.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.silveira.conciliador.common.enums.RoleEnum;
 import lombok.Data;
 
 @Document
@@ -16,7 +18,7 @@ import lombok.Data;
 public class User {
 	
 	@Id
-	private Long id;
+	private String id;
 	
 	@NotEmpty(message = "name required")
 	private String name;
@@ -30,7 +32,7 @@ public class User {
 	
 	@Indexed
 	@NotEmpty(message = "company id required")
-	private Long companyId;
+	private String companyId;
 	
 	@Email(message = "Invalid email")
 	@Indexed(unique = true)
@@ -49,6 +51,12 @@ public class User {
 	private Boolean enable;
 	
 	private Boolean blocked;
+	
+	private Boolean lastPasswordChangeDate;
+	
+	private Boolean needPasswordChange;
+	
+	private List<RoleEnum> roles;
 
 	
 }

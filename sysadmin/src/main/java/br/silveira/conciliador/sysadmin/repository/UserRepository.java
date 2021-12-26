@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import br.silveira.conciliador.sysadmin.entity.User;
 @Repository
-public interface UserRepository extends MongoRepository<User, Long>{
+public interface UserRepository extends MongoRepository<User, String>{
 	
 	
 	public User findByUsername(String username);
