@@ -40,28 +40,24 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public OrderValuesDto getOrderValues(String orderId) {
+	public OrderValuesDto getOrderValues(String orderId) throws Exception {
 		Optional<Order> order = orderRepository.getValuesById(orderId);
-		if(order.isPresent()) {
-			OrderValuesDto dto = OrderMapper.mapperToOrderValuesDto(order.get());
+		if(order.isEmpty()) {
+			throw new Exception(String.format("Order - ID: %s not exist", orderId));
 		}
 		
-		return null;
+		return OrderMapper.mapperToOrderValuesDto(order.get());
 	}
 
 	@Override
-	public void saveOrderCost(OrderCostDto orderCostDto) {
-		// TODO Auto-generated method stub
-		/**
-		salvar somente o bloco de save order cost
-		
-		colocar o user Id;
-		
-		teste de commit
-		*/
-		
+	public void saveOrderCost(OrderCostDto orderCostDto) throws Exception {
+		Optional<Order> order = orderRepository.findById(orderCostDto.getId());
+		if(order.isEmpty()) {
+			throw new Exception(String.format("Order - ID: %s not exist", orderCostDto.getId()));
+		}
+		order.get().setOrderCost(OrderMapper.mapperToOrderEntity(orderCostDto ));
+		order.get().setUpdateDate(new Date());
+		order.get().setUpdateId(orderCostDto.getUserId());
+		orderRepository.save(order.get());
 	}
-	
-	
-
 }

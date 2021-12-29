@@ -7,8 +7,6 @@ import lombok.Data;
 @Data
 public class OrderCost {
 	
-	private String orderCostCalcuationId;
-	
 	private Double mktPlaceFee;
 	
 	private Double itemTotalCost;

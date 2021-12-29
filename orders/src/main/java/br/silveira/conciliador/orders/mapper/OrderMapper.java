@@ -1,10 +1,17 @@
 package br.silveira.conciliador.orders.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 
+import br.silveira.conciliador.orders.dto.OrderCostDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
+import br.silveira.conciliador.orders.entity.FixedCostDetail;
+import br.silveira.conciliador.orders.entity.ItemCostDetail;
 import br.silveira.conciliador.orders.entity.Order;
+import br.silveira.conciliador.orders.entity.OrderCost;
 
 public class OrderMapper {
 
@@ -16,6 +23,17 @@ public class OrderMapper {
 
 	public static OrderValuesDto mapperToOrderValuesDto(Order order) {
 		return mapper.map(order , OrderValuesDto.class);
+	}
+
+	public static OrderCost mapperToOrderEntity(OrderCostDto orderCostDto) {
+		OrderCost orderCost = mapper.map(orderCostDto, OrderCost.class);
+ 
+		List<FixedCostDetail> listFixed = orderCostDto.getFixedCostDetail().stream().map(list -> mapper.map(list, FixedCostDetail.class)).collect(Collectors.toList());
+		List<ItemCostDetail> listItem = orderCostDto.getItemCostDetail().stream().map(list -> mapper.map(list, ItemCostDetail.class)).collect(Collectors.toList());
+		orderCost.setFixedCostDetail(listFixed);
+		orderCost.setItemCostDetail(listItem);
+		
+		return orderCost;
 	}
 
 }

@@ -9,8 +9,8 @@ public interface OrderService {
 	
 	public void saveOrder(OrderDto orderDto);
 
-	public OrderValuesDto getOrderValues(String orderId);
+	public OrderValuesDto getOrderValues(String orderId) throws Exception;
 
-	public void saveOrderCost(OrderCostDto orderCostDto);
+	public void saveOrderCost(OrderCostDto orderCostDto) throws Exception;
 
 }

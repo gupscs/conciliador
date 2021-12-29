@@ -9,8 +9,6 @@ public class OrderCostDto {
 	
 	private String id;
 	
-	private String orderCostCalcuationId;
-	
 	private Double mktPlaceFee;
 	
 	private Double itemTotalCost;
