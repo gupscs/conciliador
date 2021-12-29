@@ -29,7 +29,6 @@ public class OrderController {
 	private OrderService orderService;
 
 	@PostMapping("/saveOrder")
-	// @PreAutorize("hasAnyRole('ORDERS')")
 	public ResponseEntity<Void> saveOrder(@RequestBody OrderDto orderDto) {
 		try {
 			orderService.saveOrder(orderDto);
@@ -41,7 +40,6 @@ public class OrderController {
 	}
 
 	@PostMapping("/saveOrderCost")
-	// @PreAutorize("hasAnyRole('ORDERS')")
 	public ResponseEntity<Void> saveOrderCost(@RequestBody OrderCostDto orderCostDto) {
 		try {
 			orderService.saveOrderCost(orderCostDto);
@@ -53,7 +51,6 @@ public class OrderController {
 	}
 
 	@GetMapping("/getOrderValues/{id}")
-	// @PreAutorize("hasAnyRole('ORDERS')")
 	public ResponseEntity<OrderValuesDto> getOrderValues(@PathVariable(value = "id") String orderId) {
 		try {
 			OrderValuesDto dto = orderService.getOrderValues(orderId);
