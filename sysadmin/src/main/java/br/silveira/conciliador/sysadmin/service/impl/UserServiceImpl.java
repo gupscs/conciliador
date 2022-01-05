@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.silveira.conciliador.sysadmin.dto.UserDto;
+import br.silveira.conciliador.sysadmin.dto.UserFrontDto;
 import br.silveira.conciliador.sysadmin.entity.User;
 import br.silveira.conciliador.sysadmin.repository.UserRepository;
 import br.silveira.conciliador.sysadmin.service.UserService;
@@ -58,6 +59,12 @@ public class UserServiceImpl implements UserService{
 			userRepository.save(user.get());
 			log.info(String.format("User %s successufully updated", dto.getUsername()));
 		}
+	}
+
+	@Override
+	public UserFrontDto findUserFrontModelByUsername(String username) {
+		User user = userRepository.findByUsername(username);
+		return MapperUtil.mapperUserFrontDto(user);
 	}
 
 }

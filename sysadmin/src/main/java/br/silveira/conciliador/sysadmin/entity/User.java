@@ -38,6 +38,8 @@ public class User {
 	@Indexed(unique = true)
 	private String email;
 	
+	private String avatar;
+	
 	@NotEmpty(message = "insert date required")
 	private Date insertDate;
 	
