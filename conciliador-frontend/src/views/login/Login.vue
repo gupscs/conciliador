@@ -116,27 +116,6 @@
               <span>&nbsp;Create an account</span>
             </b-link>
           </b-card-text>
-
-          <!-- divider -->
-          <div class="divider my-2">
-            <div class="divider-text">or</div>
-          </div>
-
-          <!-- social buttons -->
-          <div class="auth-footer-btn d-flex justify-content-center">
-            <b-button variant="facebook" href="javascript:void(0)">
-              <feather-icon icon="FacebookIcon" />
-            </b-button>
-            <b-button variant="twitter" href="javascript:void(0)">
-              <feather-icon icon="TwitterIcon" />
-            </b-button>
-            <b-button variant="google" href="javascript:void(0)">
-              <feather-icon icon="MailIcon" />
-            </b-button>
-            <b-button variant="github" href="javascript:void(0)">
-              <feather-icon icon="GithubIcon" />
-            </b-button>
-          </div>
         </b-col>
       </b-col>
       <!-- /Login-->
@@ -223,6 +202,7 @@ export default {
     validationForm() {
       this.$refs.loginValidation.validate().then((success) => {
         if (success) {
+          useJwt.setToken("");
           var data = qs.stringify({
             username: this.userEmail,
             password: this.password,
@@ -245,21 +225,10 @@ export default {
                   `/sysadmin/sysadmin/findUserFrontModelByUsername/${this.userEmail}`
                 )
                 .then((response) => {
-                  console.log("etnrou dfafjalkfjkalf");
-                  console.log(response);
-                  const { userData } = response.data;
-                  console.log(response.fullName)
-                  //useJwt.setRefreshToken(response.data.refreshToken)
+                  const userData = response.data;
                   localStorage.setItem("userData", JSON.stringify(userData));
                   //this.$ability.update(userData.ability)
-
-                  // ? This is just for demo purpose as well.
-                  // ? Because we are showing eCommerce app's cart items count in navbar
-                  //this.$store.commit('app-ecommerce/UPDATE_CART_ITEMS_COUNT', userData.extras.eCommerceCartItemsCount)
-
-                  // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
-                  this.$router
-                    .replace(getHomeRouteForLoggedInUser(userData.role))
+                  this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
                     .then(() => {
                       this.$toast({
                         component: ToastificationContent,
@@ -270,7 +239,7 @@ export default {
                           }`,
                           icon: "CoffeeIcon",
                           variant: "success",
-                          text: `You have successfully logged in as ${userData.role}. Now you can start to explore!`,
+                          text: `You have successfully logged in. Now you can start to explore!`,
                         },
                       });
                     });
@@ -279,7 +248,7 @@ export default {
             .catch((error) => {
               useJwt.setToken("");
               console.log(error);
-              //this.$refs.loginForm.setErrors(error)
+              this.$refs.loginForm.setErrors(error)
             });
         }
       });

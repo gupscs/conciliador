@@ -1,12 +1,7 @@
-export default [
-  {
-    title: 'Home',
-    route: 'home',
-    icon: 'HomeIcon',
-  },
-  {
-    title: 'Second Page',
-    route: 'second-page',
-    icon: 'FileIcon',
-  },
-]
+import example from './example'
+import myAccount  from './my-account'
+import systemSetup from './system-setup'
+import sales from './sales'
+
+// Array of sections
+export default [...example, ...systemSetup,...sales,...myAccount]

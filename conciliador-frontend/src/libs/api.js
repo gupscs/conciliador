@@ -27,10 +27,11 @@ api.interceptors.request.use(
         return request
     })
 
-
+/*
 api.interceptors.response.use(
     response => {
         console.log(response)
         return response
     })
+*/
 export default api

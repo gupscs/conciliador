@@ -13,10 +13,16 @@ import './global-components'
 import '@/libs/portal-vue'
 import '@/libs/toastification'
 import '@axios'
+import '@/libs/clipboard'
+import '@/libs/sweet-alerts'
+import '@/libs/vue-select'
+import '@/libs/tour'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
 Vue.use(ModalPlugin)
+
+require('@core/assets/fonts/feather/iconfont.css') // For form-wizard
 
 // Composition API
 Vue.use(VueCompositionAPI)
