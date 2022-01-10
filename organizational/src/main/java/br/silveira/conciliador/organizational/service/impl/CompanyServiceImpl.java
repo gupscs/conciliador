@@ -90,6 +90,7 @@ public class CompanyServiceImpl implements CompanyService {
 	public void register(RegisterDto register) throws Exception {
 		Company saveCompany = companyRepository.save(CompanyMapper.mapperToEntity(register));		
 		UserDto dto = new UserDto();
+		dto.setName(register.getUserName());
 		dto.setEmail(register.getEmail());
 		dto.setUsername(register.getEmail());
 		dto.setPassword(register.getPassword());
