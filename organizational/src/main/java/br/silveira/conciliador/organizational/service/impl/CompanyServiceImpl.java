@@ -7,16 +7,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.mapper.CompanyMapper;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
+import br.silveira.conciliador.sysadmin.ctr.SysadminController;
+import br.silveira.conciliador.sysadmin.dto.UserDto;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -25,6 +29,9 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
 	private CompanyRepository companyRepository;
+	
+	@Autowired
+	private SysadminController sysadminController;
 
 	@Override
 	public List<CompanyDto> findByEnable(Boolean enable) {
@@ -76,6 +83,19 @@ public class CompanyServiceImpl implements CompanyService {
 		throw new Exception("Invlaid Request dto, mandatory fields are missing - DTO: "+dto);
 			
 		
+	}
+
+	@Override
+	@Transactional
+	public void register(RegisterDto register) throws Exception {
+		Company saveCompany = companyRepository.save(CompanyMapper.mapperToEntity(register));		
+		UserDto dto = new UserDto();
+		dto.setEmail(register.getEmail());
+		dto.setUsername(register.getEmail());
+		dto.setPassword(register.getPassword());
+		dto.setCompanyId(saveCompany.getId());
+		sysadminController.saveUser(dto);
+		log.info("Register Successfully, Company ID: %s"+saveCompany.getId());
 	}
 
 }

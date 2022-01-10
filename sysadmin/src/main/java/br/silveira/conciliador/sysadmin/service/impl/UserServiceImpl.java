@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.silveira.conciliador.sysadmin.dto.UserDto;
@@ -65,6 +67,11 @@ public class UserServiceImpl implements UserService{
 	public UserFrontDto findUserFrontModelByUsername(String username) {
 		User user = userRepository.findByUsername(username);
 		return MapperUtil.mapperUserFrontDto(user);
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 }

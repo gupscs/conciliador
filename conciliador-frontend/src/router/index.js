@@ -1,6 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+
+// Routes
+import { canNavigate } from '@/libs/acl/routeProtection'
+import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
+import common from './routes/common'
+import examples from './routes/examples'
+import myAccount from './routes/my-account'
+import sales from './routes/sales'
+import system from './routes/system'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -10,67 +20,12 @@ const router = new VueRouter({
     return { x: 0, y: 0 }
   },
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/views/Home.vue'),
-      meta: {
-        pageTitle: 'Home',
-        breadcrumb: [
-          {
-            text: 'Home',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/second-page',
-      name: 'second-page',
-      component: () => import('@/views/SecondPage.vue'),
-      meta: {
-        pageTitle: 'Second Page',
-        breadcrumb: [
-          {
-            text: 'Second Page',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/fixed-cost/fixedCost',
-      name: 'fixed-cost',
-      component: () => import('@/views/fixed-cost/FixedCost.vue'),
-      meta: {
-        pageTitle: 'Custos Fixos',
-        breadcrumb: [
-          {
-            text: 'Minha Conta',
-          },
-          {
-            text: 'Custos Fixos',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/login/Login.vue'),
-      meta: {
-        layout: 'full',
-      },
-    },
-    {
-      path: '/error-404',
-      name: 'error-404',
-      component: () => import('@/views/error/Error404.vue'),
-      meta: {
-        layout: 'full',
-      },
-    },
+    { path: '/', redirect: { name: 'home' } },
+    ...examples,
+    ...common,
+    ...myAccount,
+    ...sales,
+    ...system,
     {
       path: '*',
       redirect: 'error-404',

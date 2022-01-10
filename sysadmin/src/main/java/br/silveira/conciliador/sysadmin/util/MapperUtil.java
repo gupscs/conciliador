@@ -21,6 +21,7 @@ public class MapperUtil<T,X> {
 	public static User mapperToEntity(UserDto dto) {
 		User user =  mapper.map(dto, User.class);
 		user.setRoles(dto.getRoles());
+		user.setPassword(PasswordEnconder.convertPassword(dto.getPassword()));
 		return user;
 	}
 

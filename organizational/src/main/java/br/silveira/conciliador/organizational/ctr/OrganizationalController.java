@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +12,7 @@ import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.service.CompanyService;
 
 @RestController
@@ -40,6 +42,16 @@ public class OrganizationalController {
 			} else {
 				return ResponseEntity.ok(ret);
 			}
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<Void> register(@RequestBody RegisterDto register) {
+		try {
+			companyService.register(register);
+			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}

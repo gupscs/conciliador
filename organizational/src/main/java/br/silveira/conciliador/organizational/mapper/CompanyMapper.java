@@ -8,6 +8,7 @@ import org.modelmapper.convention.MatchingStrategies;
 
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
 
 public class CompanyMapper {
@@ -31,6 +32,15 @@ public class CompanyMapper {
 	public static CompanyCostValuesDto mapperToCompanyCostValuesDto(Company entity) {
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		return mapper.map(entity, CompanyCostValuesDto.class);
+	}
+
+	public static CompanyDto mapperToCompanyDto(RegisterDto register) {
+		return mapper.map(register, CompanyDto.class);
+	}
+
+	public static Company mapperToEntity(RegisterDto register) {
+		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		return mapper.map(register, Company.class);
 	}
 
 }
