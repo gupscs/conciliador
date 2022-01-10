@@ -17,6 +17,7 @@ import '@/libs/clipboard'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
 import '@/libs/tour'
+import i18n from '@/libs/i18n'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
@@ -38,5 +39,6 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App),
 }).$mount('#app')
