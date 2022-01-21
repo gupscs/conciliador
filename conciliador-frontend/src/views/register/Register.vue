@@ -28,6 +28,22 @@
           <b-card-text class="mb-2">
             Make your app management easy and fun!
           </b-card-text>
+          <!-- global messages -->
+          <b-alert
+            v-model="showDismissibleErrorAlert"
+            v-height-fade.appear
+            variant="danger"
+            dismissible
+            class="mb-0"
+          >
+            <div class="alert-body">
+              <feather-icon class="mr-25" icon="FrownIcon" />
+              <span class="ml-25"
+                >Algo deu errado!! Já estamos trabalhando para resolver, tente
+                novamente mais tarde</span
+              >
+            </div>
+          </b-alert>
 
           <!-- form -->
           <validation-observer ref="registerForm">
@@ -45,10 +61,19 @@
                     v-model="register.identificationNo"
                     name="register-identificationNo"
                     placeholder="12.345.678/9012-34 (somente números)"
-                    :state="errors.length > 0 ? false : null"
+                    :state="
+                      errors.length > 0 || !validationExistIdentificationNo
+                        ? false
+                        : null
+                    "
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
+                <b-form-invalid-feedback
+                  :state="validationExistIdentificationNo"
+                >
+                  CNPJ já cadastrado
+                </b-form-invalid-feedback>
               </b-form-group>
               <!-- Nome da Empresa -->
               <b-form-group
@@ -64,7 +89,7 @@
                     id="register-companyName"
                     v-model="register.name"
                     name="register-company-name"
-                    placeholder="Nome da Empresa"
+                    placeholder="Nome da sua Empresa"
                     :state="errors.length > 0 ? false : null"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -88,19 +113,16 @@
                 </validation-provider>
               </b-form-group>
               <!-- Nome do Usuário -->
-              <b-form-group
-                label="Nome do Usuário"
-                label-for="register-userName"
-              >
+              <b-form-group label="Nome do Usuário" label-for="register-name">
                 <validation-provider
                   #default="{ errors }"
-                  name="register-userName"
+                  name="register-name"
                   rules="required"
                 >
                   <b-form-input
-                    id="register-userName"
+                    id="register-name"
                     v-model="register.userName"
-                    name="register-userName"
+                    name="register-name"
                     placeholder="Seu nome"
                     :state="errors.length > 0 ? false : null"
                   />
@@ -119,11 +141,18 @@
                     id="register-email"
                     v-model="register.email"
                     name="register-email"
-                    :state="errors.length > 0 ? false : null"
+                    :state="
+                      errors.length > 0 || !validationExistUsername
+                        ? false
+                        : null
+                    "
                     placeholder="john@example.com"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
+                <b-form-invalid-feedback :state="validationExistUsername">
+                  Email já cadastrado
+                </b-form-invalid-feedback>
               </b-form-group>
               <!-- password -->
               <b-form-group label-for="register-password" label="Password">
@@ -271,6 +300,8 @@ import {
   BImg,
   BCardTitle,
   BCardText,
+  BAlert,
+  BFormInvalidFeedback,
 } from "bootstrap-vue";
 import { required, email, password, confirmed } from "@validations";
 import { togglePasswordVisibility } from "@core/mixins/ui/forms";
@@ -278,7 +309,8 @@ import store from "@/store/index";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import api from "@api";
 import useJwt from "@/auth/jwt/useJwt";
-
+import { heightFade } from "@core/directives/animations";
+import Ripple from "vue-ripple-directive";
 
 export default {
   components: {
@@ -299,21 +331,31 @@ export default {
     // validations
     ValidationProvider,
     ValidationObserver,
+    BAlert,
+    BFormInvalidFeedback,
+  },
+  directives: {
+    "height-fade": heightFade,
+    Ripple,
   },
   mixins: [togglePasswordVisibility],
   data() {
     return {
       register: {
-          userName: "",
-          email: "",
-          password: "",
-          confirmedPassword: "",
-          identificationNo: "",
-          name: "",
-          phone1: "",
-          terms: "",
+        userName: "",
+        email: "",
+        password: "",
+        confirmedPassword: "",
+        identificationNo: "",
+        name: "",
+        phone1: "",
+        terms: "",
       },
-     
+      checkRegister: {
+        existUsername: false,
+        existIdentificationNo: false,
+      },
+
       sideImg: require("@/assets/images/pages/register-v2.svg"),
       // validation
       required,
@@ -323,6 +365,7 @@ export default {
       scrollContent: [
         "implementar os termos e condições puxando de um serviço",
       ],
+      showDismissibleErrorAlert: false,
     };
   },
   computed: {
@@ -337,28 +380,57 @@ export default {
       }
       return this.sideImg;
     },
+    validationExistIdentificationNo() {
+      return !this.checkRegister.existIdentificationNo;
+    },
+    validationExistUsername() {
+      return !this.checkRegister.existUsername;
+    },
   },
   methods: {
     validationForm() {
+      this.showDismissibleErrorAlert = false;
       this.$refs.registerForm.validate().then((success) => {
         if (success) {
           // TODO: VALIDAR O CNPJ CORRETAMENTE E TAMBÉM CPF
-          useJwt.setToken('')
-          api.post('/organizational/organizational/register', this.register)
+          api
+            .get(
+              `/organizational/organizational/registerCheck/${this.register.identificationNo}/${this.register.email}`
+            )
             .then((response) => {
-              this.$router.replace("/login").then(() => {
-                this.$toast({
-                  component: ToastificationContent,
-                  props: {
-                    title: "Form Submitted",
-                    icon: "EditIcon",
-                    variant: "success",
-                  },
-                });
-              });
-            }).catch((error) => {
+              this.checkRegister = response.data;
+              console.log(response.data);
+              if (
+                !this.checkRegister.existUsername &&
+                !this.checkRegister.existIdentificationNo
+              ) {
+                useJwt.setToken("");
+                api
+                  .post(
+                    "/organizational/organizational/register",
+                    this.register
+                  )
+                  .then((response) => {
+                    this.$router.replace("/login").then(() => {
+                      this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                          title: "Registardo com Sucesso",
+                          icon: "EditIcon",
+                          variant: "success",
+                        },
+                      });
+                    });
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    this.showDismissibleErrorAlert = true;
+                  });
+              }
+            })
+            .catch((error) => {
               console.log(error);
-              this.$refs.loginForm.setErrors(error)
+              this.showDismissibleErrorAlert = true;
             });
         }
       });

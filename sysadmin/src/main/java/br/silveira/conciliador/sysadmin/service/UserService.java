@@ -13,4 +13,6 @@ public interface UserService {
 
 	public UserFrontDto findUserFrontModelByUsername(String username);
 
+	public Boolean existUsername(String username);
+
 }

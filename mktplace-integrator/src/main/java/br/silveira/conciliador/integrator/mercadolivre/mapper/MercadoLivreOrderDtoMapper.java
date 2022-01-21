@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.feignClient.dto.LocationDto;
+import br.silveira.conciliador.feignClient.dto.OrderDto;
+import br.silveira.conciliador.feignClient.dto.OrderItemDto;
+import br.silveira.conciliador.feignClient.dto.ShippingDto;
 import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.AlternativePhone;
@@ -14,10 +18,6 @@ import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Phone;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Seller;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Shipping;
-import br.silveira.conciliador.orders.dto.LocationDto;
-import br.silveira.conciliador.orders.dto.OrderDto;
-import br.silveira.conciliador.orders.dto.OrderItemDto;
-import br.silveira.conciliador.orders.dto.ShippingDto;
 
 public class MercadoLivreOrderDtoMapper {
 

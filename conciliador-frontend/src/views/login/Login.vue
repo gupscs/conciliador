@@ -27,6 +27,34 @@
           <b-card-text class="mb-2">
             Please sign-in to your account and start the adventure
           </b-card-text>
+           <!-- global messages -->
+          <b-alert
+            v-model="showDismissibleErrorAlert"
+            v-height-fade.appear
+            variant="danger"
+            dismissible
+            class="mb-0"
+          >
+          <div class="alert-body">
+            <feather-icon class="mr-25" icon="FrownIcon" />
+            <span class="ml-25">Algo deu errado!! Já estamos trabalhando para resolver, tente novamente mais tarde</span
+            >
+          </div>
+          </b-alert>
+<!-- Bad Credentials messages -->
+            <b-alert
+            v-model="showBadCredentialsAlert"
+            v-height-fade.appear
+            variant="warning"
+            dismissible
+            class="mb-0"
+          >
+          <div class="alert-body">
+            <feather-icon class="mr-25" icon="AlertTriangleIcon" />
+            <span class="ml-25">Usuário/Senha inválidos!! Verifique e tente novamente</span
+            >
+          </div>
+          </b-alert>
 
           <!-- form -->
           <validation-observer ref="loginValidation">
@@ -153,6 +181,7 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import api from "@api";
 import qs from "qs";
 import useJwt from "@/auth/jwt/useJwt";
+import { heightFade } from '@core/directives/animations';
 
 export default {
   components: {
@@ -172,6 +201,10 @@ export default {
     VuexyLogo,
     ValidationProvider,
     ValidationObserver,
+    BAlert,
+  },
+   directives: {
+    'height-fade': heightFade,
   },
   mixins: [togglePasswordVisibility],
   data() {
@@ -183,8 +216,11 @@ export default {
       // validation rulesimport store from '@/store/index'
       required,
       email,
+      showDismissibleErrorAlert: false,
+      showBadCredentialsAlert: false,
     };
   },
+  
   computed: {
     passwordToggleIcon() {
       return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
@@ -200,6 +236,8 @@ export default {
   },
   methods: {
     validationForm() {
+      this.showDismissibleErrorAlert= false;
+      this.showBadCredentialsAlert= false;
       this.$refs.loginValidation.validate().then((success) => {
         if (success) {
           useJwt.setToken("");
@@ -234,12 +272,12 @@ export default {
                         component: ToastificationContent,
                         position: "top-right",
                         props: {
-                          title: `Welcome ${
+                          title: `Bem vindo ${
                             userData.fullName || userData.username
                           }`,
                           icon: "CoffeeIcon",
                           variant: "success",
-                          text: `You have successfully logged in. Now you can start to explore!`,
+                          text: `Você está logado, agora acompanhe seus lucros de perto!`,
                         },
                       });
                     });
@@ -247,8 +285,12 @@ export default {
             })
             .catch((error) => {
               useJwt.setToken("");
-              console.log(error);
-              this.$refs.loginForm.setErrors(error)
+              console.log(error.response);
+              if(error.response.data.error == "invalid_grant"){
+                this.showBadCredentialsAlert = true;
+              }else{
+                this.showDismissibleErrorAlert = true;
+              }
             });
         }
       });

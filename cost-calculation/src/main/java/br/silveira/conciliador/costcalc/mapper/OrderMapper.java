@@ -12,14 +12,14 @@ import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
 import br.silveira.conciliador.costcalc.dto.TaxDto;
 import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
-import br.silveira.conciliador.orders.dto.FixedCostDetailDto;
-import br.silveira.conciliador.orders.dto.ItemCostDetailDto;
-import br.silveira.conciliador.orders.dto.OrderCostDto;
-import br.silveira.conciliador.orders.dto.OrderItemDto;
-import br.silveira.conciliador.orders.dto.OrderValuesDto;
-import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
-import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
-import br.silveira.conciliador.organizational.dto.MktPlaceFeeDto;
+import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
+import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
+import br.silveira.conciliador.feignClient.dto.FixedCostDetailDto;
+import br.silveira.conciliador.feignClient.dto.ItemCostDetailDto;
+import br.silveira.conciliador.feignClient.dto.MktPlaceFeeDto;
+import br.silveira.conciliador.feignClient.dto.OrderCostDto;
+import br.silveira.conciliador.feignClient.dto.OrderItemDto;
+import br.silveira.conciliador.feignClient.dto.OrderValuesDto;
 
 public class OrderMapper {
 
@@ -67,7 +67,7 @@ public class OrderMapper {
 
 	private static List<ItemAverageCostDto> mapperItemAverageCost(CompanyCostValuesDto companyDto) {
 		List<ItemAverageCostDto> itemAverageCost = new ArrayList<ItemAverageCostDto>();
-		for (br.silveira.conciliador.organizational.dto.ItemAverageCostDto it : companyDto.getItemAverageCost()) {
+		for (br.silveira.conciliador.feignClient.dto.ItemAverageCostDto it : companyDto.getItemAverageCost()) {
 			ItemAverageCostDto idt = new ItemAverageCostDto();
 			idt.setAverageCost(it.getAverageCost());
 			idt.setSku(it.getSku());
@@ -79,7 +79,7 @@ public class OrderMapper {
 
 	private static List<FixedCostDto> mapperFixedCostDto(CompanyCostValuesDto companyDto) {
 		List<FixedCostDto> fixedCosts = new ArrayList<FixedCostDto>();
-		for (br.silveira.conciliador.organizational.dto.FixedCostDto fixedCostDto : companyDto.getFixedCost()) {
+		for (br.silveira.conciliador.feignClient.dto.FixedCostDto fixedCostDto : companyDto.getFixedCost()) {
 			FixedCostDto dto = new FixedCostDto();
 			dto.setCostName(fixedCostDto.getCostName());
 			dto.setRatioType(fixedCostDto.getRatioType());

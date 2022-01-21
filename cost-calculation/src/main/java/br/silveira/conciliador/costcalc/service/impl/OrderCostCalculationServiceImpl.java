@@ -22,11 +22,11 @@ import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
 import br.silveira.conciliador.costcalc.mapper.OrderMapper;
 import br.silveira.conciliador.costcalc.repository.OrderCostCalculationRepository;
 import br.silveira.conciliador.costcalc.service.OrderCostCalculationService;
-import br.silveira.conciliador.orders.ctr.OrderController;
-import br.silveira.conciliador.orders.dto.OrderCostDto;
-import br.silveira.conciliador.orders.dto.OrderValuesDto;
-import br.silveira.conciliador.organizational.ctr.OrganizationalController;
-import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
+import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
+import br.silveira.conciliador.feignClient.dto.OrderCostDto;
+import br.silveira.conciliador.feignClient.dto.OrderValuesDto;
+import br.silveira.conciliador.feignClient.resource.OrderResource;
+import br.silveira.conciliador.feignClient.resource.OrganizationalResource;
 import javassist.NotFoundException;
 
 @Service
@@ -37,10 +37,10 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	private static final String MSG_CALCULATION_ORDER_SUCESS = "Order Id: %s calculate sucessfully"; 
 	
 	@Autowired
-	private OrderController orderController ;
+	private OrderResource orderController ;
 	
 	@Autowired
-	private OrganizationalController organizationalController;
+	private OrganizationalResource organizationalController;
 	
 	@Autowired
 	private OrderCostCalculationRepository orderCostCalculationRepository; 

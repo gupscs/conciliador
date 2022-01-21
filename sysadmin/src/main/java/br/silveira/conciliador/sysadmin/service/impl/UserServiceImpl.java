@@ -74,4 +74,9 @@ public class UserServiceImpl implements UserService{
 		return new BCryptPasswordEncoder();
 	}
 
+	@Override
+	public Boolean existUsername(String username) {
+		return userRepository.findByUsername(username) != null;
+	}
+
 }

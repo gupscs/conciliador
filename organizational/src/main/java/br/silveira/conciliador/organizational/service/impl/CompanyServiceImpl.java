@@ -1,5 +1,6 @@
 package br.silveira.conciliador.organizational.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,16 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.common.enums.RoleEnum;
+import br.silveira.conciliador.feignClient.dto.UserDto;
+import br.silveira.conciliador.feignClient.resource.SysadminResource;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.mapper.CompanyMapper;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
-import br.silveira.conciliador.sysadmin.ctr.SysadminController;
-import br.silveira.conciliador.sysadmin.dto.UserDto;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -31,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
 	private CompanyRepository companyRepository;
 	
 	@Autowired
-	private SysadminController sysadminController;
+	private SysadminResource sysadminResource;
 
 	@Override
 	public List<CompanyDto> findByEnable(Boolean enable) {
@@ -95,8 +98,26 @@ public class CompanyServiceImpl implements CompanyService {
 		dto.setUsername(register.getEmail());
 		dto.setPassword(register.getPassword());
 		dto.setCompanyId(saveCompany.getId());
-		sysadminController.saveUser(dto);
+		dto.setRoles(getRegisterRoles());
+		sysadminResource.saveUser(dto);
 		log.info("Register Successfully, Company ID: %s"+saveCompany.getId());
+	}
+
+	private List<RoleEnum> getRegisterRoles() {
+		List<RoleEnum> ret = new ArrayList<RoleEnum>();
+		ret.add(RoleEnum.CUSTOMER_ADMIN);
+		return ret;
+	}
+
+	@Override
+	public RegisterCheckDto registerCheck(String identificationNo, String username) {
+		Optional<Company> company = companyRepository.findIdByIdentificationNo(identificationNo);
+		Boolean existUsername = sysadminResource.existUsername(username);
+		RegisterCheckDto dto = new RegisterCheckDto();
+		dto.setExistIdentificationNo(company.isPresent());
+		dto.setExistUsername(existUsername);
+		log.info("Register Check Result: "+dto);
+		return dto;
 	}
 
 }

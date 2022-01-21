@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.feignClient.dto.OrderDto;
+import br.silveira.conciliador.feignClient.resource.OrderResource;
 import br.silveira.conciliador.integrator.dto.OrderProcessDto;
 import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.mapper.QueueDtoMapper;
@@ -19,8 +21,6 @@ import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.mapper.MercadoLivreOrderDtoMapper;
 import br.silveira.conciliador.integrator.service.OrderService;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
-import br.silveira.conciliador.orders.ctr.OrderController;
-import br.silveira.conciliador.orders.dto.OrderDto;
 
 @Service("orderMercadoLivreServiceImpl")
 public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon implements OrderService {
@@ -46,7 +46,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 	private static final Integer PROCESS_STATUS_SUCCESS = 2;
 
 	@Autowired
-	private OrderController orderController;
+	private OrderResource orderController;
 
 	@Autowired
 	private QueueOrderService queueOrderService;

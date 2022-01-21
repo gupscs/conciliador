@@ -1,5 +1,6 @@
 package br.silveira.conciliador.organizational.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,10 @@ public class CompanyMapper {
 
 	public static Company mapperToEntity(RegisterDto register) {
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		return mapper.map(register, Company.class);
+		Company ret = mapper.map(register, Company.class);
+		ret.setInsertDate(new Date());
+		ret.setInsertId(register.getEmail());
+		return ret;
 	}
 
 }

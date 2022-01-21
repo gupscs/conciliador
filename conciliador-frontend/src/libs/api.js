@@ -21,13 +21,13 @@ api.interceptors.request.use(
     error => Promise.reject(error),
 )
 
-
+/*
 api.interceptors.request.use(
     request => {
         console.log(request)
         return request
     })
-
+*/
 /*
 api.interceptors.response.use(
     response => {

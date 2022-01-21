@@ -34,6 +34,8 @@ public class Company {
 	
 	private String address2;
 	
+	private String zipcode;
+	
 	private String district;
 	
 	private String city;

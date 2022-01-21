@@ -4,8 +4,13 @@ export default [
     },
     {
         title: 'Meus Dados',
-        route: 'my-account',
+        route: 'my-info',
         icon: 'UserIcon',
+    },
+    {
+        title: 'Meus Marketplaces',
+        route: 'market-place',
+        icon: 'ShoppingCartIcon',
     },
     {
         title: 'Custos Fixos',
