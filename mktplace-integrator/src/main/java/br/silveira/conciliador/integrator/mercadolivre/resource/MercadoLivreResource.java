@@ -1,8 +1,9 @@
-package br.silveira.conciliador.integrator.mercadolivre.ctr;
+package br.silveira.conciliador.integrator.mercadolivre.resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,9 +30,9 @@ import br.silveira.conciliador.integrator.service.QueueShipmentsService;
 @RestController
 @RequestMapping("/api/mercado-livre")
 @CrossOrigin(origins = "*")	
-public class MercadoLivreController {
+public class MercadoLivreResource {
 
-	private static final Logger log = LogManager.getLogger(MercadoLivreController.class);
+	private static final Logger log = LogManager.getLogger(MercadoLivreResource.class);
 	
 	@Autowired
 	private MercadoLivreConfig config;
@@ -52,6 +53,7 @@ public class MercadoLivreController {
 	private QueueNotImplementedService queueNotImplementedService;
 	
 	@Autowired
+	@Qualifier("mktPlaceIntegrationConfigMercadoLivreServiceImpl")
 	private MktPlaceIntegrationConfigService mktPlaceIntegrationConfigService;
 
 	//https://developers.mercadolivre.com.br/pt_br/produto-receba-notificacoes?nocache=true#Teste-suas-notificacoes

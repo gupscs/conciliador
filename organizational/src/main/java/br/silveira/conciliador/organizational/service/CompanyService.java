@@ -20,4 +20,6 @@ public interface CompanyService {
 
 	public RegisterCheckDto registerCheck(String identificationNo, String username);
 
+	public boolean updateCompanyInfo(CompanyDto companyDto);
+
 }

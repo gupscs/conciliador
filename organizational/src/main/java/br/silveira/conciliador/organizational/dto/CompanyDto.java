@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CompanyDto {
 	
-	private Long id;
+	private String id;
 	
 	private String identificationNo;
 	
@@ -18,6 +18,8 @@ public class CompanyDto {
 	private String address;
 	
 	private String address2;
+	
+	private String zipcode;
 	
 	private String district;
 	//TODO ALTERAR PARA ENUM

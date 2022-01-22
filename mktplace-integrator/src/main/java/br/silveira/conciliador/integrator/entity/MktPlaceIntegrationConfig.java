@@ -24,16 +24,15 @@ public class MktPlaceIntegrationConfig {
 	@NotEmpty(message = "market place required")
 	private MktPlaceEnum marketPlace;
 	
-	//Mercado Livre: cadastro manual
 	private String applicationId;
 	
-	//Mercado Livre: cadastro manual
 	private String clientSecret;
 	
-	//atualização automática no primeiro login
 	private String authorizationCode;
 	
 	private String mktPlaceUserId;
+	
+	private String mktPlaceUsername;
 	
 	private String apiToken;
 	

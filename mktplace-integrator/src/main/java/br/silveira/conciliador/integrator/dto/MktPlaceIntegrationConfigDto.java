@@ -25,6 +25,8 @@ public class MktPlaceIntegrationConfigDto {
 	
 	private String mktPlaceUserId;
 	
+	private String mktPlaceUsername;
+	
 	private String apiRefreshToken;
 	
 	private Date lastApiTokenUpdated;

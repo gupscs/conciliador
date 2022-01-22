@@ -1,4 +1,4 @@
-package br.silveira.conciliador.integrator.service.impl;
+package br.silveira.conciliador.integrator.factories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

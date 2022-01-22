@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserInfoDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserMeDto;
 
 @FeignClient(name = "mercadoLivreService", url = "${mercadolivre.url}")
 public interface MercadoLivreRestService {
@@ -31,7 +32,11 @@ public interface MercadoLivreRestService {
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/users/me", produces = "application/json")
-	public MercadoLivreUserInfoDto getUserInfo(@RequestHeader(value = "Authorization", required = true) String bearerToken);
+	public MercadoLivreUserMeDto getUsersMe(@RequestHeader(value = "Authorization", required = true) String bearerToken);
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/users/{User_id}", produces = "application/json")
+	public MercadoLivreUserInfoDto getUserInfo(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("User_id") Integer userId);
+		
 	
 	
 	/**

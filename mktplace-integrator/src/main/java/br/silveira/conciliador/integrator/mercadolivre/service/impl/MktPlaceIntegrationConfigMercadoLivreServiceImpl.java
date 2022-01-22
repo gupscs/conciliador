@@ -1,4 +1,4 @@
-package br.silveira.conciliador.integrator.service.impl;
+package br.silveira.conciliador.integrator.mercadolivre.service.impl;
 
 import java.util.Date;
 import java.util.Optional;
@@ -9,19 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import br.silveira.conciliador.integrator.dto.MktPlaceIntegrationConfigDto;
 import br.silveira.conciliador.integrator.entity.MktPlaceIntegrationConfig;
 import br.silveira.conciliador.integrator.mapper.MktPlaceIntegrationConfigMapper;
 import br.silveira.conciliador.integrator.mercadolivre.config.MercadoLivreConfig;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserInfoDto;
 import br.silveira.conciliador.integrator.mercadolivre.service.MercadoLivreRestService;
 import br.silveira.conciliador.integrator.repository.MktPlaceIntegrationConfigRepository;
 import br.silveira.conciliador.integrator.service.MktPlaceIntegrationConfigService;
 
-@Service
-public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl implements MktPlaceIntegrationConfigService {
+@Service("mktPlaceIntegrationConfigMercadoLivreServiceImpl")
+public class MktPlaceIntegrationConfigMercadoLivreServiceImpl implements MktPlaceIntegrationConfigService {
 	
-	private static final Logger log = LogManager.getLogger(MktPlaceIntegrationConfigServiceImpl.class);
+	private static final Logger log = LogManager.getLogger(MktPlaceIntegrationConfigMercadoLivreServiceImpl.class);
 	
 	private static final String MKT_PLACE_INTEG_DISABLE = "Market Place Integration is disable for Company Id: %s and Market Place: %s  and User Id: %s - Check with System Administrator";
 	private static final String MKT_PLACE_USER_ALREADY_REGISTERED = "User Id: %s is already registered for Company Id: %s and Market Place: %s";
@@ -36,12 +38,56 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 	
 	@Autowired
 	private MercadoLivreConfig mercadoLivreConfig;
-
+	
 	@Override
+	public boolean save(MktPlaceIntegrationConfigDto dto) {
+		if(isMktPlaceIntegrationConfigDtoValid(dto)) {
+			dto = checkConfigAlreadyExistByUserId(dto);
+
+			dto.setMarketPlace(MktPlaceEnum.MERCADO_LIVRE);
+			dto.setApplicationId(mercadoLivreConfig.APP_ID);
+			dto.setClientSecret(mercadoLivreConfig.CLIENT_SECRET);
+			dto.setRedirectUrl(mercadoLivreConfig.REDIRECT_URL);
+			
+			dto = getDataFromMercadoLivreApi(dto);
+			
+			repository.save(MktPlaceIntegrationConfigMapper.mapperToEntity(dto));
+			log.info(String.format(AUTH_CODE_UPDATE_SUCCESSFULLY, dto.getCompanyId(), dto.getMarketPlace(), dto.getMktPlaceUserId()));
+			return true;
+			
+		}else {
+			log.error("Invalid DTO\nRule: [dto != null && dto.getAuthorizationCode() != null] - DTO: "+dto);
+		}
+		
+		return false;
+	}
+
+
+
+	private MktPlaceIntegrationConfigDto getDataFromMercadoLivreApi(MktPlaceIntegrationConfigDto dto) {
+		MercadoLivreTokenDto token = mercadoLivreRestService.getToken(MktPlaceIntegrationConfigMapper.mapperToTokenFormMercadoLivre(dto));
+		MercadoLivreUserInfoDto userInfo = mercadoLivreRestService.getUserInfo(token.access_token, token.getUser_id());	
+		dto.setMktPlaceUserId(""+token.getUser_id());		
+		dto.setMktPlaceUsername(userInfo.getNickname());			
+		dto.setApiToken(token.getAccess_token());
+		dto.setApiRefreshToken(token.getRefresh_token());
+		dto.setLastApiTokenUpdated(new Date());
+		dto.setExpiresIn(token.getExpires_in());
+		return dto;
+	}
+	
+	
+
+	private boolean isMktPlaceIntegrationConfigDtoValid(MktPlaceIntegrationConfigDto dto) {
+		return dto != null && dto.getAuthorizationCode() != null ;
+	}
+
+
+
+	@Deprecated
 	public void createMktPlaceIntegratioinConfigForMercadoLivre(MktPlaceIntegrationConfigDto dto) throws Exception {
 
 		checkDtoForAuthorizationCodeUpdate(dto);
-		dto.setCompanyId(getCompanyId());
 		
 		if(checkConfigIfAlreadyExistOrIsDisable(dto)) {		
 			dto.setApplicationId(mercadoLivreConfig.APP_ID);
@@ -71,11 +117,11 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 			MktPlaceIntegrationConfigDto mapperToDto = MktPlaceIntegrationConfigMapper.mapperToDto(mktConfigEntity.get());
 			mapperToDto.setAuthorizationCode(dto.getAuthorizationCode());
 			dto.setUpdateDate(new Date());
-			dto.setUpdateId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
+			dto.setUpdateId( StringUtils.hasText(dto.getInsertId()) ? dto.getInsertId(): MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
 			return mapperToDto;
 		}else {
 			dto.setInsertDate(new Date());
-			dto.setInsertId(MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
+			dto.setInsertId(StringUtils.hasText(dto.getInsertId()) ? dto.getInsertId(): MERCADO_LIVRE_AUTHORIZATION_REDIRECT);
 			return dto;
 		}
 	}
@@ -115,9 +161,4 @@ public class MktPlaceIntegrationConfigServiceImpl extends CommonServiceImpl impl
 		
 	}
 
-	@Override
-	public void save(MktPlaceIntegrationConfigDto dto) {
-		String id = repository.save(MktPlaceIntegrationConfigMapper.mapperToEntity(dto)).getId();
-		log.info("MktPlaceIntegrationConfig save successfully - ID: "+id);
-	}
 }

@@ -7,6 +7,6 @@ public interface MktPlaceIntegrationConfigService {
 	
 	public void createMktPlaceIntegratioinConfigForMercadoLivre(MktPlaceIntegrationConfigDto dto) throws Exception;
 
-	public void save(MktPlaceIntegrationConfigDto dto);
+	public boolean save(MktPlaceIntegrationConfigDto dto);
 
 }

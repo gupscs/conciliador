@@ -16,6 +16,7 @@ import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import br.silveira.conciliador.integrator.dto.OrderProcessDto;
 import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.entity.QueueOrders;
+import br.silveira.conciliador.integrator.factories.OrderServiceFactory;
 import br.silveira.conciliador.integrator.mapper.QueueDtoMapper;
 import br.silveira.conciliador.integrator.repository.QueueOrdersRepository;
 import br.silveira.conciliador.integrator.service.QueueOrderService;

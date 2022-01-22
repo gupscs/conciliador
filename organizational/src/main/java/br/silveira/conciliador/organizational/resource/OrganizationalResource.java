@@ -95,5 +95,20 @@ public class OrganizationalResource {
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
+	
+	
+	@PostMapping("/updateCompanyInfo")
+	public ResponseEntity<Void> updateCompanyInfo(@RequestBody CompanyDto companyDto) {
+		try {
+			if(companyService.updateCompanyInfo(companyDto)) {
+				return ResponseEntity.ok().build();				
+			}else {
+				return ResponseEntity.badRequest().build();
+			}
+		} catch (Exception e) {
+			log.error("Error to update the Company Info: DTO: "+companyDto, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
 
 }
