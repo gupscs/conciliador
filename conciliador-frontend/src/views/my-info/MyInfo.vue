@@ -46,18 +46,7 @@
               />
             </b-form-group>
           </b-col>
-          <!-- Last Update -->
-          <b-col md="4">
-            <b-form-group label="Ultima Atualização em:" label-for="myinfo-updateDate">
-              <b-form-input
-                id="myinfo-updateDate"
-                v-model="myinfo.updateDate"
-                name="myinfo-updateDate"
-                disabled
-              />
-            </b-form-group>
-          </b-col>
-          <!-- CNPJ -->
+           <!-- Update ID -->
           <b-col md="4">
             <b-form-group label="Atualizado por (id)" label-for="myinfo-updateId">
               <b-form-input
@@ -68,6 +57,20 @@
               />
             </b-form-group>
           </b-col>
+          <!-- Last Update -->
+          <b-col md="4">
+            <b-form-group label="Ultima Atualização em:" label-for="myinfo-updateDate">
+              <flat-pickr
+                id="myinfo-updateDate"
+                v-model="myinfo.updateDate"
+                name="myinfo-updateDate"
+                :config="{ enableTime: true,dateFormat: 'Y-m-d H:i:S'}"
+                 class="form-control"
+                 disabled
+              />
+            </b-form-group>
+          </b-col>
+         
           <!-- Nome da Empresa -->
           <b-col md="6">
             <b-form-group label="Nome da Empresa" label-for="myinfo-name">
@@ -93,13 +96,13 @@
               <validation-provider
                 #default="{ errors }"
                 name="myinfo-shortName"
-                rules="required|max:15"
+                rules="required"
               >
                 <b-form-input
                   id="myinfo-shortName"
                   v-model="myinfo.shortName"
                   name="myinfo-shortName"
-                  placeholder="Nome Abreviado ou Fantasia (máximo 15)"
+                  placeholder="Nome Abreviado ou Fantasia"
                   :state="errors.length > 0 ? false : null"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
@@ -129,20 +132,12 @@
           <!-- Address 2 -->
           <b-col md="6">
             <b-form-group label="Complemento" label-for="myinfo-address2">
-              <validation-provider
-                #default="{ errors }"
-                name="myinfo-address2"
-                rules="required"
-              >
                 <b-form-input
                   id="myinfo-address2"
                   v-model="myinfo.address2"
                   name="myinfo--address2"
                   placeholder="Complemento"
-                  :state="errors.length > 0 ? false : null"
                 />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
             </b-form-group>
           </b-col>
           <!-- Zipcode -->
@@ -178,6 +173,7 @@
                   name="myinfo-state"
                   placeholder="UF"
                   :state="errors.length > 0 ? false : null"
+                  :formatter="formatterUpperCase"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -193,10 +189,11 @@
               >
                 <b-form-input
                   id="myinfo-city"
-                  v-model="myinfo.state"
+                  v-model="myinfo.city"
                   name="myinfo-city"
                   placeholder="Cidade"
                   :state="errors.length > 0 ? false : null"
+                  :formatter="formatterUpperCase"
                 />
                 <small class="text-danger">{{ errors[0] }}</small>
               </validation-provider>
@@ -224,20 +221,12 @@
           <!-- Phone2 -->
           <b-col md="6">
             <b-form-group label="Outros Telefones" label-for="myinfo-phone2">
-              <validation-provider
-                #default="{ errors }"
-                name="myinfo-phone2"
-                rules="required"
-              >
                 <b-form-input
                   id="myinfo-phone2"
                   v-model="myinfo.phone2"
                   name="myinfo-phone2"
                   placeholder="Outros telefones (somente números com DDD)"
-                  :state="errors.length > 0 ? false : null"
                 />
-                <small class="text-danger">{{ errors[0] }}</small>
-              </validation-provider>
             </b-form-group>
           </b-col>
           <!-- email -->
@@ -300,7 +289,8 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import api from "@api";
 import { heightFade } from "@core/directives/animations";
 import Ripple from "vue-ripple-directive";
-import { mounted } from "vue-echarts";
+import flatPickr from 'vue-flatpickr-component'
+
 
 export default {
   components: {
@@ -320,6 +310,7 @@ export default {
     BAlert,
     BFormInvalidFeedback,
     BCard,
+    flatPickr,
   },
   directives: {
     "height-fade": heightFade,
@@ -344,6 +335,7 @@ export default {
         email: "",
         updateDate: "",
         updateId: "",
+        username: "",
       },
       // validation
       required,
@@ -352,35 +344,57 @@ export default {
       showSessionExpiredAlert: false,
     };
   },
-  created: function () {
-    const userData = JSON.parse(localStorage.getItem("userData"));
+  created() {
+    this.loadPageData();
+  },
+  methods: {
+    formatterUpperCase(value) {
+      return value.toUpperCase()
+    },
+    loadPageData(){
+      const userData = JSON.parse(localStorage.getItem("userData"));
     api
       .get(
         `/organizational/organizational/getCompanyInfo/${userData.companyId}`
       )
       .then((response) => {
-        console.log(response);
-        this.myinfo = response.data;
-        console.log(this.myinfo);
         if(response.status == 204){
           this.showSessionExpiredAlert = true;
+        }else{
+          this.myinfo = response.data;
+          this.myinfo.username = userData.username;
         }
-
       })
       .catch((error) => {
         console.log(error);
         console.log(error.response);
         this.showDismissibleErrorAlert = true;
       });
-  },
-  methods: {
+    },
     validationForm() {
       this.showDismissibleErrorAlert = false;
+      this.showSessionExpiredAlert = false;
       this.$refs.myInfoForm.validate().then((success) => {
         if (success) {
-
-          //TODO: IMPLEMENTAR A ATUALIZAÇÃO DOS DADOS CADASTRAIS
-
+          this.myinfo.updateId = this.myinfo.username;
+          this.myinfo.updateDate = "";
+          api.post('/organizational/organizational/updateCompanyInfo', this.myinfo).then(response => {
+              this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                          title: "Salvo com sucesso",
+                          icon: "EditIcon",
+                          variant: "success",
+                        },
+                      });
+            this.loadPageData();
+          }).catch(error =>{
+            if(error.response.status == 400){
+              this.showSessionExpiredAlert = true;
+            }else{
+              this.showDismissibleErrorAlert = true;
+            }
+          });
         }
       });
     },

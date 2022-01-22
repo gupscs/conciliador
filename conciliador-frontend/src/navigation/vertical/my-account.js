@@ -9,7 +9,8 @@ export default [
     },
     {
         title: 'Meus Marketplaces',
-        route: 'market-place',
+        //route: 'my-marketplaces',
+        route: { name: 'my-marketplaces', params: { tabActived: 0} },
         icon: 'ShoppingCartIcon',
     },
     {

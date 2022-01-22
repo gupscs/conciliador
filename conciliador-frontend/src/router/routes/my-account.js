@@ -17,6 +17,23 @@ export default [
         },
       },
       {
+        path: '/my-account/myMarketplaces/:tabActived',
+        name: 'my-marketplaces',
+        component: () => import('@/views/my-marketplaces/MyMarketplaces.vue'),
+        meta: {
+          pageTitle: 'Meus Marketplaces',
+          breadcrumb: [
+            {
+              text: 'Minha Conta',
+            },
+            {
+              text: 'Meus Marketplaces',
+              active: true,
+            },
+          ],
+        },
+      },
+      {
         path: '/fixed-cost/fixedCost',
         name: 'fixed-cost',
         component: () => import('@/views/fixed-cost/FixedCost.vue'),
