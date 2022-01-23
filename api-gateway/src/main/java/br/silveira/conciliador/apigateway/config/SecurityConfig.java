@@ -1,16 +1,11 @@
 package br.silveira.conciliador.apigateway.config;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -22,7 +17,7 @@ public class SecurityConfig {
 
 	// TODO PASSAR PARA CONFIGURAÇÕES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
 	// ACESSO) - Cadastro de ROLE x URL e outro de Grupos x ROLE
-	private static final String[] PUBLIC = { "/oauth/**", "/oauth/check_token", "/actuator/**" , "/organizational/register**"};
+	private static final String[] PUBLIC = { "/oauth/**", "/oauth/check_token", "/actuator/**" , "/organizational/register**", "/mktplace-integrator/**"};
 
 	private static final String[] CUSTOMER_ADMIN = { "/sysadmin/**", "/orders/**", "/organizational/**" };
 

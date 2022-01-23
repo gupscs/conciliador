@@ -1,9 +1,12 @@
 package br.silveira.conciliador.integrator.resource;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import br.silveira.conciliador.integrator.dto.MktPlaceIntegrationConfigDto;
+import br.silveira.conciliador.integrator.entity.MktPlaceIntegrationConfig;
 import br.silveira.conciliador.integrator.factories.MktPlaceIntegrationConfigFactory;
+import br.silveira.conciliador.integrator.repository.MktPlaceIntegrationConfigRepository;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
 
 @RestController
@@ -25,6 +30,9 @@ public class IntegratorResource {
 
 	@Autowired
 	private QueueOrderService queueOrderService;
+
+	@Autowired
+	private MktPlaceIntegrationConfigRepository mktPlaceIntegrationConfigRepository;
 
 	@Autowired
 	private MktPlaceIntegrationConfigFactory mktPlaceIntegrationConfigFactory;
@@ -61,6 +69,21 @@ public class IntegratorResource {
 			}
 		} catch (Exception e) {
 			log.error("Error to createMktPlaceIntegrationConfigMercadoLivre - DTO: " + dto, e);
+			return ResponseEntity.internalServerError().build();
+		}
+	}
+
+	@GetMapping("/getMktPlaceIntegrationConfigUsers/{companyId}/{mktPlace}")
+	public ResponseEntity<List<MktPlaceIntegrationConfig>> getMktPlaceIntegrationConfigUsers(@PathVariable String companyId, @PathVariable String mktPlace) {
+		try {
+			List<MktPlaceIntegrationConfig> retEntities = mktPlaceIntegrationConfigRepository.findMktPlaceUsersByCompanyIdAndMarketPlaceOrderByMktPlaceUsername(companyId, MktPlaceEnum.valueOf(mktPlace.toUpperCase()));
+			if (retEntities == null || retEntities.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok(retEntities);
+			}
+		} catch (Exception e) {
+			log.error("Error to getMktPlaceIntegrationConfigUsers - Company ID: " + companyId + "| Mkt Place: "+mktPlace, e);
 			return ResponseEntity.internalServerError().build();
 		}
 	}
