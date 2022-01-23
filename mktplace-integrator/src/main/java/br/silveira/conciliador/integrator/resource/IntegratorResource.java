@@ -17,7 +17,7 @@ import br.silveira.conciliador.integrator.factories.MktPlaceIntegrationConfigFac
 import br.silveira.conciliador.integrator.service.QueueOrderService;
 
 @RestController
-@RequestMapping("/api/integrator")
+@RequestMapping("/mktplace-integrator")
 //@CrossOrigin(origins = "*")
 public class IntegratorResource {
 
