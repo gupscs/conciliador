@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-        tabIndex: router.currentRoute.params.tabActived ,
+        tabIndex: parseInt(router.currentRoute.params.tabActived) ,
     }
   },
   created() {

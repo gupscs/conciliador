@@ -3,7 +3,6 @@
     <!-- global messages -->
     <b-alert
       v-model="showDismissibleErrorAlert"
-      v-height-fade.appear
       variant="danger"
       dismissible
       class="mb-0"
@@ -19,7 +18,6 @@
     <!-- Sessing messages -->
     <b-alert
       v-model="showSessionExpiredAlert"
-      v-height-fade.appear
       variant="warning"
       dismissible
       class="mb-0"

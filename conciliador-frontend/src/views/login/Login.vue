@@ -30,7 +30,6 @@
            <!-- global messages -->
           <b-alert
             v-model="showDismissibleErrorAlert"
-            v-height-fade.appear
             variant="danger"
             dismissible
             class="mb-0"
