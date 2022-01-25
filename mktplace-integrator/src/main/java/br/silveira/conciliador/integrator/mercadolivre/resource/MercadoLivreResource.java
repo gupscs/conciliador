@@ -107,6 +107,7 @@ public class MercadoLivreResource {
 		}catch(Exception e) {
 			log.error("Authorization Code from Mercado Livre error", e);
 			return ResponseEntity.badRequest().body(new String(e.getMessage()));
+			
 		}
 	}
 
