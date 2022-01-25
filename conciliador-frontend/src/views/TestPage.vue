@@ -75,51 +75,37 @@ export default {
         {
           label: "Usuário",
           key: "mktPlaceUsername",
-          thClass: "text-center",
-          tdClass: "text-left",
           sortable: true,
         },
         {
           label: "Id",
           key: "mktPlaceUserId",
-          thClass: "text-center",
-          tdClass: "text-left",
           sortable: true,
         },
         {
           label: "Inserido Por",
           key: "insertId",
-          thClass: "text-center",
-          tdClass: "text-center",
           sortable: true,
         },
         {
           label: "Inserido Em",
           key: "insertDate",
-          thClass: "text-center",
-          tdClass: "text-center",
           formatter: "formatDate",
           sortable: true,
         },
         {
           label: "Atualizado Por",
           key: "updateId",
-          thClass: "text-center",
-          tdClass: "text-center",
           sortable: true,
         },
         {
           label: "Atualizado Em",
           key: "updateDate",
-          thClass: "text-center",
-          tdClass: "text-center",
           formatter: "formatDate",
           sortable: true,
         },
         {
           label: "Ativo/Desativado",
-          thClass: "text-center",
-          tdClass: "text-center",
           key: "enable",
           sortable: true,
         },
@@ -164,8 +150,7 @@ export default {
           //ler os parametros da aplicacao id (criar novo webservice)
           //concatenar os parametros na url do mercado livre
           */
-         
-          window.location.href = "https://localhost:8080/mercado-livre/authorizationRedirect?code=codeteste&error=errorteste&error_description=error_descriptionteste";
+          window.location.href = "https://google.com/contact";
         }
       });
     },

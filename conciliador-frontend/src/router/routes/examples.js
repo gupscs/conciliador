@@ -26,5 +26,22 @@ export default [
             },
           ],
         },
+      },
+      {
+        path: '/test-page',
+        name: 'test-page',
+        component: () => import('@/views/TestPage.vue'),
+        meta: {
+          pageTitle: 'Pagina de Teste',
+          breadcrumb: [
+            {
+              text: 'Pagina de Teste',
+              active: true,
+            },
+          ],
+        },
       }
+
+
+      
 ]

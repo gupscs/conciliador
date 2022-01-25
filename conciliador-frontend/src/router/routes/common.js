@@ -24,6 +24,14 @@ export default [
     },
   },
   {
+    path: '/mercado-livre/authorizationRedirect',
+    name: 'error-404',
+    component: () => import('@/views/my-marketplaces/mercado-livre/AuthorizationRedirect.vue'),
+    meta: {
+      layout: 'full',
+    },
+  },
+  {
     path: '*',
     redirect: 'error-404',
   }

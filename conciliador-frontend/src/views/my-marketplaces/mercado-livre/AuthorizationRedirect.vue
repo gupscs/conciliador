@@ -1,7 +1,4 @@
 <template>
-
-1. 
-
   <b-card>
     <!-- global messages -->
     <b-alert
@@ -89,6 +86,11 @@ export default {
     return {
       showDismissibleErrorAlert: true,
     };
+  },
+  created(){
+    console.log(this.$route.query.code);
+    console.log(this.$route.query.error);
+    console.log(this.$route.query.error_description);
   },
   methods: {
 
