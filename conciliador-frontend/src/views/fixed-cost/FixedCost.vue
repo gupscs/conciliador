@@ -2,7 +2,7 @@
   <div>
     <b-row>
       <b-col cols="12">
-        <form-repeater-basic />
+        <fixed-cost-repeater/>
       </b-col>
     </b-row>
   </div>
@@ -11,14 +11,13 @@
 <script>
 import { BRow, BCol } from 'bootstrap-vue'
 
-import FormRepeaterBasic from './FormRepeaterBasic.vue'
+import FixedCostRepeater from './FixedCostRepeater.vue'
 
 export default {
   components: {
     BRow,
     BCol,
-
-    FormRepeaterBasic,
+    FixedCostRepeater,
   },
 }
 </script>

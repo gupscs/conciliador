@@ -23,7 +23,8 @@
         variant="outline-primary"
         @click="confirmText"
       >
-        Adicionar Nova Conta
+        <feather-icon icon="PlusIcon" class="mr-25" />
+        <span>Adicionar Nova Conta</span>
       </b-button>
     </div>
     <br />
@@ -144,7 +145,11 @@ export default {
   },
   methods: {
     formatDate(value) {
-      return Moment(String(value)).format("DD/MM/YYYY hh:mm:ss");
+      if (value) {
+        return Moment(String(value)).format("DD/MM/YYYY hh:mm:ss");
+      } else {
+        return value;
+      }
     },
     confirmText() {
       this.$swal({
@@ -164,8 +169,21 @@ export default {
           //ler os parametros da aplicacao id (criar novo webservice)
           //concatenar os parametros na url do mercado livre
           */
-         
-          window.location.href = "https://localhost:8080/mercado-livre/authorizationRedirect?code=codeteste&error=errorteste&error_description=error_descriptionteste";
+
+          api
+            .get(
+              "/mktplace-integrator/mktplace-integrator/mercado-livre/getAppIdAndRedirectUrl"
+            )
+            .then((response) => {
+              const appId = response.data.appId;
+              const redirectUrl = response.data.redirectUrl;
+              const urlMercadoLivre = `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${appId}&redirect_uri=${redirectUrl}`;
+              window.location.href = urlMercadoLivre;
+            })
+            .catch((error) => {
+              this.showDismissibleErrorAlert = true;
+              console.log(error);
+            });
         }
       });
     },
