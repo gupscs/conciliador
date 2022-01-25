@@ -5,6 +5,7 @@ import java.util.List;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 
@@ -21,5 +22,7 @@ public interface CompanyService {
 	public RegisterCheckDto registerCheck(String identificationNo, String username);
 
 	public boolean updateCompanyInfo(CompanyDto companyDto);
+
+	public boolean saveFixedCost(FixedCostDto fixedCostDto);
 
 }

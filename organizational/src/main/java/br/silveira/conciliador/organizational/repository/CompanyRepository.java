@@ -37,4 +37,7 @@ public interface CompanyRepository extends MongoRepository<Company, String> {
 	@Query(value = "{ id : ?0 }", fields = "{ id : 1 , identificationNo : 1 , name : 1 , shortName : 1 , address: 1 , address2 : 1 , zipcode : 1 , district : 1 , city : 1 , state : 1 , country : 1 , phone1 : 1 , phone2 : 1 , email : 1 , insertId : 1 , inserDate : 1 , updateId : 1 , updateDate : 1 , enable : 1}")
 	public Optional<Company> findCompanyInfoById(String id);
 
+	@Query(value = "{ id : ?0 }", fields = "{ id : 1 , identificationNo : 1 ,  shortName : 1 ,  fixedCost : 1  }")
+	public Optional<Company> findFixedCostById(String id);
+
 }

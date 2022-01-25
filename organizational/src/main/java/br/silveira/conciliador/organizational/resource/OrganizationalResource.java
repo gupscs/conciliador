@@ -17,6 +17,7 @@ import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
@@ -27,12 +28,12 @@ import br.silveira.conciliador.organizational.service.CompanyService;
 @RequestMapping("/organizational")
 //@CrossOrigin(origins = "*")
 public class OrganizationalResource {
-	
+
 	private static final Logger log = LogManager.getLogger(OrganizationalResource.class);
 
 	@Autowired
 	private CompanyService companyService;
-	
+
 	@Autowired
 	private CompanyRepository companyRepository;
 
@@ -59,7 +60,7 @@ public class OrganizationalResource {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<Void> register(@RequestBody RegisterDto register) {
 		try {
@@ -69,9 +70,9 @@ public class OrganizationalResource {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@GetMapping("/registerCheck/{identificationNo}/{username}")
-	public ResponseEntity<RegisterCheckDto> registerCheck(@PathVariable String identificationNo , @PathVariable String username) {
+	public ResponseEntity<RegisterCheckDto> registerCheck(@PathVariable String identificationNo, @PathVariable String username) {
 		try {
 			RegisterCheckDto dto = companyService.registerCheck(identificationNo, username);
 			return ResponseEntity.ok().body(dto);
@@ -79,36 +80,66 @@ public class OrganizationalResource {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@GetMapping("/getCompanyInfo/{id}")
-	public ResponseEntity<Company> getCompanyInfo(@PathVariable String id){
+	public ResponseEntity<Company> getCompanyInfo(@PathVariable String id) {
 		try {
 			Optional<Company> companyInfo = companyRepository.findCompanyInfoById(id);
-			if(companyInfo.isPresent()) {
+			if (companyInfo.isPresent()) {
 				return ResponseEntity.ok().body(companyInfo.get());
-			}else {
-				log.warn("No Content for Company ID: "+id+", check the frontend app or user session");
+			} else {
+				log.warn("No Content for Company ID: " + id + ", check the frontend app or user session");
 				return ResponseEntity.noContent().build();
 			}
 		} catch (Exception e) {
-			log.error("getCompanyInfo error, Company ID: "+id, e);
+			log.error("getCompanyInfo error, Company ID: " + id, e);
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
-	
+
 	@PostMapping("/updateCompanyInfo")
 	public ResponseEntity<Void> updateCompanyInfo(@RequestBody CompanyDto companyDto) {
 		try {
-			if(companyService.updateCompanyInfo(companyDto)) {
-				return ResponseEntity.ok().build();				
-			}else {
+			if (companyService.updateCompanyInfo(companyDto)) {
+				return ResponseEntity.ok().build();
+			} else {
 				return ResponseEntity.badRequest().build();
 			}
 		} catch (Exception e) {
-			log.error("Error to update the Company Info: DTO: "+companyDto, e);
+			log.error("Error to update the Company Info: DTO: " + companyDto, e);
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
+	}
+
+	@GetMapping("/getFixedCost/{id}")
+	public ResponseEntity<Company> getFixedCost(@PathVariable String id) {
+		try {
+			Optional<Company> companyInfo = companyRepository.findFixedCostById(id);
+			if (companyInfo.isPresent()) {
+				return ResponseEntity.ok().body(companyInfo.get());
+			} else {
+				log.warn("No Content for Company ID: " + id + ", check the frontend app or user session");
+				return ResponseEntity.noContent().build();
+			}
+		} catch (Exception e) {
+			log.error("getCompanyInfo error, Company ID: " + id, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+
+	@PostMapping("/saveFixedCost")
+	public ResponseEntity<Void> saveFixedCost(@PathVariable FixedCostDto fixedCostDto) {
+		try {
+			if (companyService.saveFixedCost(fixedCostDto)) {
+				return ResponseEntity.ok().build();
+			} else {
+				return ResponseEntity.badRequest().build();
+			}
+		} catch (Exception e) {
+			log.error("saveFixedCost error, DTO: " + fixedCostDto, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+
 	}
 
 }

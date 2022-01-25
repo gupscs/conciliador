@@ -18,9 +18,11 @@ import br.silveira.conciliador.feignClient.resource.SysadminResource;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
+import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
+import br.silveira.conciliador.organizational.repository.CompanyDao;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
 import br.silveira.conciliador.organizational.util.MapperUtil;
@@ -35,6 +37,9 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
 	private SysadminResource sysadminResource;
+	
+	@Autowired
+	private CompanyDao companyDao;
 
 	@Override
 	public List<CompanyDto> findByEnable(Boolean enable) {
@@ -153,6 +158,12 @@ public class CompanyServiceImpl implements CompanyService {
 		return companyDto != null && companyDto.getId() != null && companyDto.getIdentificationNo() != null
 				&& companyDto.getName() != null && companyDto.getShortName() != null
 				&& companyDto.getUpdateId() != null;
+	}
+
+	@Override
+	public boolean saveFixedCost(FixedCostDto fixedCostDto) {
+		//salvar
+		companyDao.kfdajfadsk
 	}
 
 }

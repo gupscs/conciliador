@@ -1,5 +1,8 @@
 package br.silveira.conciliador.integrator.mercadolivre.resource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +112,14 @@ public class MercadoLivreResource {
 			return ResponseEntity.badRequest().body(new String(e.getMessage()));
 			
 		}
+	}
+	
+	@GetMapping("/getAppIdAndRedirectUrl")
+	public ResponseEntity<Map<String, String>> getAppId(){
+		Map<String, String> ret = new HashMap<String , String>();
+		ret.put("appId", config.APP_ID);
+		ret.put("redirectUrl", config.REDIRECT_URL);
+		return ResponseEntity.ok(ret);
 	}
 
 }

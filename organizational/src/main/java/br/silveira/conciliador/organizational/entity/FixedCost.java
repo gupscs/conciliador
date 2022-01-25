@@ -10,8 +10,6 @@ import lombok.Data;
 @Data
 public class FixedCost {
 	
-	private Date costStart;
-	
 	private String costName;
 	
 	private Double cost;

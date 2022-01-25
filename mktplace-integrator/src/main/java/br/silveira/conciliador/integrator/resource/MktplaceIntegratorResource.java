@@ -24,9 +24,9 @@ import br.silveira.conciliador.integrator.service.QueueOrderService;
 @RestController
 @RequestMapping("/mktplace-integrator")
 //@CrossOrigin(origins = "*")
-public class IntegratorResource {
+public class MktplaceIntegratorResource {
 
-	private static final Logger log = LogManager.getLogger(IntegratorResource.class);
+	private static final Logger log = LogManager.getLogger(MktplaceIntegratorResource.class);
 
 	@Autowired
 	private QueueOrderService queueOrderService;
