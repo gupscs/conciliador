@@ -165,11 +165,6 @@ export default {
         buttonsStyling: false,
       }).then((result) => {
         if (result.value) {
-          /*
-          //ler os parametros da aplicacao id (criar novo webservice)
-          //concatenar os parametros na url do mercado livre
-          */
-
           api
             .get(
               "/mktplace-integrator/mktplace-integrator/mercado-livre/getAppIdAndRedirectUrl"

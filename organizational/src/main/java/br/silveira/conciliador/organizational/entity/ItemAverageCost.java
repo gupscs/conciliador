@@ -5,13 +5,21 @@ import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.Data;
 
 
+@Document
 @Data
-	
 public class ItemAverageCost {
 	//TODO ESTE DOCUMENTO DEVE SER POPULADO PELA INTEGRAÇÃO COM O BLING
+	
+	@Id
+	private String id;
+	
+	private String companyId;
 	
 	@NotNull(message = "sku required")
 	private String sku;

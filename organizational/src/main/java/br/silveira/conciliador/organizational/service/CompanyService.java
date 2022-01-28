@@ -23,6 +23,6 @@ public interface CompanyService {
 
 	public boolean updateCompanyInfo(CompanyDto companyDto);
 
-	public boolean saveFixedCost(FixedCostDto fixedCostDto);
+	public FixedCostDto saveFixedCost(FixedCostDto fixedCostDto);
 
 }

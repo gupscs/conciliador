@@ -4,11 +4,20 @@ import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import br.silveira.conciliador.common.enums.RatioTypeEnum;
 import lombok.Data;
 
+@Document
 @Data
 public class FixedCost {
+	
+	@Id
+	private String id;
+	
+	private String companyId;
 	
 	private String costName;
 	

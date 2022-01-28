@@ -1,6 +1,7 @@
 package br.silveira.conciliador.organizational.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +23,15 @@ import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
-import br.silveira.conciliador.organizational.repository.CompanyDao;
+import br.silveira.conciliador.organizational.entity.FixedCost;
+import br.silveira.conciliador.organizational.entity.ItemAverageCost;
+import br.silveira.conciliador.organizational.entity.MktPlaceFee;
+import br.silveira.conciliador.organizational.entity.Tax;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
+import br.silveira.conciliador.organizational.repository.FixedCostRepository;
+import br.silveira.conciliador.organizational.repository.ItemAverageCostRepository;
+import br.silveira.conciliador.organizational.repository.MktPlaceFeeRepository;
+import br.silveira.conciliador.organizational.repository.TaxRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
 import br.silveira.conciliador.organizational.util.MapperUtil;
 
@@ -36,10 +44,19 @@ public class CompanyServiceImpl implements CompanyService {
 	private CompanyRepository companyRepository;
 
 	@Autowired
-	private SysadminResource sysadminResource;
-	
+	private FixedCostRepository fixedCostRepository;
+
 	@Autowired
-	private CompanyDao companyDao;
+	private ItemAverageCostRepository itemAverageCostRepository;
+
+	@Autowired
+	private MktPlaceFeeRepository mktPlaceFeeRepository;
+
+	@Autowired
+	private TaxRepository taxRepository;
+
+	@Autowired
+	private SysadminResource sysadminResource;
 
 	@Override
 	public List<CompanyDto> findByEnable(Boolean enable) {
@@ -50,49 +67,51 @@ public class CompanyServiceImpl implements CompanyService {
 	@Transactional
 	public void saveCompany(CompanyDto dto) {
 		companyRepository.save(MapperUtil.mapperToEntity(dto));
-		log.info(String.format("Company save sucessfully. Company Name: %s - Company Identification No: %s",
-				dto.getName(), dto.getIdentificationNo()));
+		log.info(String.format("Company save sucessfully. Company Name: %s - Company Identification No: %s", dto.getName(), dto.getIdentificationNo()));
 	}
 
 	@Override
 	public CompanyCostValuesDto getCompanyCostValues(CompanyCostValuesRequestDto dto) throws Exception {
-		Optional<Company> entity = null;
+		List<ItemAverageCost> itemAvgCost = null;
+		List<MktPlaceFee> mktPlace = null;
+
 		switch (getSelectCondition(dto)) {
 		case 0:
-			entity = companyRepository.findCompanyCostValuesById(dto.getId());
+			mktPlace = mktPlaceFeeRepository.findByCompanyId(dto.getId());
+			itemAvgCost = itemAverageCostRepository.findByCompanyId(dto.getId());
 			break;
 		case 1:
-			entity = companyRepository.findCompanyCostValuesByIdAndMktPlaceAndFeeType(dto.getId(), dto.getMarketPlace(),
-					dto.getFeeType());
+			mktPlace = mktPlaceFeeRepository.findByMarketPlaceAndFeeType(dto.getMarketPlace(), dto.getFeeType());
+			itemAvgCost = itemAverageCostRepository.findByCompanyId(dto.getId());
 			break;
 		case 2:
-			entity = companyRepository.findCompanyCostValuesByIdAndSku(dto.getId(), dto.getSku());
+			mktPlace = mktPlaceFeeRepository.findByCompanyId(dto.getId());
+			itemAvgCost = itemAverageCostRepository.findBySku(dto.getSku());
 			break;
 		case 3:
-			entity = companyRepository.findCompanyCostValuesByIdAndMktPlaceAndFeeTypeAndSku(dto.getId(),
-					dto.getMarketPlace(), dto.getFeeType(), dto.getSku());
+			mktPlace = mktPlaceFeeRepository.findByMarketPlaceAndFeeType(dto.getMarketPlace(), dto.getFeeType());
+			itemAvgCost = itemAverageCostRepository.findBySku(dto.getSku());
 			break;
 		}
 
-		return MapperUtil.mapperToCompanyCostValuesDto(entity.get());
+		List<FixedCost> fixedCost = fixedCostRepository.findByCompanyId(dto.getId());
+		List<Tax> tax = taxRepository.findByCompanyId(dto.getId());
+
+		return MapperUtil.mapperToCompanyCostValuesDto(dto, mktPlace, itemAvgCost, fixedCost, tax);
 
 	}
 
 	private int getSelectCondition(CompanyCostValuesRequestDto dto) throws Exception {
-		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null
-				&& CollectionUtils.isEmpty(dto.getSku()))
+		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null && CollectionUtils.isEmpty(dto.getSku()))
 			return 0;
 
-		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null
-				&& CollectionUtils.isEmpty(dto.getSku()))
+		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null && CollectionUtils.isEmpty(dto.getSku()))
 			return 1;
 
-		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null
-				&& !CollectionUtils.isEmpty(dto.getSku()))
+		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null && !CollectionUtils.isEmpty(dto.getSku()))
 			return 2;
 
-		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null
-				&& !CollectionUtils.isEmpty(dto.getSku()))
+		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null && !CollectionUtils.isEmpty(dto.getSku()))
 			return 3;
 
 		throw new Exception("Invlaid Request dto, mandatory fields are missing - DTO: " + dto);
@@ -139,15 +158,13 @@ public class CompanyServiceImpl implements CompanyService {
 			if (entity.isPresent()) {
 				Company entityMerged = MapperUtil.mapperEntity(entity.get(), companyDto);
 				companyRepository.save(entityMerged);
-				log.info("Company Info update successfully: ID: "+companyDto.getId());
+				log.info("Company Info update successfully: ID: " + companyDto.getId());
 				return true;
 			} else {
 				log.error(String.format("Company ID: %s not found - DTO: %s", companyDto.getId(), companyDto));
 			}
 		} else {
-			log.error(
-					"DTO is not valid \nRule[ CompanyDto != null && companyDto.getId() != null && companyDto.getIdentificationNo() != null 	&& companyDto.getName() != null && companyDto.getShortName() != null && companyDto.getUpdateId() != null; \nMissing mandatory Fields in DTO. Pleae check the - DTO: "
-							+ companyDto);
+			log.error("DTO is not valid \nRule[ CompanyDto != null && companyDto.getId() != null && companyDto.getIdentificationNo() != null 	&& companyDto.getName() != null && companyDto.getShortName() != null && companyDto.getUpdateId() != null; \nMissing mandatory Fields in DTO. Pleae check the - DTO: " + companyDto);
 		}
 
 		return false;
@@ -155,15 +172,24 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	private boolean isValidCompanyDtoToUpdate(CompanyDto companyDto) {
-		return companyDto != null && companyDto.getId() != null && companyDto.getIdentificationNo() != null
-				&& companyDto.getName() != null && companyDto.getShortName() != null
-				&& companyDto.getUpdateId() != null;
+		return companyDto != null && companyDto.getId() != null && companyDto.getIdentificationNo() != null && companyDto.getName() != null && companyDto.getShortName() != null && companyDto.getUpdateId() != null;
 	}
 
 	@Override
-	public boolean saveFixedCost(FixedCostDto fixedCostDto) {
-		//salvar
-		companyDao.kfdajfadsk
-	}
+	public FixedCostDto saveFixedCost(FixedCostDto fixedCostDto) {
+		
+		if(StringUtils.hasText(fixedCostDto.getId())) {
+			fixedCostDto.setUpdateDate(new Date());
+		}else {
+			fixedCostDto.setInsertDate(new Date());
+		}
+		
+		FixedCost entity = MapperUtil.mapperToEntity(fixedCostDto);
+		FixedCost saved = fixedCostRepository.save(entity);
+		
+		fixedCostDto.setId(saved.getId());
 
+		log.info("Fixed Cost saved succussfully - ID: "+fixedCostDto.getId());
+		return fixedCostDto;
+	}
 }

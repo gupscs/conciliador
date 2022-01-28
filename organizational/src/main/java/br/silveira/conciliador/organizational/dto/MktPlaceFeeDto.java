@@ -5,11 +5,15 @@ import lombok.Data;
 
 @Data
 public class MktPlaceFeeDto {
-	
+
+	private String id;
+
+	private String companyId;
+
 	private MktPlaceEnum marketPlace;
-	
+
 	private String feeType;
-	
+
 	private Double fee;
-	
+
 }
