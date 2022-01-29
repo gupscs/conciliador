@@ -83,7 +83,7 @@ public class OrderMapper {
 			FixedCostDto dto = new FixedCostDto();
 			dto.setCostName(fixedCostDto.getCostName());
 			dto.setRatioType(fixedCostDto.getRatioType());
-			dto.setCostRateValue(fixedCostDto.getCostRateValue());
+			dto.setCostRateValue(fixedCostDto.getCost());
 			fixedCosts.add(dto);
 		}
 		return fixedCosts;

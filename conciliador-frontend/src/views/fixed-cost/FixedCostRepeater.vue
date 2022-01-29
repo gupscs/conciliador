@@ -1,5 +1,21 @@
 <template>
   <b-card title="Custos">
+    <!-- global messages -->
+    <b-alert
+      v-model="showDismissibleErrorAlert"
+      variant="danger"
+      dismissible
+      class="mb-0"
+    >
+      <div class="alert-body">
+        <feather-icon class="mr-25" icon="FrownIcon" />
+        <span class="ml-25"
+          >Algo deu errado!! Já estamos trabalhando para resolver, tente
+          novamente mais tarde</span
+        >
+      </div>
+    </b-alert>
+    <br />
     <div>
       <div class="custom-search d-flex justify-content-end">
         <b-button
@@ -20,8 +36,8 @@
         <!-- Row Loop -->
         <b-row
           v-for="(item, index) in items"
-          :id="item.id"
-          :key="item.id"
+          :itemId="item.itemId"
+          :key="item.itemId"
           ref="row"
         >
           <b-col cols="12">
@@ -92,10 +108,13 @@ import {
   BCol,
   BButton,
   BCard,
+  BAlert,
 } from "bootstrap-vue";
 import { heightTransition } from "@core/mixins/ui/transition";
 import Ripple from "vue-ripple-directive";
 import { codeBasic } from "./code";
+import api from "@api";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
   components: {
@@ -106,6 +125,7 @@ export default {
     BFormGroup,
     BFormInput,
     BCard,
+    BAlert,
   },
   directives: {
     Ripple,
@@ -113,16 +133,12 @@ export default {
   mixins: [heightTransition],
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          selected: "male",
-          selected1: "designer",
-          prevHeight: 0,
-        },
-      ],
+      items: [],
       nextTodoId: 2,
       codeBasic,
+      showDismissibleErrorAlert: false,
+      username: "",
+      companyId: "",
     };
   },
   mounted() {
@@ -130,19 +146,64 @@ export default {
   },
   created() {
     window.addEventListener("resize", this.initTrHeight);
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    this.username = userData.username;
+    this.companyId = userData.companyId;
+    api
+      .get(
+        `/organizational/organizational/getFixedCostByCompanyId/${userData.companyId}`
+      )
+      .then((response) => {
+        const listGetItem = response.data;
+        if (listGetItem) {
+          var count = 1;
+          for (let item of response.data) {
+            this.items.push({
+              itmeId: count,
+              id: item.id,
+              costName: item.costName,
+              cost: item.cost,
+              insertId: item.insertId,
+              insertDate: item.insertDate,
+              updateId: this.username,
+              updateDate: item.updateDate,
+              companyId: item.companyId,
+            });
+            this.$nextTick(() => {
+              this.trAddHeight(this.$refs.row[0].offsetHeight);
+            });
+            count++;
+          }
+        } else {
+          this.items.push({
+            itmeId: 1,
+            id: null,
+            costName: "",
+            cost: null,
+            insertId: this.username,
+            companyId: this.companyId,
+          });
+        }
+      })
+      .catch((error) => {
+        this.showDismissibleErrorAlert = true;
+        console.error(error);
+      });
   },
   destroyed() {
     window.removeEventListener("resize", this.initTrHeight);
   },
   methods: {
     formatterUpperCase(value) {
-      return value.toUpperCase()
+      return value.toUpperCase();
     },
     repeateAgain() {
       this.items.push({
-        id: (this.nextTodoId += this.nextTodoId),
+        itemId: (this.nextTodoId += this.nextTodoId),
         costName: "",
         cost: null,
+        insertId: this.username,
+        companyId: this.companyId,
       });
 
       this.$nextTick(() => {
@@ -151,23 +212,53 @@ export default {
     },
     removeItem(index) {
       this.$bvModal
-        .msgBoxConfirm('O Custo será deleta, Ok?', {
-          cancelVariant: 'outline-secondary',
+        .msgBoxConfirm("O Custo será deletado, Ok?", {
+          cancelVariant: "outline-secondary",
           centered: true,
-          title: 'Por favor, confirmar',
+          title: "Por favor, confirmar",
         })
-        .then(value => {
-          if(value){
-             this.items.splice(index, 1);
-            this.trTrimHeight(this.$refs.row[0].offsetHeight);
+        .then((value) => {
+          if (value) {
+            if (this.items[index].id) {
+              api
+                .delete(
+                  `/organizational/organizational/deleteFixedCost/${this.items[index].id}`
+                )
+                .then((response) => {
+                  this.items.splice(index, 1);
+                  this.trTrimHeight(this.$refs.row[0].offsetHeight);
+                })
+                .catch((error) => {
+                  this.showDismissibleErrorAlert = true;
+                  console.error(error);
+                });
+            } else {
+              this.items.splice(index, 1);
+              this.trTrimHeight(this.$refs.row[0].offsetHeight);
+            }
           }
-        })
-      
-      
-     
+        });
     },
     saveItem(index) {
-      console.log(this.items[index]);
+      this.items[index].updateId = this.username;
+      api
+        .post("/organizational/organizational/saveFixedCost", this.items[index])
+        .then((response) => {
+          this.items[index].id = response.data.id;
+          this.items[index].insertDate = response.data.insertDate;
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: "Salvo com sucesso",
+              icon: "EditIcon",
+              variant: "success",
+            },
+          });
+        })
+        .catch((error) => {
+          this.showDismissibleErrorAlert = true;
+          console.error(error);
+        });
     },
     initTrHeight() {
       this.trSetHeight(null);

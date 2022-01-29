@@ -136,10 +136,14 @@ public class OrganizationalResource {
 	}
 
 	@PostMapping("/saveFixedCost")
-	public ResponseEntity<FixedCostDto> saveFixedCost(@PathVariable FixedCostDto fixedCostDto) {
+	public ResponseEntity<FixedCostDto> saveFixedCost(@RequestBody FixedCostDto fixedCostDto) {
 		try {
 			FixedCostDto saveFixedCost = companyService.saveFixedCost(fixedCostDto);
-			return ResponseEntity.ok(saveFixedCost);
+			if(saveFixedCost == null) {
+				return ResponseEntity.noContent().build();
+			}else {
+				return ResponseEntity.ok(saveFixedCost);
+			}
 		} catch (Exception e) {
 			log.error("saveFixedCost error, DTO: " + fixedCostDto, e);
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();

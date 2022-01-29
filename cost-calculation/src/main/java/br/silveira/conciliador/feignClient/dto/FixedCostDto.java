@@ -8,7 +8,7 @@ public class FixedCostDto {
 
 	private String costName;
 
-	private Double costRateValue;
+	private Double cost;
 
 	private RatioTypeEnum ratioType;
 

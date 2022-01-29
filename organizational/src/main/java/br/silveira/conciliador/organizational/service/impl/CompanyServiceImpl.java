@@ -179,7 +179,14 @@ public class CompanyServiceImpl implements CompanyService {
 	public FixedCostDto saveFixedCost(FixedCostDto fixedCostDto) {
 		
 		if(StringUtils.hasText(fixedCostDto.getId())) {
-			fixedCostDto.setUpdateDate(new Date());
+			Optional<FixedCost> entityInsert = fixedCostRepository.findById(fixedCostDto.getId());
+			if(entityInsert.isPresent()) {
+				fixedCostDto.setInsertId(entityInsert.get().getInsertId());
+				fixedCostDto.setInsertDate(entityInsert.get().getInsertDate());
+				fixedCostDto.setUpdateDate(new Date());
+			}else {
+				return null;
+			}
 		}else {
 			fixedCostDto.setInsertDate(new Date());
 		}

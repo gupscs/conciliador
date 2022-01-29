@@ -40,7 +40,7 @@
                 id="myinfo-identificationNo"
                 v-model="myinfo.identificationNo"
                 name="myinfo-identificationNo"
-                disabled
+                plaintext
               />
             </b-form-group>
           </b-col>
@@ -51,7 +51,7 @@
                 id="myinfo-updateId"
                 v-model="myinfo.updateId"
                 name="myinfo-updateId"
-                disabled
+                plaintext
               />
             </b-form-group>
           </b-col>
@@ -64,7 +64,7 @@
                 name="myinfo-updateDate"
                 :config="{ enableTime: true,dateFormat: 'Y-m-d H:i:S'}"
                  class="form-control"
-                 disabled
+                 plaintext
               />
             </b-form-group>
           </b-col>
