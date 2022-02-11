@@ -1,11 +1,10 @@
 package br.silveira.conciliador.integrator.mercadolivre.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource(value = {"classpath:app.properties"})
+//@PropertySource(value = {"classpath:config.properties"})
 public class MercadoLivreConfig {
 	
 	@Value("${mercadolivre.notification.topic.orders}")
