@@ -48,27 +48,28 @@
 				<version>1.11.3</version>
 				<configuration>
 					<nodeVersion>v16.13.1</nodeVersion>
+					<yarnVersion>v1.22.15</yarnVersion>
 					<workingDirectory>vue</workingDirectory> <!-- Diretorio dos arquivos vue -->
 					<installDirectory>node_installation</installDirectory><!-- Diretorio para instalar o node -->
 				</configuration>
 				<executions>
 					<execution>
-						<id>install node and npm</id>
+						<id>install node and yarn</id>
 						<goals>
-							<goal>install-node-and-npm</goal>
+							<goal>install-node-and-yarn</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>npm install</id>
+						<id>yarn install</id>
 						<goals>
-							<goal>npm</goal>
+							<goal>yarn</goal>
 						</goals>
 						<phase>generate-resources</phase>
 					</execution>
 					<execution>
-						<id>npm run build</id>
+						<id>yarn run build</id>
 						<goals>
-							<goal>npm</goal>
+							<goal>yarn</goal>
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
