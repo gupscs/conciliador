@@ -23,7 +23,7 @@
 	<repositories>
 		<repository>
 			<id>local-file-repo</id>
-			<url>file://${basedir}/lib</url>
+			<url>file://${basedir}\lib</url>
 		</repository>
 	</repositories>
 	<dependencies>
