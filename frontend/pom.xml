@@ -46,6 +46,11 @@
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
 				<version>1.11.3</version>
+				<configuration>
+					<nodeVersion>v16.13.1</nodeVersion>
+					<workingDirectory>vue</workingDirectory> <!-- Diretorio dos arquivos vue -->
+					<installDirectory>node_installation</installDirectory><!-- Diretorio para instalar o node -->
+				</configuration>
 				<executions>
 					<execution>
 						<id>install node and npm</id>
@@ -71,9 +76,6 @@
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<nodeVersion>v16.13.1</nodeVersion>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -88,7 +90,7 @@
 							<outputDirectory>${basedir}/target/classes/static</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/main/vue/dist</directory>
+									<directory>${basedir}/vue/dist</directory>
 									<filtering>false</filtering>
 								</resource>
 							</resources>
