@@ -17,6 +17,6 @@ export default [
   {
     title: 'Login',
     route: 'login',
-    icon: 'KeyIcon',
+    icon: 'KeyIcon', 
   },
 ]
