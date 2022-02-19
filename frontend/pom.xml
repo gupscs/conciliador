@@ -50,7 +50,8 @@
 					<nodeVersion>v16.13.1</nodeVersion>
 					<yarnVersion>v1.22.15</yarnVersion>
 					<workingDirectory>vue</workingDirectory> <!-- Diretorio dos arquivos vue -->
-					<installDirectory>node_installation</installDirectory><!-- Diretorio para instalar o node -->
+					<installDirectory>node_installation</installDirectory><!-- Diretorio 
+						para instalar o node -->
 				</configuration>
 				<executions>
 					<execution>
@@ -95,6 +96,26 @@
 									<filtering>false</filtering>
 								</resource>
 							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+
+						<configuration>
+							<includes>
+								<include>**</include>
+							</includes>
 						</configuration>
 					</execution>
 				</executions>
