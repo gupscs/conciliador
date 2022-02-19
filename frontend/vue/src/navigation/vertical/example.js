@@ -14,4 +14,9 @@ export default [
     route: 'test-page',
     icon: 'FileIcon',
   },
+  {
+    title: 'Login',
+    route: 'login',
+    icon: 'KeyIcon',
+  },
 ]
