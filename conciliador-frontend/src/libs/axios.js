@@ -11,7 +11,7 @@ const axiosIns = axios.create({
   // headers: {'X-Custom-Header': 'foobar'}
   baseURL: 'http://localhost:8099',
   timeout: 100000,
-  
+
 })
 
 Vue.prototype.$http = axiosIns

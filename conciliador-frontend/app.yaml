@@ -1,0 +1,5 @@
+runtime: nodejs16
+env: standard
+service: frontend
+manual_scaling:
+  instances: 1

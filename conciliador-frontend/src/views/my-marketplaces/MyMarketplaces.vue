@@ -1,11 +1,11 @@
 <template>
   <b-tabs
+    v-model="tabIndex"
     vertical
     content-class="col-12 col-md-9 mt-1 mt-md-0"
     pills
     nav-wrapper-class="col-md-3 col-12"
     nav-class="nav-left"
-    v-model="tabIndex"
   >
 
     <!-- Mercado Livre tab -->
@@ -15,7 +15,7 @@
         <span class="font-weight-bold">Mercado Livre</span>
       </template>
 
-      <mercado-livre/>
+      <mercado-livre />
     </b-tab>
 
     <!-- Shopee tab -->
@@ -28,7 +28,6 @@
       <shopee />
     </b-tab>
 
-  
   </b-tabs>
 </template>
 
@@ -47,7 +46,7 @@ export default {
   },
   data() {
     return {
-        tabIndex: parseInt(router.currentRoute.params.tabActived) ,
+      tabIndex: parseInt(router.currentRoute.params.tabActived),
     }
   },
   created() {

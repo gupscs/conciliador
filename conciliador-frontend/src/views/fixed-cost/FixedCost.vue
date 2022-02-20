@@ -2,7 +2,7 @@
   <div>
     <b-row>
       <b-col cols="12">
-        <fixed-cost-repeater/>
+        <fixed-cost-repeater />
       </b-col>
     </b-row>
   </div>

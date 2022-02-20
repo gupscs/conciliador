@@ -1,24 +1,23 @@
-import axios from "axios";
+import axios from 'axios'
 import useJwt from '@/auth/jwt/useJwt'
 
 const api = axios.create({
-    baseURL: "http://localhost:8099",
-    timeout: 10000,
-    headers: {'Authorization': 'Basic bXlhcHA6MTIz'}
-});
+  baseURL: 'http://localhost:8099',
+  timeout: 10000,
+  headers: { Authorization: 'Basic bXlhcHA6MTIz' },
+})
 
 // Request Interceptor
 api.interceptors.request.use(
-    config => {
+  config => {
+    const accessToken = useJwt.getToken()
+    if (accessToken) {
+      config.headers.Authorization = `${useJwt.jwtConfig.tokenType} ${accessToken}`
+    }
 
-        const accessToken = useJwt.getToken()
-        if (accessToken) {
-            config.headers.Authorization = `${useJwt.jwtConfig.tokenType} ${accessToken}`
-        }
-
-        return config
-    },
-    error => Promise.reject(error),
+    return config
+  },
+  error => Promise.reject(error),
 )
 
 /*

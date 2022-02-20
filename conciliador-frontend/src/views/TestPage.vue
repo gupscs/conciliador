@@ -8,11 +8,14 @@
       class="mb-0"
     >
       <div class="alert-body">
-        <feather-icon class="mr-25" icon="FrownIcon" />
-        <span class="ml-25"
-          >Algo deu errado!! Já estamos trabalhando para resolver, tente
-          novamente mais tarde</span
-        >
+        <feather-icon
+          class="mr-25"
+          icon="FrownIcon"
+        />
+        <span
+          class="ml-25"
+        >Algo deu errado!! Já estamos trabalhando para resolver, tente
+          novamente mais tarde</span>
       </div>
     </b-alert>
 
@@ -26,7 +29,7 @@
         Adicionar Nova Conta
       </b-button>
     </div>
-    <br />
+    <br>
     <!-- Users Tables -->
     <b-table
       responsive="sm"
@@ -48,12 +51,12 @@ import {
   BAlert,
   BFormInvalidFeedback,
   BCard,
-} from "bootstrap-vue";
-import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import api from "@api";
-import { BTable } from "bootstrap-vue";
-import Ripple from "vue-ripple-directive";
-import Moment from "moment";
+} from 'bootstrap-vue'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import api from '@api'
+import { BTable } from 'bootstrap-vue'
+import Ripple from 'vue-ripple-directive'
+import Moment from 'moment'
 
 export default {
   components: {
@@ -73,87 +76,87 @@ export default {
     return {
       fields: [
         {
-          label: "Usuário",
-          key: "mktPlaceUsername",
+          label: 'Usuário',
+          key: 'mktPlaceUsername',
           sortable: true,
         },
         {
-          label: "Id",
-          key: "mktPlaceUserId",
+          label: 'Id',
+          key: 'mktPlaceUserId',
           sortable: true,
         },
         {
-          label: "Inserido Por",
-          key: "insertId",
+          label: 'Inserido Por',
+          key: 'insertId',
           sortable: true,
         },
         {
-          label: "Inserido Em",
-          key: "insertDate",
-          formatter: "formatDate",
+          label: 'Inserido Em',
+          key: 'insertDate',
+          formatter: 'formatDate',
           sortable: true,
         },
         {
-          label: "Atualizado Por",
-          key: "updateId",
+          label: 'Atualizado Por',
+          key: 'updateId',
           sortable: true,
         },
         {
-          label: "Atualizado Em",
-          key: "updateDate",
-          formatter: "formatDate",
+          label: 'Atualizado Em',
+          key: 'updateDate',
+          formatter: 'formatDate',
           sortable: true,
         },
         {
-          label: "Ativo/Desativado",
-          key: "enable",
+          label: 'Ativo/Desativado',
+          key: 'enable',
           sortable: true,
         },
       ],
       items: [],
       showDismissibleErrorAlert: false,
-    };
+    }
   },
   created() {
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userData = JSON.parse(localStorage.getItem('userData'))
     api
       .get(
-        `/mktplace-integrator/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`
+        `/mktplace-integrator/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`,
       )
-      .then((response) => {
-        this.items = response.data;
+      .then(response => {
+        this.items = response.data
       })
-      .catch((error) => {
-        this.showDismissibleErrorAlert = true;
-        console.log(error);
-      });
+      .catch(error => {
+        this.showDismissibleErrorAlert = true
+        console.log(error)
+      })
   },
   methods: {
     formatDate(value) {
-      return Moment(String(value)).format("DD/MM/YYYY hh:mm:ss");
+      return Moment(String(value)).format('DD/MM/YYYY hh:mm:ss')
     },
     confirmText() {
       this.$swal({
-        title: "Confirme para continuar",
-        text: "Você será redirecionado para o site do Mercado Livre para autenticação da conta.",
-        icon: "warning",
+        title: 'Confirme para continuar',
+        text: 'Você será redirecionado para o site do Mercado Livre para autenticação da conta.',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Sim, pode me redirecionar",
+        confirmButtonText: 'Sim, pode me redirecionar',
         customClass: {
-          confirmButton: "btn btn-primary",
-          cancelButton: "btn btn-outline-danger ml-1",
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
         },
         buttonsStyling: false,
-      }).then((result) => {
+      }).then(result => {
         if (result.value) {
           /*
           //ler os parametros da aplicacao id (criar novo webservice)
           //concatenar os parametros na url do mercado livre
           */
-          window.location.href = "https://google.com/contact";
+          window.location.href = 'https://google.com/contact'
         }
-      });
+      })
     },
   },
-};
+}
 </script>

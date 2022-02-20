@@ -2,6 +2,7 @@ package br.silveira.conciliador.apigateway.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -14,6 +15,9 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
+	
+	@Value("${cors.allowedOrigins}")
+	private String ALLOWED_ORIGINS;
 
 	// TODO PASSAR PARA CONFIGURAÇÕES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
 	// ACESSO) - Cadastro de ROLE x URL e outro de Grupos x ROLE
@@ -43,7 +47,9 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+		//corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+		
+		corsConfig.setAllowedOrigins(Arrays.asList(ALLOWED_ORIGINS));
 		corsConfig.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "PATCH"));
 		corsConfig.setAllowCredentials(true);
 		corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));

@@ -4,62 +4,92 @@
       <!-- Brand logo-->
       <b-link class="brand-logo">
         <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">Vuexy</h2>
+        <h2 class="brand-text text-primary ml-1">
+          Vuexy
+        </h2>
       </b-link>
       <!-- /Brand logo-->
 
       <!-- Left Text-->
-      <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
+      <b-col
+        lg="8"
+        class="d-none d-lg-flex align-items-center p-5"
+      >
         <div
           class="w-100 d-lg-flex align-items-center justify-content-center px-5"
         >
-          <b-img fluid :src="imgUrl" alt="Login V2" />
+          <b-img
+            fluid
+            :src="imgUrl"
+            alt="Login V2"
+          />
         </div>
       </b-col>
       <!-- /Left Text-->
 
       <!-- Login-->
-      <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
-        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
-          <b-card-title title-tag="h2" class="font-weight-bold mb-1">
+      <b-col
+        lg="4"
+        class="d-flex align-items-center auth-bg px-2 p-lg-5"
+      >
+        <b-col
+          sm="8"
+          md="6"
+          lg="12"
+          class="px-xl-2 mx-auto"
+        >
+          <b-card-title
+            title-tag="h2"
+            class="font-weight-bold mb-1"
+          >
             Welcome to Vuexy! 👋
           </b-card-title>
           <b-card-text class="mb-2">
             Please sign-in to your account and start the adventure
           </b-card-text>
-           <!-- global messages -->
+          <!-- global messages -->
           <b-alert
             v-model="showDismissibleErrorAlert"
             variant="danger"
             dismissible
             class="mb-0"
           >
-          <div class="alert-body">
-            <feather-icon class="mr-25" icon="FrownIcon" />
-            <span class="ml-25">Algo deu errado!! Já estamos trabalhando para resolver, tente novamente mais tarde</span
-            >
-          </div>
+            <div class="alert-body">
+              <feather-icon
+                class="mr-25"
+                icon="FrownIcon"
+              />
+              <span class="ml-25">Algo deu errado!! Já estamos trabalhando para resolver, tente novamente mais tarde</span>
+            </div>
           </b-alert>
-<!-- Bad Credentials messages -->
-            <b-alert
+          <!-- Bad Credentials messages -->
+          <b-alert
             v-model="showBadCredentialsAlert"
             v-height-fade.appear
             variant="warning"
             dismissible
             class="mb-0"
           >
-          <div class="alert-body">
-            <feather-icon class="mr-25" icon="AlertTriangleIcon" />
-            <span class="ml-25">Usuário/Senha inválidos!! Verifique e tente novamente</span
-            >
-          </div>
+            <div class="alert-body">
+              <feather-icon
+                class="mr-25"
+                icon="AlertTriangleIcon"
+              />
+              <span class="ml-25">Usuário/Senha inválidos!! Verifique e tente novamente</span>
+            </div>
           </b-alert>
 
           <!-- form -->
           <validation-observer ref="loginValidation">
-            <b-form class="auth-login-form mt-2" @submit.prevent>
+            <b-form
+              class="auth-login-form mt-2"
+              @submit.prevent
+            >
               <!-- email -->
-              <b-form-group label="Email" label-for="login-email">
+              <b-form-group
+                label="Email"
+                label-for="login-email"
+              >
                 <validation-provider
                   #default="{ errors }"
                   name="Email"
@@ -153,8 +183,8 @@
 <script>
 /* eslint-disable global-require */
 /* eslint-disable global-require */
-import { ValidationProvider, ValidationObserver } from "vee-validate";
-import VuexyLogo from "@core/layouts/components/Logo.vue";
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   BRow,
   BCol,
@@ -171,16 +201,16 @@ import {
   BButton,
   BAlert,
   VBTooltip,
-} from "bootstrap-vue";
-import { required, email } from "@validations";
-import { togglePasswordVisibility } from "@core/mixins/ui/forms";
-import store from "@/store/index";
-import { getHomeRouteForLoggedInUser } from "@/auth/utils";
-import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import api from "@api";
-import qs from "qs";
-import useJwt from "@/auth/jwt/useJwt";
-import { heightFade } from '@core/directives/animations';
+} from 'bootstrap-vue'
+import { required, email } from '@validations'
+import { togglePasswordVisibility } from '@core/mixins/ui/forms'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import api from '@api'
+import qs from 'qs'
+import { heightFade } from '@core/directives/animations'
+import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+import useJwt from '@/auth/jwt/useJwt'
+import store from '@/store/index'
 
 export default {
   components: {
@@ -202,100 +232,100 @@ export default {
     ValidationObserver,
     BAlert,
   },
-   directives: {
+  directives: {
     'height-fade': heightFade,
   },
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      status: "",
-      password: "",
-      userEmail: "",
-      sideImg: require("@/assets/images/pages/login-v2.svg"),
+      status: '',
+      password: '',
+      userEmail: '',
+      sideImg: require('@/assets/images/pages/login-v2.svg'),
       // validation rulesimport store from '@/store/index'
       required,
       email,
       showDismissibleErrorAlert: false,
       showBadCredentialsAlert: false,
-    };
+    }
   },
-  
+
   computed: {
     passwordToggleIcon() {
-      return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
+      return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
     imgUrl() {
-      if (store.state.appConfig.layout.skin === "dark") {
+      if (store.state.appConfig.layout.skin === 'dark') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.sideImg = require("@/assets/images/pages/login-v2-dark.svg");
-        return this.sideImg;
+        this.sideImg = require('@/assets/images/pages/login-v2-dark.svg')
+        return this.sideImg
       }
-      return this.sideImg;
+      return this.sideImg
     },
   },
   methods: {
     validationForm() {
-      this.showDismissibleErrorAlert= false;
-      this.showBadCredentialsAlert= false;
-      this.$refs.loginValidation.validate().then((success) => {
+      this.showDismissibleErrorAlert = false
+      this.showBadCredentialsAlert = false
+      this.$refs.loginValidation.validate().then(success => {
         if (success) {
-          useJwt.setToken("");
-          var data = qs.stringify({
+          useJwt.setToken('')
+          const data = qs.stringify({
             username: this.userEmail,
             password: this.password,
-            grant_type: "password",
-          });
-          var config = {
-            method: "post",
-            url: "/oauth/oauth/token",
+            grant_type: 'password',
+          })
+          const config = {
+            method: 'post',
+            url: '/oauth/oauth/token',
             headers: {
-              Authorization: "Basic bXlhcHA6MTIz",
-              "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: 'Basic bXlhcHA6MTIz',
+              'Content-Type': 'application/x-www-form-urlencoded',
             },
-            data: data,
-          };
+            data,
+          }
           api(config)
-            .then((response) => {
-              useJwt.setToken(response.data.access_token);
+            .then(response => {
+              useJwt.setToken(response.data.access_token)
               api
                 .get(
-                  `/sysadmin/sysadmin/findUserFrontModelByUsername/${this.userEmail}`
+                  `/sysadmin/sysadmin/findUserFrontModelByUsername/${this.userEmail}`,
                 )
-                .then((response) => {
-                  const userData = response.data;
-                  localStorage.setItem("userData", JSON.stringify(userData));
-                  //this.$ability.update(userData.ability)
+                .then(response => {
+                  const userData = response.data
+                  localStorage.setItem('userData', JSON.stringify(userData))
+                  // this.$ability.update(userData.ability)
                   this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
                     .then(() => {
                       this.$toast({
                         component: ToastificationContent,
-                        position: "top-right",
+                        position: 'top-right',
                         props: {
                           title: `Bem vindo ${
                             userData.fullName || userData.username
                           }`,
-                          icon: "CoffeeIcon",
-                          variant: "success",
-                          text: `Você está logado, agora acompanhe seus lucros de perto!`,
+                          icon: 'CoffeeIcon',
+                          variant: 'success',
+                          text: 'Você está logado, agora acompanhe seus lucros de perto!',
                         },
-                      });
-                    });
-                });
+                      })
+                    })
+                })
             })
-            .catch((error) => {
-              useJwt.setToken("");
-              console.log(error.response);
-              if(error.response.data.error == "invalid_grant"){
-                this.showBadCredentialsAlert = true;
-              }else{
-                this.showDismissibleErrorAlert = true;
+            .catch(error => {
+              useJwt.setToken('')
+              console.log(error.response)
+              if (error.response.data.error == 'invalid_grant') {
+                this.showBadCredentialsAlert = true
+              } else {
+                this.showDismissibleErrorAlert = true
               }
-            });
+            })
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss">

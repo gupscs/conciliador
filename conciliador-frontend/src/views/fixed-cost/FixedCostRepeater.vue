@@ -8,14 +8,17 @@
       class="mb-0"
     >
       <div class="alert-body">
-        <feather-icon class="mr-25" icon="FrownIcon" />
-        <span class="ml-25"
-          >Algo deu errado!! Já estamos trabalhando para resolver, tente
-          novamente mais tarde</span
-        >
+        <feather-icon
+          class="mr-25"
+          icon="FrownIcon"
+        />
+        <span
+          class="ml-25"
+        >Algo deu errado!! Já estamos trabalhando para resolver, tente
+          novamente mais tarde</span>
       </div>
     </b-alert>
-    <br />
+    <br>
     <div>
       <div class="custom-search d-flex justify-content-end">
         <b-button
@@ -23,7 +26,10 @@
           variant="primary"
           @click="repeateAgain"
         >
-          <feather-icon icon="PlusIcon" class="mr-25" />
+          <feather-icon
+            icon="PlusIcon"
+            class="mr-25"
+          />
           <span>Adicionar Custo</span>
         </b-button>
       </div>
@@ -36,47 +42,60 @@
         <!-- Row Loop -->
         <b-row
           v-for="(item, index) in items"
-          :itemId="item.itemId"
           :key="item.itemId"
           ref="row"
+          :item-id="item.itemId"
         >
           <b-col cols="12">
-            <hr />
+            <hr>
           </b-col>
           <!-- Cost Name -->
           <b-col md="6">
-            <b-form-group label="Custo" label-for="item-costName">
+            <b-form-group
+              label="Custo"
+              label-for="item-costName"
+            >
               <b-form-input
                 id="item-costName"
+                v-model="item.costName"
                 type="text"
                 placeholder="Nome do Custo"
                 :formatter="formatterUpperCase"
-                v-model="item.costName"
               />
             </b-form-group>
           </b-col>
 
           <!-- Cost -->
           <b-col md="4">
-            <b-form-group label="Valor" label-for="item-cost">
+            <b-form-group
+              label="Valor"
+              label-for="item-cost"
+            >
               <b-form-input
                 id="item-cost"
+                v-model="item.cost"
                 type="number"
                 placeholder="Valor do custo mensal (155.38)"
-                v-model="item.cost"
               />
             </b-form-group>
           </b-col>
 
           <!-- Remove Button -->
-          <b-col lg="2" md="2" class="mb-50 justify-content-end">
+          <b-col
+            lg="2"
+            md="2"
+            class="mb-50 justify-content-end"
+          >
             <b-button
               v-ripple.400="'rgba(234, 84, 85, 0.15)'"
               variant="outline-primary"
               class="mt-0 mt-md-2"
               @click="saveItem(index)"
             >
-              <feather-icon icon="XIcon" class="mr-25" />
+              <feather-icon
+                icon="XIcon"
+                class="mr-25"
+              />
               <span>Salvar</span>
             </b-button>
             &nbsp
@@ -86,7 +105,10 @@
               class="mt-0 mt-md-2"
               @click="removeItem(index)"
             >
-              <feather-icon icon="XIcon" class="mr-25" />
+              <feather-icon
+                icon="XIcon"
+                class="mr-25"
+              />
               <span>Delete</span>
             </b-button>
           </b-col>
@@ -109,12 +131,12 @@ import {
   BButton,
   BCard,
   BAlert,
-} from "bootstrap-vue";
-import { heightTransition } from "@core/mixins/ui/transition";
-import Ripple from "vue-ripple-directive";
-import { codeBasic } from "./code";
-import api from "@api";
-import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+} from 'bootstrap-vue'
+import { heightTransition } from '@core/mixins/ui/transition'
+import Ripple from 'vue-ripple-directive'
+import api from '@api'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import { codeBasic } from './code'
 
 export default {
   components: {
@@ -137,27 +159,27 @@ export default {
       nextTodoId: 2,
       codeBasic,
       showDismissibleErrorAlert: false,
-      username: "",
-      companyId: "",
-    };
+      username: '',
+      companyId: '',
+    }
   },
   mounted() {
-    this.initTrHeight();
+    this.initTrHeight()
   },
   created() {
-    window.addEventListener("resize", this.initTrHeight);
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    this.username = userData.username;
-    this.companyId = userData.companyId;
+    window.addEventListener('resize', this.initTrHeight)
+    const userData = JSON.parse(localStorage.getItem('userData'))
+    this.username = userData.username
+    this.companyId = userData.companyId
     api
       .get(
-        `/organizational/organizational/getFixedCostByCompanyId/${userData.companyId}`
+        `/organizational/organizational/getFixedCostByCompanyId/${userData.companyId}`,
       )
-      .then((response) => {
-        const listGetItem = response.data;
+      .then(response => {
+        const listGetItem = response.data
         if (listGetItem) {
-          var count = 1;
-          for (let item of response.data) {
+          let count = 1
+          for (const item of response.data) {
             this.items.push({
               itmeId: count,
               id: item.id,
@@ -168,106 +190,106 @@ export default {
               updateId: this.username,
               updateDate: item.updateDate,
               companyId: item.companyId,
-            });
+            })
             this.$nextTick(() => {
-              this.trAddHeight(this.$refs.row[0].offsetHeight);
-            });
-            count++;
+              this.trAddHeight(this.$refs.row[0].offsetHeight)
+            })
+            count++
           }
         } else {
           this.items.push({
             itmeId: 1,
             id: null,
-            costName: "",
+            costName: '',
             cost: null,
             insertId: this.username,
             companyId: this.companyId,
-          });
+          })
         }
       })
-      .catch((error) => {
-        this.showDismissibleErrorAlert = true;
-        console.error(error);
-      });
+      .catch(error => {
+        this.showDismissibleErrorAlert = true
+        console.error(error)
+      })
   },
   destroyed() {
-    window.removeEventListener("resize", this.initTrHeight);
+    window.removeEventListener('resize', this.initTrHeight)
   },
   methods: {
     formatterUpperCase(value) {
-      return value.toUpperCase();
+      return value.toUpperCase()
     },
     repeateAgain() {
       this.items.push({
         itemId: (this.nextTodoId += this.nextTodoId),
-        costName: "",
+        costName: '',
         cost: null,
         insertId: this.username,
         companyId: this.companyId,
-      });
+      })
 
       this.$nextTick(() => {
-        this.trAddHeight(this.$refs.row[0].offsetHeight);
-      });
+        this.trAddHeight(this.$refs.row[0].offsetHeight)
+      })
     },
     removeItem(index) {
       this.$bvModal
-        .msgBoxConfirm("O Custo será deletado, Ok?", {
-          cancelVariant: "outline-secondary",
+        .msgBoxConfirm('O Custo será deletado, Ok?', {
+          cancelVariant: 'outline-secondary',
           centered: true,
-          title: "Por favor, confirmar",
+          title: 'Por favor, confirmar',
         })
-        .then((value) => {
+        .then(value => {
           if (value) {
             if (this.items[index].id) {
               api
                 .delete(
-                  `/organizational/organizational/deleteFixedCost/${this.items[index].id}`
+                  `/organizational/organizational/deleteFixedCost/${this.items[index].id}`,
                 )
-                .then((response) => {
-                  this.items.splice(index, 1);
-                  this.trTrimHeight(this.$refs.row[0].offsetHeight);
+                .then(response => {
+                  this.items.splice(index, 1)
+                  this.trTrimHeight(this.$refs.row[0].offsetHeight)
                 })
-                .catch((error) => {
-                  this.showDismissibleErrorAlert = true;
-                  console.error(error);
-                });
+                .catch(error => {
+                  this.showDismissibleErrorAlert = true
+                  console.error(error)
+                })
             } else {
-              this.items.splice(index, 1);
-              this.trTrimHeight(this.$refs.row[0].offsetHeight);
+              this.items.splice(index, 1)
+              this.trTrimHeight(this.$refs.row[0].offsetHeight)
             }
           }
-        });
+        })
     },
     saveItem(index) {
-      this.items[index].updateId = this.username;
+      this.items[index].updateId = this.username
       api
-        .post("/organizational/organizational/saveFixedCost", this.items[index])
-        .then((response) => {
-          this.items[index].id = response.data.id;
-          this.items[index].insertDate = response.data.insertDate;
+        .post('/organizational/organizational/saveFixedCost', this.items[index])
+        .then(response => {
+          this.items[index].id = response.data.id
+          this.items[index].insertDate = response.data.insertDate
           this.$toast({
             component: ToastificationContent,
             props: {
-              title: "Salvo com sucesso",
-              icon: "EditIcon",
-              variant: "success",
+              title: 'Salvo com sucesso',
+              icon: 'EditIcon',
+              variant: 'success',
             },
-          });
+          })
         })
-        .catch((error) => {
-          this.showDismissibleErrorAlert = true;
-          console.error(error);
-        });
+        .catch(error => {
+          this.showDismissibleErrorAlert = true
+          console.error(error)
+        })
     },
     initTrHeight() {
-      this.trSetHeight(null);
+      this.trSetHeight(null)
       this.$nextTick(() => {
-        this.trSetHeight(this.$refs.form.scrollHeight);
-      });
+        this.trSetHeight(this.$refs.form.scrollHeight)
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
