@@ -2,7 +2,7 @@ import axios from "axios";
 import useJwt from '@/auth/jwt/useJwt'
 
 const api = axios.create({
-    baseURL: "http://localhost:8090",
+    baseURL: "http://localhost:8099",
     timeout: 10000,
     headers: {'Authorization': 'Basic bXlhcHA6MTIz'}
 });
