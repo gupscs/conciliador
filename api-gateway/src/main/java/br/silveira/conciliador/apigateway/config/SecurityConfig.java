@@ -17,7 +17,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 	
 	@Value("${cors.allowedOrigins}")
-	private String ALLOWED_ORIGINS;
+	private String[] ALLOWED_ORIGINS;
 
 	// TODO PASSAR PARA CONFIGURAÇÕES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
 	// ACESSO) - Cadastro de ROLE x URL e outro de Grupos x ROLE
