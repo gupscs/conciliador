@@ -31,7 +31,7 @@ import br.silveira.conciliador.integrator.service.QueuePaymentsService;
 import br.silveira.conciliador.integrator.service.QueueShipmentsService;
 
 @RestController
-@RequestMapping("/mktplace-integrator/mercado-livre")
+@RequestMapping("/mktplace-int0egrator/mercado-livre")
 @CrossOrigin(origins = "*")	
 public class MercadoLivreResource {
 
