@@ -10,4 +10,8 @@ public interface OrderService {
 
 	public void processOrder(List<OrderProcessDto> dto) throws Exception;
 
+	public void downloadOrder(OrderProcessDto orderProcessDto);
+	
+	public void downloadOrder(List<OrderProcessDto>  orderProcessDtos);
+
 }

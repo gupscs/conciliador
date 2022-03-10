@@ -1,9 +1,7 @@
 package br.silveira.conciliador.integrator.mercadolivre.service.impl;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,11 +25,13 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 	
 	private static final Logger log = LogManager.getLogger(OrderMercadoLivreServiceImpl.class);
 
-	private static final String BEARER = "Bearer ";
+	private static final String PROCESS_MSG_START_DOWNLOAD = "[Queue Id: %s] - Order Id: %s START DOWNLOAD";
+	
+	private static final String PROCESS_MSG_START_PROCESS = "[Queue Id: %s] - Order Id: %s START PROCESS";
 
-	private static final String PROCESS_MSG_START = "[Queue Id: %s] - Order Id: %s START";
-
-	private static final String PROCESS_MSG_END = "[Queue Id: %s] - Order Id: %s END";
+	private static final String PROCESS_MSG_PROCESS_END = "[Queue Id: %s] - Order Id: %s PROCESS END";
+	
+	private static final String PROCESS_MSG_DOWNLOAD_END = "[Queue Id: %s] - Order Id: %s DOWNLOAD END";
 
 	private static final String PROCESS_MSG_END_WITH_ERROR = "[Queue Id: %s] - Order Id: %s END (WITH ERRORS!!!)";
 
@@ -39,42 +39,94 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 
 	private static final String PROCESS_MSG_ON_GOING = "[Queue Id: %s] - Order Id: %s process start";
 
+	private static final Integer PROCESS_STATUS_DOWNLOAD_DONE = 10;
+	
 	private static final Integer PROCESS_STATUS_ON_GOING = 1;
 
 	private static final Integer PROCESS_STATUS_ERROR = 99;
 
-	private static final Integer PROCESS_STATUS_SUCCESS = 2;
+	private static final Integer PROCESS_STATUS_SUCCESS = 100;
 
 	@Autowired
 	private OrderResource orderController;
 
 	@Autowired
 	private QueueOrderService queueOrderService;
-
+	
+	//TODO REFATORAR PARA ELIMINAR O DTO QueueDto E MANTER APENAS O OrderProcessDto , para isso encontrar um modo de fazer update em um campo especifico do mongodb
+	
 	@Override
-	public void processOrder(OrderProcessDto orderProcessDto) {
-		log.info(String.format(PROCESS_MSG_START, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
+	public void downloadOrder(OrderProcessDto orderProcessDto) {
+		log.info(String.format(PROCESS_MSG_START_DOWNLOAD, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
 		QueueDto dto = validateAndMapperToDto(orderProcessDto);
-		if(dto == null) return;
-		
 		try {
 			updateProcessStatusOnGoing(dto);
-			MercadoLivreOrderDto order = mercadoLivreService.getOrder(BEARER + orderProcessDto.getApiToken(),orderProcessDto.getDocumentId());
+			MercadoLivreOrderDto order = mercadoLivreService.getOrder(orderProcessDto.getApiToken(),orderProcessDto.getDocumentId());
 			if (order == null) {
 				updateQueueErrorNotFound(dto);
 				log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()));
 			} else {
 				dto.setDocumentOriginalData(order);
-				OrderDto orderDto = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
-				orderController.saveOrder(orderDto);
-				updateQueueSuccessProcess(dto);
-				log.info(String.format(PROCESS_MSG_END, dto.getId(),dto.getDocumentId()));
+				orderProcessDto.setDocumentOriginalData(order);
+				updateQueueSuccessDownload(dto);
+				log.info(String.format(PROCESS_MSG_DOWNLOAD_END, dto.getId(),dto.getDocumentId()));
 			}
 		} catch (Exception e) {
 			log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()), e);
 			updateQueueExceptionError(dto, e);
 		}
 	}
+	
+
+	@Override
+	public void processOrder(OrderProcessDto orderProcessDto) {		
+		log.info(String.format(PROCESS_MSG_START_PROCESS, orderProcessDto.getQueueOrdersId(), orderProcessDto.getDocumentId()));
+		QueueDto dto = validateAndMapperToDto(orderProcessDto);
+		
+		try {
+			updateProcessStatusOnGoing(dto);
+			
+			if(orderProcessDto.getDocumentOriginalData() == null) {
+				downloadOrder(orderProcessDto);
+			}
+			
+			MercadoLivreOrderDto order = (MercadoLivreOrderDto) orderProcessDto.getDocumentOriginalData();
+			OrderDto orderDto = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
+			orderController.saveOrder(orderDto);
+
+			updateQueueSuccessProcess(dto);
+			log.info(String.format(PROCESS_MSG_PROCESS_END, dto.getId(),dto.getDocumentId()));
+		
+		} catch (Exception e) {
+			log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()), e);
+			updateQueueExceptionError(dto, e);
+		}
+	}
+	
+	@Override
+	public void processOrder(List<OrderProcessDto> dto) throws Exception {
+		for (OrderProcessDto orderProcessDto : dto) {
+			try {
+				processOrder(orderProcessDto);
+			}catch(Exception e) {
+				log.warn("Error during process, check the logs!!!");
+			}
+		}
+	}
+	
+	@Override
+	public void downloadOrder(List<OrderProcessDto> orderProcessDtos) {
+		for (OrderProcessDto orderProcessDto : orderProcessDtos) {
+			try {
+				downloadOrder(orderProcessDto);
+			}catch(Exception e) {
+				log.warn("Error during process, check the logs!!!");
+			}
+		}
+		
+	}
+	
+	
 
 	private QueueDto validateAndMapperToDto(OrderProcessDto orderProcessDto) {
 		if (orderProcessDto == null) {
@@ -90,6 +142,18 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			}
 		}
 		return null;
+	}
+	
+	private void updateQueueSuccessDownload(QueueDto queueDto) {
+		try {
+			queueDto.setProcessMsg("");
+			queueDto.setProcessStatus(PROCESS_STATUS_DOWNLOAD_DONE);
+			queueDto.setUpdateDate(new Date());
+			queueOrderService.updateDocumentOriginalDataAndProcessStatusAndProcessMsg(queueDto);
+		} catch (Exception e1) {
+			log.error("ERROR TO UPDATE STATUS", e1);
+		}
+		
 	}
 
 	private void updateQueueSuccessProcess(QueueDto queueDto) {
@@ -130,33 +194,6 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		queueDto.setProcessStatus(PROCESS_STATUS_ERROR);
 		queueDto.setUpdateDate(new Date());
 		queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
-	}
-
-
-	@Override
-	public void processOrder(List<OrderProcessDto> dto) throws Exception {
-		Map<Long, String> tokens = getTokensByUserId(dto);
-		for (OrderProcessDto orderProcessDto : dto) {
-			try {
-				MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
-				orderProcessDto.setApiToken(tokens.get(notificDto.getUser_id()));
-				processOrder(orderProcessDto);
-			}catch(Exception e) {
-				log.warn("Error during process, check the logs!!!");
-			}
-		}
-		
-	}
-
-	private Map<Long, String> getTokensByUserId(List<OrderProcessDto> dto) throws Exception {
-		Map<Long, String> tokens = new HashMap<Long, String>();
-		for (OrderProcessDto orderProcessDto : dto) {
-			MercadoLivreNotificationDto notificDto = (MercadoLivreNotificationDto) orderProcessDto.getNotificationOriginalData();
-			if(!tokens.containsKey(notificDto.getUser_id())) {
-				tokens.put(notificDto.getUser_id(), getToken(orderProcessDto.getCompanyId(), notificDto.getUser_id()));
-			}
-		}
-		return tokens;
 	}
 
 }

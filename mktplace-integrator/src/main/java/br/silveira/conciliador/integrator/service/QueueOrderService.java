@@ -12,6 +12,10 @@ public interface QueueOrderService {
 
 	public void updateProcessStatusAndProcessMsg(QueueDto dto) throws Exception;
 
-	public void updateDocumentOriginalData(QueueDto dto) throws Exception;
+	public void updateDocumentOriginalDataAndProcessStatusAndProcessMsg(QueueDto dto) throws Exception;
+
+	public void downloadAllQueueOrder(String companyId);
+
+	public void downloadQueueOrder(String queueOrderId) throws Exception;
 
 }

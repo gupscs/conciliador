@@ -58,6 +58,29 @@ public class MktplaceIntegratorResource {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
+	
+	
+	@PostMapping("/downloadOrder/{queueOrderId}")
+	public ResponseEntity<Void> downloadOrder(@PathVariable(value = "queueOrderId") String queueOrderId) {
+		try {
+			queueOrderService.downloadQueueOrder(queueOrderId);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			log.error("Error to download Queue Order Id: " + queueOrderId, e);
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+
+	@PostMapping("/downloadAllOrder/{companyId}")
+	public ResponseEntity<Void> downloadAllOrder(@PathVariable(value = "companyId") String companyId) {
+		try {
+			queueOrderService.downloadAllQueueOrder(companyId);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			log.error("Error to download Orders - Company Id: " + companyId, e);
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
 
 	@PostMapping("/createMktPlaceIntegrationConfigMercadoLivre")
 	public ResponseEntity<Void> createMktPlaceIntegrationConfigMercadoLivre(@RequestBody MktPlaceIntegrationConfigDto dto) {

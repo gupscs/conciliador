@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserInfoDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserMeDto;
@@ -37,15 +38,12 @@ public interface MercadoLivreRestService {
 	@RequestMapping(method = RequestMethod.GET, value = "/users/{User_id}", produces = "application/json")
 	public MercadoLivreUserInfoDto getUserInfo(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("User_id") Integer userId);
 		
+	@RequestMapping(method = RequestMethod.GET, value = "/shipments/{SHIPMENT_ID}", produces = "application/json")
+	public Object getShipment(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("SHIPMENT_ID") String shipmentId);
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/collections/{PAYMENT_ID}", produces = "application/json")
+	public Object getPayment(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("PAYMENT_ID") String paymentId);
 	
-	/**
-	class Configuration {
-        @Bean
-        Encoder feignFormEncoder(ObjectFactory<HttpMessageConverters> converters) {
-            return new SpringFormEncoder(new SpringEncoder(converters));
-        }
-    }
-    **/
+
 	
 }

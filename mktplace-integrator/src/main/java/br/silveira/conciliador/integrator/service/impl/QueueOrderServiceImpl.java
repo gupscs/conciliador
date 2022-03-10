@@ -1,6 +1,7 @@
 package br.silveira.conciliador.integrator.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 	private static final Logger log = LogManager.getLogger(QueueOrderServiceImpl.class);
 	
 	private static final Integer PENDING_PROCESS_STATUS = 0;
+	
+	private static final Integer DOWNLOAD_DONE_STATUS = 10;
 	
 	private static final String QUEUE_ID_NOT_FOUND = "Order Queue Id: %s not found";
 	
@@ -59,7 +62,7 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 	}
 
 	@Override
-	public void updateDocumentOriginalData(QueueDto dto) throws Exception {
+	public void updateDocumentOriginalDataAndProcessStatusAndProcessMsg(QueueDto dto) throws Exception {
 		// TODO Auto-generated method stub
 		Optional<QueueOrders> update = queueOrdersRepository.findById(dto.getId());
 		if (!update.isPresent()) {
@@ -67,6 +70,8 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 		}
 		QueueOrders queueOrders = update.get();
 		queueOrders.setDocumentOriginalData(dto.getDocumentOriginalData());
+		queueOrders.setProcessStatus(dto.getProcessStatus());
+		queueOrders.setProcessMsg(dto.getProcessMsg());
 		queueOrders.setUpdateDate(new Date());
 		queueOrders.setUpdateId(dto.getUpdateId());
 		queueOrdersRepository.save(queueOrders);
@@ -74,7 +79,8 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 
 	@Override
 	public void processAllQueueOrder(String companyId) {
-		List<QueueOrders> queueOrdersPending = queueOrdersRepository.findByCompanyIdAndProcessStatus(companyId, PENDING_PROCESS_STATUS);
+		Integer[] processStatus = new Integer[]{PENDING_PROCESS_STATUS, DOWNLOAD_DONE_STATUS};
+		List<QueueOrders> queueOrdersPending = queueOrdersRepository.findByCompanyIdAndListProcessStatus(companyId, Arrays.asList(processStatus));
 		if(queueOrdersPending != null && queueOrdersPending.isEmpty()) {
 			Map<MktPlaceEnum, List<OrderProcessDto>> orderSeparatedByMktPlace = converteEntityToMap(queueOrdersPending);
 			for (MktPlaceEnum mktPlaceEnum : orderSeparatedByMktPlace.keySet()) {
@@ -112,4 +118,31 @@ public class QueueOrderServiceImpl extends CommonServiceImpl implements QueueOrd
 
 	}
 
+	@Override
+	public void downloadAllQueueOrder(String companyId) {
+		List<QueueOrders> queueOrdersPending = queueOrdersRepository.findByCompanyIdAndProcessStatus(companyId, PENDING_PROCESS_STATUS);
+		if(queueOrdersPending != null && !queueOrdersPending.isEmpty()) {
+			Map<MktPlaceEnum, List<OrderProcessDto>> orderSeparatedByMktPlace = converteEntityToMap(queueOrdersPending);
+			for (MktPlaceEnum mktPlaceEnum : orderSeparatedByMktPlace.keySet()) {
+				try {
+					orderServiceFactory.getImpl(mktPlaceEnum).downloadOrder( orderSeparatedByMktPlace.get(mktPlaceEnum));
+				}catch(Exception e) {
+					log.error("Error to download All Queue Order for Company Id: "+companyId, e);
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void downloadQueueOrder(String queueOrderId) throws Exception {
+		Optional<QueueOrders> entity = queueOrdersRepository.findById(queueOrderId);
+		if(entity.isPresent()) {
+			 OrderProcessDto dto = QueueDtoMapper.mapperToOrderProcessDto(entity.get());
+			 orderServiceFactory.getImpl(dto.getMarketPlace()).downloadOrder(dto);	
+		}else {
+			throw new Exception(String.format(QUEUE_ID_NOT_FOUND, queueOrderId));
+		}
+		
+	}
 }

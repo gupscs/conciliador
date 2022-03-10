@@ -16,6 +16,8 @@ public class MercadoLivreServiceCommon {
 	
 	private static final String  REFRESH_TOKEN = "refresh_token";
 	
+	private static final String BEARER = "Bearer ";
+	
 	@Autowired
 	MktPlaceIntegrationConfigRepository mktPlaceIntegrationConfigRepository;
 	
@@ -47,7 +49,7 @@ public class MercadoLivreServiceCommon {
 			apiToken = token.getAccess_token();
 		}
 		
-		return apiToken;
+		return BEARER+apiToken;
 	}
 
 }

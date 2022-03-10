@@ -13,4 +13,9 @@ public interface QueueOrdersRepository extends MongoRepository<QueueOrders, Stri
 	
 	@Query("{companyId: ?0, processStatus: ?1}")      
 	public List<QueueOrders> findByCompanyIdAndProcessStatus(String companyId, Integer processStatus);
+	
+	
+	@Query("{companyId: ?0, processStatus: ?1}")      
+	public List<QueueOrders> findByCompanyIdAndListProcessStatus(String companyId, List<Integer> processStatus);
+
 }
