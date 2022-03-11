@@ -49,5 +49,23 @@ export default [
             },
           ],
         },
+      },
+      {
+        path: '/item-cost/itemCost',
+        name: 'item-cost',
+        component: () => import('@/views/item-cost/ItemCost.vue'),
+        meta: {
+          pageTitle: 'Custos dos Produtos',
+          breadcrumb: [
+            {
+              text: 'Minha Conta',
+            },
+            {
+              text: 'Custos dos Produtos',
+              active: true,
+            },
+          ],
+        },
       }
 ]
+
