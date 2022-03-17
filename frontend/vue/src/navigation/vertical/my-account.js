@@ -22,12 +22,6 @@ export default [
         title: 'Custos dos Produtos',
         route: 'item-cost',
         icon: 'PackageIcon',
-    }
-    ,
-    {
-        title: 'Commissões',
-        route: 'fee',
-        icon: 'PieChartIcon',
     },
     {
         title: 'Impostos',

@@ -93,9 +93,6 @@
         </b-row>
       </b-form>
     </div>
-    <template #code>
-      {{ codeBasic }}
-    </template>
   </b-card>
 </template>
 
