@@ -92,6 +92,10 @@ public class MapperUtil {
 		ret.setTax(CollectionUtils.isEmpty(taxDto)?null:taxDto.get(0));
 		ret.setId(dto.getId());
 		return ret;
+	}
+
+	public static ItemAverageCost mapperToEntity(ItemAverageCostDto itemAverageCostDto) {
+		return mapper.map(itemAverageCostDto, ItemAverageCost.class);
 	}	
 
 }

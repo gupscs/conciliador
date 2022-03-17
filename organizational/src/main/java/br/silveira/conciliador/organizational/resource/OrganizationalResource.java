@@ -21,13 +21,17 @@ import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
 import br.silveira.conciliador.organizational.dto.FixedCostDto;
+import br.silveira.conciliador.organizational.dto.ItemAverageCostDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.entity.FixedCost;
+import br.silveira.conciliador.organizational.entity.ItemAverageCost;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.repository.FixedCostRepository;
+import br.silveira.conciliador.organizational.repository.ItemAverageCostRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
+import br.silveira.conciliador.organizational.service.ItemAverageCostService;
 
 @RestController
 @RequestMapping("/organizational")
@@ -44,6 +48,12 @@ public class OrganizationalResource {
 	
 	@Autowired
 	private FixedCostRepository fixedCostRepository;
+	
+	@Autowired
+	private ItemAverageCostRepository itemAverageCostRepository;
+	
+	@Autowired
+	private ItemAverageCostService itemAverageCostService;
 
 	@PostMapping("/saveCompany")
 	public ResponseEntity<Void> saveCompany(CompanyDto companyDto) {
@@ -157,6 +167,36 @@ public class OrganizationalResource {
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			log.error("deleteFixedCost error, ID: " + fixedCostId, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+	
+	@GetMapping("/getItemAverageCost/{companyId}")
+	public ResponseEntity<List<ItemAverageCost>> getItemAverageCost(@PathVariable String companyId) {
+		try {
+			List<ItemAverageCost> itemAverageCost = itemAverageCostRepository.findByCompanyId(companyId);
+			if (CollectionUtils.isEmpty(itemAverageCost)) {
+				log.warn("No Content for Company ID: " + companyId + ", check the frontend app or user session");
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok().body(itemAverageCost);
+			}
+		} catch (Exception e) {
+			log.error("getItemAverageCost error, Company ID: " + companyId, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+	
+	@PostMapping("/saveItemAverageCost")
+	public ResponseEntity<Void> saveItemAverageCost(@RequestBody ItemAverageCostDto itemAverageCostDto) {
+		try {
+			if (itemAverageCostService.saveItemAverageCost(itemAverageCostDto)) {
+				return ResponseEntity.ok().build();
+			} else {
+				return ResponseEntity.badRequest().build();
+			}
+		} catch (Exception e) {
+			log.error("Error to saveItemAverageCost  the Company Info: DTO: " + itemAverageCostDto, e);
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}

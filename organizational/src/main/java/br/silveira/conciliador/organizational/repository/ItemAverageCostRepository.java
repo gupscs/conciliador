@@ -1,6 +1,8 @@
 package br.silveira.conciliador.organizational.repository;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +15,7 @@ public interface ItemAverageCostRepository extends MongoRepository<ItemAverageCo
 	public List<ItemAverageCost> findByCompanyId(String companyId);
 	
 	public List<ItemAverageCost> findBySku(List<String> sku);
+	
+	public Optional<ItemAverageCost> findByCompanyIdAndSkuAndStartDateAndEnable(String companyId, String sku, Date startDate, Boolean enable);
 
 }

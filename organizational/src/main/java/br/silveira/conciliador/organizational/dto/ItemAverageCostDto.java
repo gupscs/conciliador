@@ -18,5 +18,7 @@ public class ItemAverageCostDto {
 	
 	private Double averageCost;
 	
+	private String insertId;
+	
 	
 }
