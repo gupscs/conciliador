@@ -3,6 +3,8 @@ package br.silveira.conciliador.organizational.service.impl;
 import java.util.Date;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import br.silveira.conciliador.organizational.util.MapperUtil;
 
 @Service
 public class ItemAverageCostServiceImpl implements ItemAverageCostService{
+	
+	private static final Logger log = LogManager.getLogger(ItemAverageCostServiceImpl.class);
 	
 	@Autowired
 	private ItemAverageCostRepository itemAverageCostRepository; 
@@ -33,6 +37,7 @@ public class ItemAverageCostServiceImpl implements ItemAverageCostService{
 		}
 		
 		ItemAverageCost save = itemAverageCostRepository.save(entity);
+		log.info("Item Average Cost save successfully!! - ID: "+save.getId());
 		return save != null;
 	}
 

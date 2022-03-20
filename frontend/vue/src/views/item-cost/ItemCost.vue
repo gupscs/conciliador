@@ -10,7 +10,7 @@
         <span>Adicionar Custo</span>
       </b-button>
 
-      <b-sidebar id="sidebar-right" bg-variant="white" right backdrop shadow>
+      <b-sidebar ref="itemCostAddNewSidebar" id="sidebar-right" bg-variant="white" right backdrop shadow>
         <item-cost-add-new />
       </b-sidebar>
     </div>
@@ -32,6 +32,8 @@ import { BButton, BSidebar, VBToggle, BCardText, BCard } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import ItemCostAddNew from "./ItemCostAddNew.vue";
 import { BTable } from "bootstrap-vue";
+import api from "@api";
+import Moment from "moment";
 
 export default {
   components: {
@@ -53,14 +55,14 @@ export default {
           label: "SKU",
           key: "sku",
           thClass: "text-center",
-          tdClass: "text-left",
+          tdClass: "text-center",
           sortable: true,
         },
         {
           label: "Custo Médio",
           key: "averageCost",
           thClass: "text-center",
-          tdClass: "text-left",
+          tdClass: "text-right",
           sortable: true,
         },
         {
@@ -69,6 +71,7 @@ export default {
           thClass: "text-center",
           tdClass: "text-center",
           sortable: true,
+          formatter: "formatDate",
         },
       ],
       items: [],
@@ -92,7 +95,7 @@ export default {
   methods: {
     formatDate(value) {
       if (value) {
-        return Moment(String(value)).format("DD/MM/YYYY hh:mm:ss");
+        return Moment(String(value)).format("DD/MM/YYYY");
       } else {
         return value;
       }

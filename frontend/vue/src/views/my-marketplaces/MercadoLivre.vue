@@ -4,7 +4,7 @@
       <b-tab active title="Contas">
         <mercado-livre-account />
       </b-tab>
-      <b-tab title="Commissões">
+      <b-tab title="Comissões">
         <mercado-livre-fee />
       </b-tab>
     </b-tabs>

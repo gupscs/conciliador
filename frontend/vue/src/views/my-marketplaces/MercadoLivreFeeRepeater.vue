@@ -1,5 +1,5 @@
 <template>
-  <b-card title="Custos">
+  <b-card>
     <!-- global messages -->
     <b-alert
       v-model="showDismissibleErrorAlert"
@@ -20,7 +20,7 @@
       <div class="custom-search d-flex justify-content-end">
         <b-button
           v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-          variant="primary"
+          variant="outline-primary"
           @click="repeateAgain"
         >
           <feather-icon icon="PlusIcon" class="mr-25" />
@@ -44,7 +44,7 @@
             <hr />
           </b-col>
           <!-- Cost Name -->
-          <b-col md="6">
+          <b-col md="5">
             <b-form-group label="Custo" label-for="item-costName">
               <b-form-input
                 id="item-costName"
@@ -57,7 +57,7 @@
           </b-col>
 
           <!-- Cost -->
-          <b-col md="3">
+          <b-col md="4">
             <b-form-group label="Valor" label-for="item-cost">
               <b-form-input
                 id="item-cost"
@@ -68,7 +68,7 @@
             </b-form-group>
           </b-col>
 
-           <!-- Button -->
+          <!-- Button -->
           <b-col md="3">  
               <b-button
                 v-ripple.400="'rgba(234, 84, 85, 0.15)'"
@@ -109,7 +109,6 @@ import {
 import { heightTransition } from "@core/mixins/ui/transition";
 import Ripple from "vue-ripple-directive";
 import api from "@api";
-import { codeBasic } from "./code";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
@@ -134,7 +133,6 @@ export default {
       showDismissibleErrorAlert: false,
       username: "",
       companyId: "",
-      codeBasic,
     };
   },
   mounted() {

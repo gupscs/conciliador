@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
@@ -95,7 +96,14 @@ public class MapperUtil {
 	}
 
 	public static ItemAverageCost mapperToEntity(ItemAverageCostDto itemAverageCostDto) {
-		return mapper.map(itemAverageCostDto, ItemAverageCost.class);
+		ItemAverageCost ret = mapper.map(itemAverageCostDto, ItemAverageCost.class);
+		if(ret.getEnable() == null) {
+			ret.setEnable(true);
+		}
+		if(!StringUtils.hasText(ret.getId())) {
+			ret.setId(null);
+		}
+		return ret;
 	}	
 
 }

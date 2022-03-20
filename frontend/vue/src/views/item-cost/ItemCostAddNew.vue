@@ -1,5 +1,5 @@
 <template>
-  <b-card>
+  <b-card title="Novo Custo Médio do Produto">
     <div>
        <!-- Global messages -->
       <b-alert
@@ -31,13 +31,6 @@
           >
         </div>
       </b-alert>
-      <div class="text-center">
-        <!-- Name -->
-        <b-card-text class="mt-2 h4 color-inherit text-reset">
-          Novo Custo Médio do Produto
-        </b-card-text>
-      </div>
-      <br />
       <validation-observer ref="itemForm">
         <b-form @submit.prevent>
           <b-row>
@@ -97,7 +90,7 @@
                 <validation-provider
                   #default="{ errors }"
                   name="averageCost"
-                  rules="required|decimal:3"
+                  rules="required"
                 >
                   <b-form-input
                     id="itemInfo-averageCost"
@@ -105,10 +98,6 @@
                     name="itemInfo-averageCost"
                     placeholder="Custo Médio (Ex: 123.99)"
                     :state="errors.length > 0 ? false : null"
-                    :type="number"
-                    step="0.01"
-                    min="0.00"
-                    max="9999999.99"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -150,7 +139,7 @@ import {
   BCard,
   BFormDatepicker,
 } from "bootstrap-vue";
-import { required, decimal } from "@validations";
+import { required } from "@validations";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import api from "@api";
 import { heightFade } from "@core/directives/animations";
@@ -185,7 +174,6 @@ export default {
     ValidationProvider,
     ValidationObserver,
     required,
-    decimal,
     flatPickr,
   },
   directives: {
@@ -202,6 +190,8 @@ export default {
         averageCost: "",
         insertId: "",
       },
+      showDismissibleErrorAlert: false,
+      showSessionExpiredAlert: false,
     };
   },
   methods: {
@@ -210,6 +200,7 @@ export default {
         if (success) {
           const userData = JSON.parse(localStorage.getItem("userData"));
           this.itemInfo.insertId = userData.username;
+          this.itemInfo.companyId = userData.companyId;
           api
             .post(
               "/organizational/organizational/saveItemAverageCost",
@@ -225,6 +216,7 @@ export default {
                 },
               });
               this.loadPageData();
+              this.$root.$emit('bv::toggle::collapse', 'sidebar-right');
             })
             .catch((error) => {
               if (error.response.status == 400) {
