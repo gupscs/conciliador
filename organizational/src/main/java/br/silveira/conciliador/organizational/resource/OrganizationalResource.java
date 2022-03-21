@@ -17,21 +17,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.silveira.conciliador.common.constant.RestTagConstant;
+import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.organizational.dto.CompanyDto;
 import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.ItemAverageCostDto;
+import br.silveira.conciliador.organizational.dto.MktPlaceFeeDto;
 import br.silveira.conciliador.organizational.dto.RegisterCheckDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
 import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.entity.FixedCost;
 import br.silveira.conciliador.organizational.entity.ItemAverageCost;
+import br.silveira.conciliador.organizational.entity.MktPlaceFee;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.repository.FixedCostRepository;
 import br.silveira.conciliador.organizational.repository.ItemAverageCostRepository;
+import br.silveira.conciliador.organizational.repository.MktPlaceFeeRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
 import br.silveira.conciliador.organizational.service.ItemAverageCostService;
+import br.silveira.conciliador.organizational.service.MktPlaceFeeService;
 
 @RestController
 @RequestMapping("/organizational")
@@ -45,15 +50,21 @@ public class OrganizationalResource {
 
 	@Autowired
 	private CompanyRepository companyRepository;
-	
+
 	@Autowired
 	private FixedCostRepository fixedCostRepository;
-	
+
 	@Autowired
 	private ItemAverageCostRepository itemAverageCostRepository;
-	
+
 	@Autowired
 	private ItemAverageCostService itemAverageCostService;
+
+	@Autowired
+	private MktPlaceFeeRepository mktPlaceFeeRepository;
+	
+	@Autowired
+	private MktPlaceFeeService mktPlaceFeeService;
 
 	@PostMapping("/saveCompany")
 	public ResponseEntity<Void> saveCompany(CompanyDto companyDto) {
@@ -102,7 +113,7 @@ public class OrganizationalResource {
 	@GetMapping("/getCompanyInfo/{id}")
 	public ResponseEntity<Company> getCompanyInfo(@PathVariable String id) {
 		try {
-			Optional<Company> companyInfo = companyRepository.findCompanyInfoById(id);
+			Optional<Company> companyInfo = companyRepository.findById(id);
 			if (companyInfo.isPresent()) {
 				return ResponseEntity.ok().body(companyInfo.get());
 			} else {
@@ -149,9 +160,9 @@ public class OrganizationalResource {
 	public ResponseEntity<FixedCostDto> saveFixedCost(@RequestBody FixedCostDto fixedCostDto) {
 		try {
 			FixedCostDto saveFixedCost = companyService.saveFixedCost(fixedCostDto);
-			if(saveFixedCost == null) {
+			if (saveFixedCost == null) {
 				return ResponseEntity.noContent().build();
-			}else {
+			} else {
 				return ResponseEntity.ok(saveFixedCost);
 			}
 		} catch (Exception e) {
@@ -159,7 +170,7 @@ public class OrganizationalResource {
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@DeleteMapping("/deleteFixedCost/{fixedCostId}")
 	public ResponseEntity<Void> deleteFixedCost(@PathVariable String fixedCostId) {
 		try {
@@ -170,7 +181,7 @@ public class OrganizationalResource {
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@GetMapping("/getItemAverageCost/{companyId}")
 	public ResponseEntity<List<ItemAverageCost>> getItemAverageCost(@PathVariable String companyId) {
 		try {
@@ -186,7 +197,7 @@ public class OrganizationalResource {
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
-	
+
 	@PostMapping("/saveItemAverageCost")
 	public ResponseEntity<Void> saveItemAverageCost(@RequestBody ItemAverageCostDto itemAverageCostDto) {
 		try {
@@ -197,6 +208,49 @@ public class OrganizationalResource {
 			}
 		} catch (Exception e) {
 			log.error("Error to saveItemAverageCost  the Company Info: DTO: " + itemAverageCostDto, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+
+	@GetMapping("/getMktPlaceFee/{companyId}/{mktPlace}")
+	public ResponseEntity<List<MktPlaceFee>> getMktPlaceFee(@PathVariable String companyId, @PathVariable MktPlaceEnum mktPlace) {
+		try {
+			List<MktPlaceFee> mktPlaceFee = mktPlaceFeeRepository.findByCompanyIdAndMarketPlace(companyId, mktPlace);
+			if (CollectionUtils.isEmpty(mktPlaceFee)) {
+				log.warn("No Content for Company ID: " + companyId + ", check the frontend app or user session");
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok().body(mktPlaceFee);
+			}
+		} catch (Exception e) {
+			log.error("getMktPlaceFee error, Company ID: " + companyId + " MktPlaceEnum: " + mktPlace, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+
+	@DeleteMapping("/deleteMktPlaceFee/{id}")
+	public ResponseEntity<Void> deleteMktPlaceFee(@PathVariable String id) {
+		try {
+			mktPlaceFeeRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			log.error("deleteMktPlaceFee error,  ID: " + id, e);
+			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+	
+	
+	@PostMapping("/saveMktPlaceFee")
+	public ResponseEntity<Void> saveMktPlaceFee(@RequestBody MktPlaceFeeDto mktPlaceFeeDto) {
+		try {
+			if (mktPlaceFeeService.saveMktPlaceFee(mktPlaceFeeDto)) {
+				return ResponseEntity.ok().build();
+			} else {
+				log.warn("No saved: "+mktPlaceFeeDto);
+				return ResponseEntity.badRequest().build();
+			}
+		} catch (Exception e) {
+			log.error("saveMktPlaceFee error, MktPlaceFeeDto: "+mktPlaceFeeDto, e);
 			return ResponseEntity.internalServerError().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}

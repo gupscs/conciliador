@@ -36,6 +36,8 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	
 	private static final String MSG_CALCULATION_ORDER_SUCESS = "Order Id: %s calculate sucessfully"; 
 	
+	private static final String TAX_NAME = "TAX";
+	
 	@Autowired
 	private OrderResource orderController ;
 	
@@ -129,10 +131,10 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 
 	private CalculationDto calculationTax(OrderCalculationValuesDto dto) {
 		CalculationDto calc = new CalculationDto();
-		calc.setCalculationName(dto.getTax().getTaxName());
+		calc.setCalculationName(TAX_NAME);
 		calc.setCalculationDetail(getTaxDetail(dto));
 		//Tax Cost deve ser salvo como % em decimal 0,01 = 1%
-		Double taxCalc = dto.getOrderAmount() * dto.getTax().getCost();
+		Double taxCalc = dto.getOrderAmount() * (dto.getTaxCost() / 100);
 		calc.setValue(taxCalc);
 		return calc;
 	}
@@ -141,7 +143,7 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		StringBuffer sb = new StringBuffer();
 		sb.append(dto.getOrderAmount());
 		sb.append("(Order Amount) x ");
-		sb.append(dto.getTax().getCost());
+		sb.append(dto.getTaxCost());
 		sb.append("(Tax %)");
 		return sb.toString();
 	}

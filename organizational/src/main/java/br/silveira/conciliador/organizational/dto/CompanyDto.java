@@ -35,6 +35,8 @@ public class CompanyDto {
 	
 	private String email;
 	
+	private Double taxCost;
+	
 	private Date insertDate;
 	
 	private String insertId;

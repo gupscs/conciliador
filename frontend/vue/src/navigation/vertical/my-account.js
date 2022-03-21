@@ -22,10 +22,5 @@ export default [
         title: 'Custos dos Produtos',
         route: 'item-cost',
         icon: 'PackageIcon',
-    },
-    {
-        title: 'Impostos',
-        route: 'tax',
-        icon: 'DollarSignIcon',
     }
 ]

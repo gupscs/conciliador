@@ -10,7 +10,6 @@ import br.silveira.conciliador.costcalc.dto.FixedCostDto;
 import br.silveira.conciliador.costcalc.dto.ItemAverageCostDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
-import br.silveira.conciliador.costcalc.dto.TaxDto;
 import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
@@ -44,11 +43,7 @@ public class OrderMapper {
 		ret.setOrderAmount(orderDto.getTotalAmount());
 		ret.setOrderId(orderDto.getId());
 		
-		TaxDto tax = new TaxDto();
-		tax.setCost(companyDto.getTax().getCost());
-		tax.setTaxName(companyDto.getTax().getTaxName());
-		tax.setTaxStart(companyDto.getTax().getTaxStart());
-		ret.setTax(tax);
+		ret.setTaxCost(companyDto.getTaxCost());
 		
 		ret.setFixedCost(mapperFixedCostDto(companyDto));		
 		ret.setItemAverageCost(mapperItemAverageCost(companyDto));

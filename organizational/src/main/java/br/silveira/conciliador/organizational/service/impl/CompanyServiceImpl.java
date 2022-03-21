@@ -26,12 +26,10 @@ import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.entity.FixedCost;
 import br.silveira.conciliador.organizational.entity.ItemAverageCost;
 import br.silveira.conciliador.organizational.entity.MktPlaceFee;
-import br.silveira.conciliador.organizational.entity.Tax;
 import br.silveira.conciliador.organizational.repository.CompanyRepository;
 import br.silveira.conciliador.organizational.repository.FixedCostRepository;
 import br.silveira.conciliador.organizational.repository.ItemAverageCostRepository;
 import br.silveira.conciliador.organizational.repository.MktPlaceFeeRepository;
-import br.silveira.conciliador.organizational.repository.TaxRepository;
 import br.silveira.conciliador.organizational.service.CompanyService;
 import br.silveira.conciliador.organizational.util.MapperUtil;
 
@@ -51,9 +49,6 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
 	private MktPlaceFeeRepository mktPlaceFeeRepository;
-
-	@Autowired
-	private TaxRepository taxRepository;
 
 	@Autowired
 	private SysadminResource sysadminResource;
@@ -95,9 +90,9 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 
 		List<FixedCost> fixedCost = fixedCostRepository.findByCompanyId(dto.getId());
-		List<Tax> tax = taxRepository.findByCompanyId(dto.getId());
+		Optional<Company> taxCost = companyRepository.findTaxCostById(dto.getId());
 
-		return MapperUtil.mapperToCompanyCostValuesDto(dto, mktPlace, itemAvgCost, fixedCost, tax);
+		return MapperUtil.mapperToCompanyCostValuesDto(dto, mktPlace, itemAvgCost, fixedCost, taxCost.get());
 
 	}
 

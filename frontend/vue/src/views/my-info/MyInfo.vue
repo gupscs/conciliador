@@ -34,7 +34,7 @@
       <b-form @submit.prevent>
         <b-row>
           <!-- CNPJ -->
-          <b-col md="4">
+          <b-col md="3">
             <b-form-group label="CNPJ" label-for="myinfo-identificationNo">
               <b-form-input
                 id="myinfo-identificationNo"
@@ -44,9 +44,33 @@
               />
             </b-form-group>
           </b-col>
-           <!-- Update ID -->
-          <b-col md="4">
-            <b-form-group label="Atualizado por (id)" label-for="myinfo-updateId">
+
+          <!-- Tax Cost -->
+          <b-col md="3">
+            <b-form-group label="Imposto (%)" label-for="tax-cost">
+              <validation-provider
+                #default="{ errors }"
+                name="tax-cost"
+                rules="required"
+              >
+                <b-form-input
+                  id="tax-cost"
+                  type="number"
+                  placeholder="Valor do imposto mensal (10.50)"
+                  v-model="myinfo.taxCost"
+                  max="100"
+                />
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+          </b-col>
+
+          <!-- Update ID -->
+          <b-col md="3">
+            <b-form-group
+              label="Atualizado por (id)"
+              label-for="myinfo-updateId"
+            >
               <b-form-input
                 id="myinfo-updateId"
                 v-model="myinfo.updateId"
@@ -56,19 +80,22 @@
             </b-form-group>
           </b-col>
           <!-- Last Update -->
-          <b-col md="4">
-            <b-form-group label="Ultima Atualização em:" label-for="myinfo-updateDate">
+          <b-col md="3">
+            <b-form-group
+              label="Ultima Atualização em:"
+              label-for="myinfo-updateDate"
+            >
               <flat-pickr
                 id="myinfo-updateDate"
                 v-model="myinfo.updateDate"
                 name="myinfo-updateDate"
-                :config="{ enableTime: true,dateFormat: 'Y-m-d H:i:S'}"
-                 class="form-control"
-                 plaintext
+                :config="{ enableTime: true, dateFormat: 'Y-m-d H:i:S' }"
+                class="form-control"
+                plaintext
               />
             </b-form-group>
           </b-col>
-         
+
           <!-- Nome da Empresa -->
           <b-col md="6">
             <b-form-group label="Nome da Empresa" label-for="myinfo-name">
@@ -130,12 +157,12 @@
           <!-- Address 2 -->
           <b-col md="6">
             <b-form-group label="Complemento" label-for="myinfo-address2">
-                <b-form-input
-                  id="myinfo-address2"
-                  v-model="myinfo.address2"
-                  name="myinfo--address2"
-                  placeholder="Complemento"
-                />
+              <b-form-input
+                id="myinfo-address2"
+                v-model="myinfo.address2"
+                name="myinfo--address2"
+                placeholder="Complemento"
+              />
             </b-form-group>
           </b-col>
           <!-- Zipcode -->
@@ -219,12 +246,12 @@
           <!-- Phone2 -->
           <b-col md="6">
             <b-form-group label="Outros Telefones" label-for="myinfo-phone2">
-                <b-form-input
-                  id="myinfo-phone2"
-                  v-model="myinfo.phone2"
-                  name="myinfo-phone2"
-                  placeholder="Outros telefones (somente números com DDD)"
-                />
+              <b-form-input
+                id="myinfo-phone2"
+                v-model="myinfo.phone2"
+                name="myinfo-phone2"
+                placeholder="Outros telefones (somente números com DDD)"
+              />
             </b-form-group>
           </b-col>
           <!-- email -->
@@ -287,8 +314,7 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import api from "@api";
 import { heightFade } from "@core/directives/animations";
 import Ripple from "vue-ripple-directive";
-import flatPickr from 'vue-flatpickr-component'
-
+import flatPickr from "vue-flatpickr-component";
 
 export default {
   components: {
@@ -331,6 +357,7 @@ export default {
         phone1: "",
         phone2: "",
         email: "",
+        taxCost: "",
         updateDate: "",
         updateId: "",
         username: "",
@@ -347,27 +374,27 @@ export default {
   },
   methods: {
     formatterUpperCase(value) {
-      return value.toUpperCase()
+      return value.toUpperCase();
     },
-    loadPageData(){
+    loadPageData() {
       const userData = JSON.parse(localStorage.getItem("userData"));
-    api
-      .get(
-        `/organizational/organizational/getCompanyInfo/${userData.companyId}`
-      )
-      .then((response) => {
-        if(response.status == 204){
-          this.showSessionExpiredAlert = true;
-        }else{
-          this.myinfo = response.data;
-          this.myinfo.username = userData.username;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response);
-        this.showDismissibleErrorAlert = true;
-      });
+      api
+        .get(
+          `/organizational/organizational/getCompanyInfo/${userData.companyId}`
+        )
+        .then((response) => {
+          if (response.status == 204) {
+            this.showSessionExpiredAlert = true;
+          } else {
+            this.myinfo = response.data;
+            this.myinfo.username = userData.username;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response);
+          this.showDismissibleErrorAlert = true;
+        });
     },
     validationForm() {
       this.showDismissibleErrorAlert = false;
@@ -376,23 +403,29 @@ export default {
         if (success) {
           this.myinfo.updateId = this.myinfo.username;
           this.myinfo.updateDate = "";
-          api.post('/organizational/organizational/updateCompanyInfo', this.myinfo).then(response => {
+          api
+            .post(
+              "/organizational/organizational/updateCompanyInfo",
+              this.myinfo
+            )
+            .then((response) => {
               this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                          title: "Salvo com sucesso",
-                          icon: "EditIcon",
-                          variant: "success",
-                        },
-                      });
-            this.loadPageData();
-          }).catch(error =>{
-            if(error.response.status == 400){
-              this.showSessionExpiredAlert = true;
-            }else{
-              this.showDismissibleErrorAlert = true;
-            }
-          });
+                component: ToastificationContent,
+                props: {
+                  title: "Salvo com sucesso",
+                  icon: "EditIcon",
+                  variant: "success",
+                },
+              });
+              this.loadPageData();
+            })
+            .catch((error) => {
+              if (error.response.status == 400) {
+                this.showSessionExpiredAlert = true;
+              } else {
+                this.showDismissibleErrorAlert = true;
+              }
+            });
         }
       });
     },

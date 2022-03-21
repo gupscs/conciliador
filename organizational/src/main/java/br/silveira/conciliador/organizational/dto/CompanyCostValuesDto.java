@@ -18,7 +18,7 @@ public class CompanyCostValuesDto {
 	
 	private List<FixedCostDto> fixedCost;
 	
-	private TaxDto tax;
+	private Double taxCost;
 	
 	private List<ItemAverageCostDto> itemAverageCost;
 

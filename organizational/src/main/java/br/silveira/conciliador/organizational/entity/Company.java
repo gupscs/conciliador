@@ -50,6 +50,8 @@ public class Company {
 	
 	@Email(message = "Invalid email")
 	private String email;
+	
+	private Double taxCost;
 
 	@NotEmpty(message = "insert date required")
 	private Date insertDate;

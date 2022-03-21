@@ -15,4 +15,6 @@ public interface MktPlaceFeeRepository extends MongoRepository<MktPlaceFee, Stri
 
 	public List<MktPlaceFee> findByMarketPlaceAndFeeType(MktPlaceEnum marketPlace, String feeType);
 
+	public List<MktPlaceFee> findByCompanyIdAndMarketPlace(String companyId, MktPlaceEnum mktPlace);
+
 }

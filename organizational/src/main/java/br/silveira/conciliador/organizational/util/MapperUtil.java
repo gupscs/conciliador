@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import br.silveira.conciliador.organizational.dto.CompanyCostValuesDto;
@@ -16,18 +15,15 @@ import br.silveira.conciliador.organizational.dto.FixedCostDto;
 import br.silveira.conciliador.organizational.dto.ItemAverageCostDto;
 import br.silveira.conciliador.organizational.dto.MktPlaceFeeDto;
 import br.silveira.conciliador.organizational.dto.RegisterDto;
-import br.silveira.conciliador.organizational.dto.TaxDto;
 import br.silveira.conciliador.organizational.entity.Company;
 import br.silveira.conciliador.organizational.entity.FixedCost;
 import br.silveira.conciliador.organizational.entity.ItemAverageCost;
 import br.silveira.conciliador.organizational.entity.MktPlaceFee;
-import br.silveira.conciliador.organizational.entity.Tax;
 
 public class MapperUtil {
-	
+
 	private static ModelMapper mapper = new ModelMapper();
-	
-	
+
 	public static List<CompanyDto> mapperCompanyDto(List<Company> entities) {
 		return entities.stream().map(entity -> mapperCompanyDto(entity)).collect(Collectors.toList());
 	}
@@ -72,6 +68,7 @@ public class MapperUtil {
 		entity.setPhone1(companyDto.getPhone1());
 		entity.setPhone2(companyDto.getPhone2());
 		entity.setEmail(companyDto.getEmail());
+		entity.setTaxCost(companyDto.getTaxCost());
 		entity.setUpdateDate(new Date());
 		entity.setUpdateId(companyDto.getUpdateId());
 		return entity;
@@ -81,29 +78,42 @@ public class MapperUtil {
 		return mapper.map(fixedCostDto, FixedCost.class);
 	}
 
-	public static CompanyCostValuesDto mapperToCompanyCostValuesDto(CompanyCostValuesRequestDto dto, List<MktPlaceFee> mktPlace, List<ItemAverageCost> itemAvgCost, List<FixedCost> fixedCost, List<Tax> tax) {
+	public static CompanyCostValuesDto mapperToCompanyCostValuesDto(CompanyCostValuesRequestDto dto, List<MktPlaceFee> mktPlace, List<ItemAverageCost> itemAvgCost, List<FixedCost> fixedCost, Company taxCost) {
 		List<MktPlaceFeeDto> mktPlaceDto = mktPlace.stream().map(t -> mapper.map(t, MktPlaceFeeDto.class)).collect(Collectors.toList());
 		List<ItemAverageCostDto> itemAverageCostDto = itemAvgCost.stream().map(t -> mapper.map(t, ItemAverageCostDto.class)).collect(Collectors.toList());
 		List<FixedCostDto> fixedCostDto = fixedCost.stream().map(t -> mapper.map(t, FixedCostDto.class)).collect(Collectors.toList());
-		List<TaxDto> taxDto = tax.stream().map(t -> mapper.map(t, TaxDto.class)).collect(Collectors.toList());
 		CompanyCostValuesDto ret = new CompanyCostValuesDto();
 		ret.setFixedCost(fixedCostDto);
 		ret.setItemAverageCost(itemAverageCostDto);
 		ret.setMktPlaceFees(mktPlaceDto);
-		ret.setTax(CollectionUtils.isEmpty(taxDto)?null:taxDto.get(0));
+		ret.setTaxCost(taxCost != null ? taxCost.getTaxCost() : null);
 		ret.setId(dto.getId());
 		return ret;
 	}
 
 	public static ItemAverageCost mapperToEntity(ItemAverageCostDto itemAverageCostDto) {
 		ItemAverageCost ret = mapper.map(itemAverageCostDto, ItemAverageCost.class);
-		if(ret.getEnable() == null) {
+		if (ret.getEnable() == null) {
 			ret.setEnable(true);
 		}
-		if(!StringUtils.hasText(ret.getId())) {
+		if (!StringUtils.hasText(ret.getId())) {
 			ret.setId(null);
 		}
 		return ret;
-	}	
+	}
+
+	public static MktPlaceFee mapperToEntity(MktPlaceFee entity, MktPlaceFeeDto mktPlaceFeeDto) {
+		MktPlaceFee ret = mapper.map(mktPlaceFeeDto, MktPlaceFee.class);
+		if (entity != null) {
+			ret.setInsertDate(entity.getInsertDate());
+			ret.setInsertId(entity.getInsertId());
+			if (ret.getUpdateId() == null) {
+				ret.setUpdateId(mktPlaceFeeDto.getInsertId());
+			}
+			ret.setUpdateDate(new Date());
+		}
+		return ret;
+
+	}
 
 }
