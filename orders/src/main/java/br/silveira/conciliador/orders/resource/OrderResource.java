@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.silveira.conciliador.common.constant.RestTagConstant;
-import br.silveira.conciliador.orders.dto.OrderCostDto;
+import br.silveira.conciliador.orders.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
 import br.silveira.conciliador.orders.service.OrderService;
@@ -39,13 +38,13 @@ public class OrderResource {
 		}
 	}
 
-	@PostMapping("/saveOrderCost")
-	public ResponseEntity<Void> saveOrderCost(@RequestBody OrderCostDto orderCostDto) {
+	@PostMapping("/saveOrderCostCalculated")
+	public ResponseEntity<Void> saveOrderCostCalculated(@RequestBody OrderCostCalculatedDto orderCostCalculatedDto) {
 		try {
-			orderService.saveOrderCost(orderCostDto);
+			orderService.saveOrderCost(orderCostCalculatedDto);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			log.error("Error to save Orders: " + orderCostDto, e);
+			log.error("Error to save Orders: " + orderCostCalculatedDto, e);
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}

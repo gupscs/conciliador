@@ -5,7 +5,9 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class OrderCost {
+public class OrderCostCalculated {
+	
+	private String orderCostCalcuationId;
 	
 	private Double mktPlaceFee;
 	

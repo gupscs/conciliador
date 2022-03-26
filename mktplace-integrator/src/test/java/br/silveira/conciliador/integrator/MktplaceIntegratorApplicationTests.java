@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import br.silveira.conciliador.integrator.mercadolivre.service.impl.PaymentMercadoLivreServiceImpl;
 import br.silveira.conciliador.integrator.mercadolivre.service.impl.ShipmentMercadoLivreServiceImpl;
+import br.silveira.conciliador.integrator.resource.MktplaceIntegratorResource;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
 
 @SpringBootTest
@@ -22,6 +23,17 @@ class MktplaceIntegratorApplicationTests {
 	
 	@Autowired
 	private PaymentMercadoLivreServiceImpl paymentMercadoLivreServiceImpl; 
+	
+	
+	@Autowired
+	private MktplaceIntegratorResource mktplaceIntegratorResource;
+	
+	@Test
+	void processOrderId() {
+		
+		mktplaceIntegratorResource.processOrder("6229407f5d36f9543e6e1b6b");
+	}
+	
 	
 	//@Test
 	void contextLoads() {

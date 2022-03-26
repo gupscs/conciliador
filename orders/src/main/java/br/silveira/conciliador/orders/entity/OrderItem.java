@@ -26,7 +26,7 @@ public class OrderItem {
 	
 	private Double saleFee;
 	
-	private String typeId;
+	private String feeTypeId;
 	
 	@NotNull(message = "sku required")
 	private Double unitPrice;

@@ -23,7 +23,7 @@ import br.silveira.conciliador.costcalc.mapper.OrderMapper;
 import br.silveira.conciliador.costcalc.repository.OrderCostCalculationRepository;
 import br.silveira.conciliador.costcalc.service.OrderCostCalculationService;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
-import br.silveira.conciliador.feignClient.dto.OrderCostDto;
+import br.silveira.conciliador.feignClient.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.feignClient.dto.OrderValuesDto;
 import br.silveira.conciliador.feignClient.resource.OrderResource;
 import br.silveira.conciliador.feignClient.resource.OrganizationalResource;
@@ -63,10 +63,10 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		
 		OrderCostCalcuation orderSaved = orderCostCalculationRepository.save(OrderMapper.mapperToOrderCostCalculationEntity(calculationRes));
 		
-		OrderCostDto orderCost = OrderMapper.mapperToOrderCostDto(calculationRes);
+		OrderCostCalculatedDto orderCost = OrderMapper.mapperToOrderCostDto(calculationRes);
 		orderCost.setOrderCostCalcuationId(orderSaved.getId());
 		orderCost.setUserId(dto.getUserId());
-		orderController.saveOrderCost(orderCost);
+		orderController.saveOrderCostCalculated(orderCost);
 		
 		log.info(String.format(MSG_CALCULATION_ORDER_SUCESS, dto.getId()));
 		
@@ -155,6 +155,7 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 			d.setSku(item.getSku());
 			d.setCost(item.getAverageCost());
 			d.setCalculationDetail("-");
+			d.setMktPlaceFeecost(calculo detalhado);
 			ret.add(d);
 		}
 		
@@ -168,6 +169,9 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		//Tax Cost deve ser salvo como % em decimal 0,01 = 1%
 		Double feeCalc = dto.getOrderAmount() * dto.getFeeAmount();
 		calc.setValue(feeCalc);
+		
+		valores estao no nivel do item , calcular primeiro por item e depois apenas somar aqui
+		
 		return calc;
 	}
 

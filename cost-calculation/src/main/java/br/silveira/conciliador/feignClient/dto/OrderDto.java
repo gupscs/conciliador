@@ -33,7 +33,7 @@ public class OrderDto {
 	
 	private OrderStatusEnum orderStatus;
 	
-	private String feeType;
+	private String mktPlaceFeeType;
 	
 	private String currency;
 	
@@ -49,7 +49,9 @@ public class OrderDto {
 	
 	private String status;
 	
-	private ShippingDto shipping;
+	private Double shippingCost;
+	
+	private Double mktPlaceFeeCost;
 	
 	@NotNull(message = "item required")
 	private List<OrderItemDto> orderItems;

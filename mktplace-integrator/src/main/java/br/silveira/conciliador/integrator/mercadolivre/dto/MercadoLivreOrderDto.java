@@ -4,8 +4,6 @@ package br.silveira.conciliador.integrator.mercadolivre.dto;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import lombok.Data;
 
 @Data

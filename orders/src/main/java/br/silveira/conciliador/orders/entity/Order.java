@@ -37,12 +37,7 @@ public class Order {
 	private Location buyer;
 	
 	@NotNull(message = "Seller required")
-	private Location seller;
-	
-	//Order Type tipo do pedido criado no mkt place, define as tarifas a serem utilizadas
-	private String feeType;
-	
-	private String currency;
+	private Location seller;	
 	
 	private Date closedDate;
 	
@@ -52,15 +47,22 @@ public class Order {
 	
 	private Date lastUpdatedDate;
 	
-	private Double totalAmount;
-	
-	private String mktPlaceStatus;
-	
 	private OrderStatusEnum orderStatus;
 	
-	private Shipping shipping;
+	//Order Type tipo do pedido criado no mkt place, define as tarifas a serem utilizadas
+	private String mktPlaceFeeType;
 
-	private OrderCost orderCost;
+	private String mktPlaceStatus;
+	
+	private String currency;
+
+	private Double totalAmount;
+	
+	private Double shippingCost;
+	
+	private Double mktPlaceFeeCost;
+
+	private OrderCostCalculated orderCostCalculated;
 	
 	@NotNull(message = "item required")
 	private List<OrderItem> orderItems;

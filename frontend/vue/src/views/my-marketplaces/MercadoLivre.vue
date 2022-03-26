@@ -1,10 +1,10 @@
 <template>
   <b-card>
-    <b-tabs content-class="pt-1" fill>
+    <b-tabs content-class="mt-1">
       <b-tab active title="Contas">
         <mercado-livre-account />
       </b-tab>
-      <b-tab title="Comissões">
+      <b-tab title="Comissões" lazy>
         <mercado-livre-fee />
       </b-tab>
     </b-tabs>
@@ -25,7 +25,9 @@ export default {
     MercadoLivreAccount,
     MercadoLivreFee,
   },
-  data() {},
+  data() {
+    return{}
+  },
   created() {},
 };
 </script>

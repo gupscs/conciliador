@@ -10,5 +10,7 @@ public class ItemCostDetail {
 	private String title;
 	
 	private Double cost;
+	
+	private Double mktPlaceFeecost;
 
 }

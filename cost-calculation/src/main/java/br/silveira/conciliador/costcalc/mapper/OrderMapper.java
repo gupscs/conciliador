@@ -16,7 +16,7 @@ import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.feignClient.dto.FixedCostDetailDto;
 import br.silveira.conciliador.feignClient.dto.ItemCostDetailDto;
 import br.silveira.conciliador.feignClient.dto.MktPlaceFeeDto;
-import br.silveira.conciliador.feignClient.dto.OrderCostDto;
+import br.silveira.conciliador.feignClient.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.feignClient.dto.OrderItemDto;
 import br.silveira.conciliador.feignClient.dto.OrderValuesDto;
 
@@ -84,8 +84,8 @@ public class OrderMapper {
 		return fixedCosts;
 	}
 
-	public static OrderCostDto mapperToOrderCostDto(OrderCalculationResultDto calRes) {
-		OrderCostDto ret = new OrderCostDto();
+	public static OrderCostCalculatedDto mapperToOrderCostDto(OrderCalculationResultDto calRes) {
+		OrderCostCalculatedDto ret = new OrderCostCalculatedDto();
 
 		ret.setFixedTotalCost(calRes.getTotalFixedCost());
 		ret.setItemTotalCost(calRes.getTotalItemCost());

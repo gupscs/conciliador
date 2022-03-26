@@ -10,5 +10,7 @@ public class ItemCostDetailDto {
 	private String title;
 	
 	private Double cost;
+	
+	private Double mktPlaceFeecost;
 
 }

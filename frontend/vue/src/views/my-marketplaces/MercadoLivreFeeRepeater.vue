@@ -24,7 +24,7 @@
           @click="repeateAgain"
         >
           <feather-icon icon="PlusIcon" class="mr-25" />
-          <span>Adicionar Custo</span>
+          <span>Adicionar Comissão</span>
         </b-button>
       </div>
       <b-form
@@ -43,27 +43,27 @@
           <b-col cols="12">
             <hr />
           </b-col>
-          <!-- Cost Name -->
+          <!-- Tipo da Comissão-->
           <b-col md="5">
-            <b-form-group label="Custo" label-for="item-costName">
+            <b-form-group label="Tipo de Comissão" label-for="item-feeType">
               <b-form-input
-                id="item-costName"
+                id="item-feeType"
                 type="text"
-                placeholder="Nome do Custo"
+                placeholder="Tipo da comissão do ML"
                 :formatter="formatterUpperCase"
-                v-model="item.costName"
+                v-model="item.feeType"
               />
             </b-form-group>
           </b-col>
 
-          <!-- Cost -->
+          <!-- Custo -->
           <b-col md="4">
-            <b-form-group label="Valor" label-for="item-cost">
+            <b-form-group label="Valor" label-for="item-fee">
               <b-form-input
-                id="item-cost"
+                id="item-fee"
                 type="number"
-                placeholder="Valor do custo mensal (155.38)"
-                v-model="item.cost"
+                placeholder="Valor da comissão mensal (155.38)"
+                v-model="item.fee"
               />
             </b-form-group>
           </b-col>
@@ -145,7 +145,7 @@ export default {
     this.companyId = userData.companyId;
     api
       .get(
-        `/organizational/organizational/getFixedCostByCompanyId/${userData.companyId}`
+        `/organizational/organizational/getMktPlaceFee/${userData.companyId}/MERCADO_LIVRE`
       )
       .then((response) => {
         const listGetItem = response.data;
@@ -155,8 +155,9 @@ export default {
             this.items.push({
               itmeId: count,
               id: item.id,
-              costName: item.costName,
-              cost: item.cost,
+              feeType: item.feeType,
+              fee: item.fee,
+              marketPlace: item.marketPlace,
               insertId: item.insertId,
               insertDate: item.insertDate,
               updateId: this.username,
@@ -172,8 +173,9 @@ export default {
           this.items.push({
             itmeId: 1,
             id: null,
-            costName: "",
-            cost: null,
+            feeType: "",
+            fee: null,
+            marketPlace: "MERCADO_LIVRE",
             insertId: this.username,
             companyId: this.companyId,
           });
@@ -194,8 +196,9 @@ export default {
     repeateAgain() {
       this.items.push({
         itemId: (this.nextTodoId += this.nextTodoId),
-        costName: "",
-        cost: null,
+        feeType: "",
+        fee: null,
+        marketPlace: "MERCADO_LIVRE",
         insertId: this.username,
         companyId: this.companyId,
       });
@@ -206,7 +209,7 @@ export default {
     },
     removeItem(index) {
       this.$bvModal
-        .msgBoxConfirm("O Custo será deletado, Ok?", {
+        .msgBoxConfirm("A Comissão será deletado, Ok?", {
           cancelVariant: "outline-secondary",
           centered: true,
           title: "Por favor, confirmar",
@@ -216,7 +219,7 @@ export default {
             if (this.items[index].id) {
               api
                 .delete(
-                  `/organizational/organizational/deleteFixedCost/${this.items[index].id}`
+                  `/organizational/organizational/deleteMktPlaceFee/${this.items[index].id}`
                 )
                 .then((response) => {
                   this.items.splice(index, 1);
@@ -236,7 +239,7 @@ export default {
     saveItem(index) {
       this.items[index].updateId = this.username;
       api
-        .post("/organizational/organizational/saveFixedCost", this.items[index])
+        .post("/organizational/organizational/saveMktPlaceFee", this.items[index])
         .then((response) => {
           this.items[index].id = response.data.id;
           this.items[index].insertDate = response.data.insertDate;

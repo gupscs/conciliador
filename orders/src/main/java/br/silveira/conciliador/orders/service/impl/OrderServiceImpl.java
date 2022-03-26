@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.silveira.conciliador.orders.dto.OrderCostDto;
+import br.silveira.conciliador.orders.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
 import br.silveira.conciliador.orders.entity.Order;
@@ -50,14 +50,15 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public void saveOrderCost(OrderCostDto orderCostDto) throws Exception {
-		Optional<Order> order = orderRepository.findById(orderCostDto.getId());
+	public void saveOrderCost(OrderCostCalculatedDto orderCostCalculatedDto) throws Exception {
+		Optional<Order> order = orderRepository.findById(orderCostCalculatedDto.getId());
 		if(order.isEmpty()) {
-			throw new Exception(String.format("Order - ID: %s not exist", orderCostDto.getId()));
+			throw new Exception(String.format("Order - ID: %s not exist", orderCostCalculatedDto.getId()));
 		}
-		order.get().setOrderCost(OrderMapper.mapperToOrderEntity(orderCostDto ));
+		order.get().setOrderCostCalculated(OrderMapper.mapperToOrderEntity(orderCostCalculatedDto ));
 		order.get().setUpdateDate(new Date());
-		order.get().setUpdateId(orderCostDto.getUserId());
+		order.get().setUpdateId(orderCostCalculatedDto.getUserId());
+		
 		orderRepository.save(order.get());
 	}
 }

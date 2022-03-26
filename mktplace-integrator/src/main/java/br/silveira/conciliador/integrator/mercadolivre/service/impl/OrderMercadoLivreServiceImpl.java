@@ -16,6 +16,8 @@ import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.mapper.QueueDtoMapper;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreNotificationDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.OrderItem;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Payment;
 import br.silveira.conciliador.integrator.mercadolivre.mapper.MercadoLivreOrderDtoMapper;
 import br.silveira.conciliador.integrator.service.OrderService;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
@@ -91,7 +93,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			}
 			
 			MercadoLivreOrderDto order = (MercadoLivreOrderDto) orderProcessDto.getDocumentOriginalData();
-			OrderDto orderDto = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
+			OrderDto orderDto = convertMercadoLivreOrderDtoToOrderDto(order, dto);
 			orderController.saveOrder(orderDto);
 
 			updateQueueSuccessProcess(dto);
@@ -102,7 +104,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			updateQueueExceptionError(dto, e);
 		}
 	}
-	
+
 	@Override
 	public void processOrder(List<OrderProcessDto> dto) throws Exception {
 		for (OrderProcessDto orderProcessDto : dto) {
@@ -124,6 +126,42 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			}
 		}
 		
+	}
+	
+	private OrderDto convertMercadoLivreOrderDtoToOrderDto(MercadoLivreOrderDto order, QueueDto dto) {
+		OrderDto ret = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
+		Double totalShipmentCost = 0.0;
+		Double totalFeeCost = 0.0;
+		for (Payment payment : order.getPayments()) {
+			totalShipmentCost = totalShipmentCost + payment.getShipping_cost();
+		}
+		
+		//Somente para validação da tag do tipo de anuncio que interfere na % da comissão do Mercado Livre
+		String feeType = null;
+		String finalFeeType = null;
+		
+		for (OrderItem orderItem : order.getOrder_items()) {
+			totalFeeCost = totalFeeCost + orderItem.getSale_fee();
+			
+			if(feeType == null) {
+				feeType = orderItem.getListing_type_id();
+				finalFeeType = feeType;
+			}
+			
+			if(!feeType.equalsIgnoreCase(orderItem.getListing_type_id())) {
+				log.fatal("!!!!!!!!!! URGENTE !!!!!!!!!! - Pedido com 2 tipos de anuncios: Queue Order Id: "+dto.getId());
+				
+				feeType = orderItem.getListing_type_id();				
+				finalFeeType = finalFeeType+"|"+feeType;
+				
+			}
+		}
+		
+		ret.setShippingCost(totalShipmentCost);
+		ret.setMktPlaceFeeCost(totalFeeCost);
+		ret.setMktPlaceFeeType(finalFeeType);
+		
+		return ret;
 	}
 	
 	

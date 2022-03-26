@@ -1,13 +1,15 @@
-package br.silveira.conciliador.orders.dto;
+package br.silveira.conciliador.feignClient.dto;
 
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class OrderCostDto {
+public class OrderCostCalculatedDto {
 	
 	private String id;
+	
+	private String orderCostCalcuationId;
 	
 	private Double mktPlaceFee;
 	
