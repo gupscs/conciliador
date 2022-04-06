@@ -29,38 +29,39 @@ public class MercadoLivreUserInfoDto {
 	public BuyerReputation buyer_reputation;
 	public Status status;
 	public Credit credit;
-
+	
+	@Data
 	public static class Identification {
 		public String type;
 		public String number;
 	}
-
+	@Data
 	public static class Address {
 		public String state;
 		public String city;
 		public String address;
 		public String zip_code;
 	}
-
+	@Data
 	public static class Phone {
 		public String area_code;
 		public String number;
 		public String extension;
 		public boolean verified;
 	}
-
+	@Data
 	public static class AlternativePhone {
 		public String area_code;
 		public String number;
 		public String extension;
 	}
-
+	@Data
 	public static class Ratings {
 		public int positive;
 		public int negative;
 		public int neutral;
 	}
-
+	@Data
 	public static class Transactions {
 		public String period;
 		public int total;
@@ -70,63 +71,63 @@ public class MercadoLivreUserInfoDto {
 		public Unrated unrated;
 		public NotYetRated not_yet_rated;
 	}
-
+	@Data
 	public static class SellerReputation {
 		public Object level_id;
 		public Object power_seller_status;
 		public Transactions transactions;
 	}
-
+	@Data
 	public static class Canceled {
 		public Object total;
 		public Object paid;
 	}
-
+	@Data
 	public static class Unrated {
 		public Object total;
 		public Object paid;
 	}
-
+	@Data
 	public static class NotYetRated {
 		public Object total;
 		public Object paid;
 		public Object units;
 	}
-
+	@Data
 	public static class BuyerReputation {
 		public int canceled_transactions;
 		public Transactions transactions;
 		public ArrayList<Object> tags;
 	}
-
+	@Data
 	public static class ImmediatePayment {
 		public boolean required;
 		public ArrayList<Object> reasons;
 	}
-
+	@Data
 	public static class List {
 		public boolean allow;
 		public ArrayList<Object> codes;
 		public ImmediatePayment immediate_payment;
 	}
-
+	@Data
 	public static class Buy {
 		public boolean allow;
 		public ArrayList<Object> codes;
 		public ImmediatePayment immediate_payment;
 	}
-
+	@Data
 	public static class Sell {
 		public boolean allow;
 		public ArrayList<Object> codes;
 		public ImmediatePayment immediate_payment;
 	}
-
+	@Data
 	public static class Billing {
 		public boolean allow;
 		public ArrayList<Object> codes;
 	}
-
+	@Data
 	public static class Status {
 		public String site_status;
 		public List list;
@@ -141,7 +142,7 @@ public class MercadoLivreUserInfoDto {
 		public String user_type;
 		public String required_action;
 	}
-
+	@Data
 	public static class Credit {
 		public int consumed;
 		public String credit_level_id;

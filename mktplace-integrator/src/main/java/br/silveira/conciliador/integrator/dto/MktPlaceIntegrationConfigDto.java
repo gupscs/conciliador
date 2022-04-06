@@ -35,6 +35,8 @@ public class MktPlaceIntegrationConfigDto {
 	
 	private String redirectUrl;
 	
+	private Object originalUserData;
+	
 	private Date insertDate;
 	
 	private String insertId;

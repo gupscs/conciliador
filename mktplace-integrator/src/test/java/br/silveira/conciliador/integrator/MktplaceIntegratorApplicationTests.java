@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import br.silveira.conciliador.integrator.mercadolivre.service.impl.PaymentMercadoLivreServiceImpl;
 import br.silveira.conciliador.integrator.mercadolivre.service.impl.ShipmentMercadoLivreServiceImpl;
-import br.silveira.conciliador.integrator.resource.MktplaceIntegratorResource;
+import br.silveira.conciliador.integrator.resource.MktPlaceIntegratorResource;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
 
 @SpringBootTest
@@ -26,7 +26,7 @@ class MktplaceIntegratorApplicationTests {
 	
 	
 	@Autowired
-	private MktplaceIntegratorResource mktplaceIntegratorResource;
+	private MktPlaceIntegratorResource mktplaceIntegratorResource;
 	
 	@Test
 	void processOrderId() {
@@ -62,7 +62,7 @@ class MktplaceIntegratorApplicationTests {
 	//@Test
 	void testQueueShipmentDownload() {
 		try {
-			shipmentMercadoLivreServiceImpl.downloadShipment(COMPANY_ID);
+			//shipmentMercadoLivreServiceImpl.downloadShipment(COMPANY_ID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

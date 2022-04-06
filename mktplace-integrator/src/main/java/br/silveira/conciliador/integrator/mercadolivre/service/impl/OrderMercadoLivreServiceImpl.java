@@ -18,7 +18,10 @@ import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreNotificat
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.OrderItem;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Payment;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentDto;
 import br.silveira.conciliador.integrator.mercadolivre.mapper.MercadoLivreOrderDtoMapper;
+import br.silveira.conciliador.integrator.mercadolivre.service.ShipmentMercadoLivreService;
+import br.silveira.conciliador.integrator.repository.MktPlaceIntegrationConfigRepository;
 import br.silveira.conciliador.integrator.service.OrderService;
 import br.silveira.conciliador.integrator.service.QueueOrderService;
 
@@ -26,6 +29,8 @@ import br.silveira.conciliador.integrator.service.QueueOrderService;
 public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon implements OrderService {
 	
 	private static final Logger log = LogManager.getLogger(OrderMercadoLivreServiceImpl.class);
+	
+	//TODO COLOCAR AS CONSTANTES EM UMA CLASSE UNICA PARA COMPARTILHAR COM AS OUTRAS
 
 	private static final String PROCESS_MSG_START_DOWNLOAD = "[Queue Id: %s] - Order Id: %s START DOWNLOAD";
 	
@@ -49,8 +54,16 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 
 	private static final Integer PROCESS_STATUS_SUCCESS = 100;
 
+	private static final String SHIPMENT_INFO_NOT_RECEIVED = "[Queue Id: %s] - Shipment for Order Id: %s not received yet";
+	
 	@Autowired
-	private OrderResource orderController;
+	private MktPlaceIntegrationConfigRepository mktPlaceIntegrationConfigRepository;
+	
+	@Autowired
+	private ShipmentMercadoLivreService shipmentMercadoLivreService;
+
+	@Autowired
+	private OrderResource orderResource;
 
 	@Autowired
 	private QueueOrderService queueOrderService;
@@ -93,17 +106,27 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			}
 			
 			MercadoLivreOrderDto order = (MercadoLivreOrderDto) orderProcessDto.getDocumentOriginalData();
-			OrderDto orderDto = convertMercadoLivreOrderDtoToOrderDto(order, dto);
-			orderController.saveOrder(orderDto);
-
-			updateQueueSuccessProcess(dto);
-			log.info(String.format(PROCESS_MSG_PROCESS_END, dto.getId(),dto.getDocumentId()));
+			MercadoLivreShipmentDto shipment = shipmentMercadoLivreService.getShipmentByCompanyIdAndMktPlaceAndShipmentId(orderProcessDto.getCompanyId(), orderProcessDto.getMarketPlace(),  String.valueOf(order.getShipping().getId()));
+			
+			if(shipment != null) {
+				OrderDto orderDto = convertMercadoLivreOrderDtoToOrderDto(order, shipment, dto);				
+				orderResource.saveOrder(orderDto);
+				updateQueueSuccessProcess(dto);
+				log.info(String.format(PROCESS_MSG_PROCESS_END, dto.getId(),dto.getDocumentId()));
+			}else {
+				log.warn(String.format(SHIPMENT_INFO_NOT_RECEIVED, dto.getId(), dto.getDocumentId() ));
+				updateQueueNotProcess(dto);
+			}
+			
 		
 		} catch (Exception e) {
 			log.error(String.format(PROCESS_MSG_END_WITH_ERROR, dto.getId(),dto.getDocumentId()), e);
 			updateQueueExceptionError(dto, e);
 		}
 	}
+
+
+
 
 	@Override
 	public void processOrder(List<OrderProcessDto> dto) throws Exception {
@@ -128,8 +151,8 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		
 	}
 	
-	private OrderDto convertMercadoLivreOrderDtoToOrderDto(MercadoLivreOrderDto order, QueueDto dto) {
-		OrderDto ret = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, dto);
+	private OrderDto convertMercadoLivreOrderDtoToOrderDto(MercadoLivreOrderDto order, MercadoLivreShipmentDto shipment, QueueDto dto) {
+		OrderDto ret = MercadoLivreOrderDtoMapper.mapperToOrderDto(order, shipment, dto);
 		Double totalShipmentCost = 0.0;
 		Double totalFeeCost = 0.0;
 		for (Payment payment : order.getPayments()) {
@@ -215,6 +238,18 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		} catch (Exception e1) {
 			log.error("ERROR TO UPDATE STATUS", e1);
 		}
+	}
+	
+	private void updateQueueNotProcess(QueueDto queueDto) {
+		try {
+			queueDto.setProcessMsg("SHIPMENT INFO NOT RECEIVED YET");
+			queueDto.setProcessStatus(PROCESS_STATUS_DOWNLOAD_DONE);
+			queueDto.setUpdateDate(new Date());
+			queueOrderService.updateProcessStatusAndProcessMsg(queueDto);
+		} catch (Exception e1) {
+			log.error("ERROR TO UPDATE STATUS", e1);
+		}
+		
 	}
 
 	private void updateProcessStatusOnGoing(QueueDto queueDto) throws Exception {

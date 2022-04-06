@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 
 import br.silveira.conciliador.orders.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
+import br.silveira.conciliador.orders.dto.OrderItemDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
 import br.silveira.conciliador.orders.entity.FixedCostDetail;
 import br.silveira.conciliador.orders.entity.ItemCostDetail;
@@ -22,7 +23,13 @@ public class OrderMapper {
 	}
 
 	public static OrderValuesDto mapperToOrderValuesDto(Order order) {
-		return mapper.map(order , OrderValuesDto.class);
+		OrderValuesDto ret = mapper.map(order , OrderValuesDto.class);
+		ret.setSellerId(order.getSeller().getId());
+		
+		List<OrderItemDto> collectItems = order.getOrderItems().stream().map(list -> mapper.map(list,  OrderItemDto.class)).collect(Collectors.toList());
+		ret.setOrderItems(collectItems);
+		
+		return ret;
 	}
 
 	public static OrderCostCalculated mapperToOrderEntity(OrderCostCalculatedDto orderCostCalculatedDto) {

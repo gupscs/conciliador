@@ -10,19 +10,27 @@ import lombok.Data;
 public class OrderValuesDto {
 	
 	private String id;
-	
+
 	private String companyId;
-	
+
 	private Double totalAmount;
 	
+	private String sellerId;
+
 	private MktPlaceEnum mktPlace;
-	
+
 	private String feeType;
-	
+
 	private String mktPlaceStatus;
-	
+
 	private OrderStatusEnum orderStatus;
-	
+
+	private Double shippingCost;
+
+	private Integer shippingMethodId;
+
+	private String receiverZipcode;
+
 	private List<OrderItemDto> orderItems;
 
 }

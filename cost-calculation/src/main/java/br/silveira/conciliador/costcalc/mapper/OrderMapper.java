@@ -2,20 +2,21 @@ package br.silveira.conciliador.costcalc.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
 import br.silveira.conciliador.costcalc.dto.CalculationDto;
 import br.silveira.conciliador.costcalc.dto.FixedCostDto;
-import br.silveira.conciliador.costcalc.dto.ItemAverageCostDto;
+import br.silveira.conciliador.costcalc.dto.ItemCalculationValuesDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
 import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.feignClient.dto.FixedCostDetailDto;
+import br.silveira.conciliador.feignClient.dto.ItemAverageCostDto;
 import br.silveira.conciliador.feignClient.dto.ItemCostDetailDto;
-import br.silveira.conciliador.feignClient.dto.MktPlaceFeeDto;
 import br.silveira.conciliador.feignClient.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.feignClient.dto.OrderItemDto;
 import br.silveira.conciliador.feignClient.dto.OrderValuesDto;
@@ -45,31 +46,38 @@ public class OrderMapper {
 		
 		ret.setTaxCost(companyDto.getTaxCost());
 		
-		ret.setFixedCost(mapperFixedCostDto(companyDto));		
-		ret.setItemAverageCost(mapperItemAverageCost(companyDto));
+		ret.setShippingCost(orderDto.getShippingCost());
 		
-		for (MktPlaceFeeDto fee : companyDto.getMktPlaceFees()) {
-			if(orderDto.getFeeType().equalsIgnoreCase(fee.getFeeType())) {
-				ret.setFeeType(fee.getFeeType());
-				ret.setFeeAmount(fee.getFee());
-				break;
-			}
-		}
+		ret.setFixedCost(mapperFixedCostDto(companyDto));		
+		ret.setItemCalculationValuesDto(mapperItemCalculationValuesDto(companyDto, orderDto));
+		
+		ret.setMktPlaceFees(companyDto.getMktPlaceFees());
+		
+		ret.setMktPlace(orderDto.getMktPlace());
+		ret.setShippingMethodId(orderDto.getShippingMethodId());
+		ret.setReceiverZipcode(orderDto.getReceiverZipcode());
+		
+		ret.setSellerId(orderDto.getSellerId());
 		
 		return ret;
 		
 	}
 
-	private static List<ItemAverageCostDto> mapperItemAverageCost(CompanyCostValuesDto companyDto) {
-		List<ItemAverageCostDto> itemAverageCost = new ArrayList<ItemAverageCostDto>();
-		for (br.silveira.conciliador.feignClient.dto.ItemAverageCostDto it : companyDto.getItemAverageCost()) {
-			ItemAverageCostDto idt = new ItemAverageCostDto();
-			idt.setAverageCost(it.getAverageCost());
-			idt.setSku(it.getSku());
-			idt.setStartDate(it.getStartDate());
-			itemAverageCost.add(idt);
+	private static List<ItemCalculationValuesDto> mapperItemCalculationValuesDto(CompanyCostValuesDto companyDto, OrderValuesDto orderDto) {
+		
+		List<ItemCalculationValuesDto> collectItemValues = orderDto.getOrderItems().stream().map(dto -> mapper.map(dto, ItemCalculationValuesDto.class)).collect(Collectors.toList());
+		
+		for(ItemCalculationValuesDto dto : collectItemValues) {
+			for (ItemAverageCostDto it : companyDto.getItemAverageCost()) {
+				if(dto.getSku().equalsIgnoreCase(it.getSku())) {
+					dto.setAverageCost(it.getAverageCost());
+					dto.setStartDate(it.getStartDate());
+					break;
+				}				
+			}
 		}
-		return itemAverageCost;
+		
+		return collectItemValues;
 	}
 
 	private static List<FixedCostDto> mapperFixedCostDto(CompanyCostValuesDto companyDto) {

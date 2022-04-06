@@ -13,7 +13,8 @@ public class ItemCostDetailDto {
 	
 	private Double cost;
 	
-	private Double mktPlaceFeecost;
+	private Double mktPlaceFeeCost;
+	
 	
 
 }

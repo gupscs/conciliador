@@ -1,7 +1,6 @@
 package br.silveira.conciliador.feignClient.resource;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +15,11 @@ public interface OrderResource {
 
 
 	@PostMapping("/orders/saveOrder")
-	public ResponseEntity<Void> saveOrder(@RequestBody OrderDto orderDto) ;
+	public void saveOrder(@RequestBody OrderDto orderDto) ;
 
 	@PostMapping("/orders/saveOrderCostCalculated")
-	public ResponseEntity<Void> saveOrderCostCalculated(@RequestBody OrderCostCalculatedDto orderCostCalculatedDto) ;
+	public void saveOrderCostCalculated(@RequestBody OrderCostCalculatedDto orderCostCalculatedDto) ;
 
 	@GetMapping("/orders/getOrderValues/{id}")
-	public ResponseEntity<OrderValuesDto> getOrderValues(@PathVariable(value = "id") String orderId) ;
+	public OrderValuesDto getOrderValues(@PathVariable(value = "id") String orderId) ;
 }

@@ -11,6 +11,6 @@ public class ItemCostDetail {
 	
 	private Double cost;
 	
-	private Double mktPlaceFeecost;
+	private Double mktPlaceFeeCost;
 
 }

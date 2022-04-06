@@ -51,6 +51,10 @@ public class OrderDto {
 	
 	private Double shippingCost;
 	
+	private Integer shippingMethodId;
+	
+	private String receiverZipcode;
+	
 	private Double mktPlaceFeeCost;
 	
 	@NotNull(message = "item required")

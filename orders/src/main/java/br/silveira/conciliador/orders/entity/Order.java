@@ -60,6 +60,10 @@ public class Order {
 	
 	private Double shippingCost;
 	
+	private Integer shippingMethodId;
+	
+	private String receiverZipcode;
+	
 	private Double mktPlaceFeeCost;
 
 	private OrderCostCalculated orderCostCalculated;

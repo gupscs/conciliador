@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,8 @@ import br.silveira.conciliador.integrator.dto.QueueDto;
 import br.silveira.conciliador.integrator.mapper.QueueDtoMapper;
 import br.silveira.conciliador.integrator.mercadolivre.config.MercadoLivreConfig;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreNotificationDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentCostDto;
+import br.silveira.conciliador.integrator.mercadolivre.service.ShipmentMercadoLivreService;
 import br.silveira.conciliador.integrator.service.MktPlaceIntegrationConfigService;
 import br.silveira.conciliador.integrator.service.QueueFeedbackService;
 import br.silveira.conciliador.integrator.service.QueueNotImplementedService;
@@ -58,6 +61,9 @@ public class MercadoLivreResource {
 	@Autowired
 	@Qualifier("mktPlaceIntegrationConfigMercadoLivreServiceImpl")
 	private MktPlaceIntegrationConfigService mktPlaceIntegrationConfigService;
+	
+	@Autowired
+	private ShipmentMercadoLivreService shipmentMercadoLivreService;
 
 	//https://developers.mercadolivre.com.br/pt_br/produto-receba-notificacoes?nocache=true#Teste-suas-notificacoes
 	
@@ -120,6 +126,22 @@ public class MercadoLivreResource {
 		ret.put("appId", config.APP_ID);
 		ret.put("redirectUrl", config.REDIRECT_URL);
 		return ResponseEntity.ok(ret);
+	}
+	
+	@GetMapping("/getShippingCost/{companyId}/{mktPlaceUserId}/{itemId}/{zipcode}/{shippingMethodId}/{quantity}")
+	public ResponseEntity<MercadoLivreShipmentCostDto> getShippingCost(@PathVariable String companyId, @PathVariable Long mktPlaceUserId, @PathVariable String itemId, @PathVariable String zipcode, @PathVariable Double quantity, @PathVariable Integer shippingMethodId){
+		try {
+			MercadoLivreShipmentCostDto ret = shipmentMercadoLivreService.getShippingCostByItemCode(companyId, mktPlaceUserId, itemId, zipcode, quantity, shippingMethodId);
+			if(ret == null) {
+				return ResponseEntity.noContent().build();
+			}else {
+				return ResponseEntity.ok(ret);
+			}
+			
+		} catch (Exception e) {
+			log.error("getShippingCostByItemCode error", e);
+			return ResponseEntity.badRequest().build();
+		}
 	}
 
 }

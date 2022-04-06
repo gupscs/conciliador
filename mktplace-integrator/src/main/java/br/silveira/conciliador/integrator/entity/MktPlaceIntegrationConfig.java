@@ -34,6 +34,8 @@ public class MktPlaceIntegrationConfig {
 	
 	private String mktPlaceUsername;
 	
+	private Object originalUserData;
+	
 	private String apiToken;
 	
 	private String apiRefreshToken;

@@ -15,8 +15,8 @@ public interface OrganizationalResource {
 	
 	
 	@PostMapping("/organizational/saveCompany")
-	public ResponseEntity<Void> saveCompany(CompanyDto companyDto);
+	public void saveCompany(CompanyDto companyDto);
 	
 	@GetMapping("/organizational/getCompanyCostValues")
-	public ResponseEntity<CompanyCostValuesDto> getCompanyCostValues(CompanyCostValuesRequestDto dto);
+	public CompanyCostValuesDto getCompanyCostValues(CompanyCostValuesRequestDto dto);
 }

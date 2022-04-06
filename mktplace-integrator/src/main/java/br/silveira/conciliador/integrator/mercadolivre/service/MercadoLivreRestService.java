@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShippingOptionsDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreTokenDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserInfoDto;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreUserMeDto;
@@ -39,11 +40,12 @@ public interface MercadoLivreRestService {
 	public MercadoLivreUserInfoDto getUserInfo(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("User_id") Integer userId);
 		
 	@RequestMapping(method = RequestMethod.GET, value = "/shipments/{SHIPMENT_ID}", produces = "application/json")
-	public Object getShipment(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("SHIPMENT_ID") String shipmentId);
+	public MercadoLivreShipmentDto getShipment(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("SHIPMENT_ID") String shipmentId);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/collections/{PAYMENT_ID}", produces = "application/json")
 	public Object getPayment(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("PAYMENT_ID") String paymentId);
 	
-
+	@RequestMapping(method = RequestMethod.GET, value = "/items/{ITEM_ID}/shipping_options?zip_code={ZIPCODE}&quantity={QUANTITY}", produces = "application/json")
+	public MercadoLivreShippingOptionsDto getShippingOptionsByItemId(@RequestHeader(value = "Authorization", required = true) String bearerToken , @PathVariable("ITEM_ID") String itemId , @PathVariable("ZIPCODE") String zipcode , @PathVariable("QUANTITY") Double quantity );
 	
 }

@@ -16,10 +16,13 @@ import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.OrderItem;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Phone;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Seller;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentCostDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentDto;
+import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShippingOptionsDto;
 
 public class MercadoLivreOrderDtoMapper {
 
-	public static OrderDto mapperToOrderDto(MercadoLivreOrderDto order, QueueDto dto) {
+	public static OrderDto mapperToOrderDto(MercadoLivreOrderDto order, MercadoLivreShipmentDto shipment, QueueDto dto) {
 		OrderDto d = new OrderDto();
 		d.setCompanyId(dto.getCompanyId());
 		d.setMktPlace(dto.getMarketPlace());
@@ -37,7 +40,9 @@ public class MercadoLivreOrderDtoMapper {
 	    d.setInsertId("AUTO");
 	    //TODO VERIFICAR O FEEDBACK COMO TRATAR
 	    d.setOrderItems(mapperToOrderItemDto(order.getOrder_items()));
-
+	    
+	    d.setShippingMethodId(shipment.getShipping_option().getShipping_method_id());
+	    d.setReceiverZipcode(shipment.getReceiver_address().getZip_code());
 		return d;
 	}
 
@@ -99,5 +104,4 @@ public class MercadoLivreOrderDtoMapper {
 		if(phone.getNumber()!=null) ret.append(phone.getNumber());
 		return ret.toString();
 	}
-
 }

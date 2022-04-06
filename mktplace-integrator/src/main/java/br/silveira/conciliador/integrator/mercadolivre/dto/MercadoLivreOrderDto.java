@@ -27,7 +27,6 @@ public class MercadoLivreOrderDto {
     public double total_amount;
     public int paid_amount;
     public Coupon coupon;
-    //@JsonSerialize(using = MercadoLivreOrderItemSerializer.class)
     public List<OrderItem> order_items;
     public String currency_id;
     public List<Payment> payments;
