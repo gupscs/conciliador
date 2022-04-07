@@ -70,7 +70,7 @@ public class MercadoLivreOrderDto {
 		private String title;
 		private String category_id;
 		private Object variation_id;
-		private Object seller_custom_field;
+		private String seller_custom_field;
 		private List<Object> variation_attributes;
 		private String warranty;
 		private String condition;

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.common.enums.MktPlaceEnum;
 import br.silveira.conciliador.common.enums.RoleEnum;
 import br.silveira.conciliador.feignClient.dto.UserDto;
 import br.silveira.conciliador.feignClient.resource.SysadminResource;
@@ -69,47 +70,25 @@ public class CompanyServiceImpl implements CompanyService {
 	public CompanyCostValuesDto getCompanyCostValues(CompanyCostValuesRequestDto dto) throws Exception {
 		List<ItemAverageCost> itemAvgCost = null;
 		List<MktPlaceFee> mktPlace = null;
-
-		switch (getSelectCondition(dto)) {
-		case 0:
-			mktPlace = mktPlaceFeeRepository.findByCompanyId(dto.getId());
+		
+		if(CollectionUtils.isEmpty(dto.getSku())) {			
 			itemAvgCost = itemAverageCostRepository.findByCompanyId(dto.getId());
-			break;
-		case 1:
-			mktPlace = mktPlaceFeeRepository.findByMarketPlaceAndFeeType(dto.getMarketPlace(), dto.getFeeType());
-			itemAvgCost = itemAverageCostRepository.findByCompanyId(dto.getId());
-			break;
-		case 2:
-			mktPlace = mktPlaceFeeRepository.findByCompanyId(dto.getId());
-			itemAvgCost = itemAverageCostRepository.findBySku(dto.getSku());
-			break;
-		case 3:
-			mktPlace = mktPlaceFeeRepository.findByMarketPlaceAndFeeType(dto.getMarketPlace(), dto.getFeeType());
-			itemAvgCost = itemAverageCostRepository.findBySku(dto.getSku());
-			break;
+		}else {
+			itemAvgCost = itemAverageCostRepository.findByCompanyIdAndSku(dto.getId(), dto.getSku());
+		}
+		
+		if(dto.getMarketPlace() != null && StringUtils.hasText(dto.getFeeType())) {			
+			mktPlace = mktPlaceFeeRepository.findByCompanyIdAndMarketPlaceAndFeeType(dto.getId(),dto.getMarketPlace(), dto.getFeeType());
+		}else if(dto.getMarketPlace() != null) {
+			mktPlace = mktPlaceFeeRepository.findByCompanyIdAndMarketPlace(dto.getId(),dto.getMarketPlace());
+		}else {
+			mktPlace = mktPlaceFeeRepository.findByCompanyId(dto.getId());			
 		}
 
 		List<FixedCost> fixedCost = fixedCostRepository.findByCompanyId(dto.getId());
 		Optional<Company> taxCost = companyRepository.findTaxCostById(dto.getId());
 
 		return MapperUtil.mapperToCompanyCostValuesDto(dto, mktPlace, itemAvgCost, fixedCost, taxCost.get());
-
-	}
-
-	private int getSelectCondition(CompanyCostValuesRequestDto dto) throws Exception {
-		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null && CollectionUtils.isEmpty(dto.getSku()))
-			return 0;
-
-		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null && CollectionUtils.isEmpty(dto.getSku()))
-			return 1;
-
-		if (!StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() == null && !CollectionUtils.isEmpty(dto.getSku()))
-			return 2;
-
-		if (StringUtils.hasLength(dto.getFeeType()) && dto.getMarketPlace() != null && !CollectionUtils.isEmpty(dto.getSku()))
-			return 3;
-
-		throw new Exception("Invlaid Request dto, mandatory fields are missing - DTO: " + dto);
 
 	}
 

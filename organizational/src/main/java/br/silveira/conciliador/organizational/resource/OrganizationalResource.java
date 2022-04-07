@@ -67,17 +67,18 @@ public class OrganizationalResource {
 	private MktPlaceFeeService mktPlaceFeeService;
 
 	@PostMapping("/saveCompany")
-	public ResponseEntity<Void> saveCompany(CompanyDto companyDto) {
+	public ResponseEntity<Void> saveCompany(@RequestBody CompanyDto companyDto) {
 		try {
 			companyService.saveCompany(companyDto);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			log.error(" saveCompany Errors - DTO: "+companyDto , e);
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
 
-	@GetMapping("/getCompanyCostValues")
-	public ResponseEntity<CompanyCostValuesDto> getCompanyCostValues(CompanyCostValuesRequestDto dto) {
+	@PostMapping("/getCompanyCostValues")
+	public ResponseEntity<CompanyCostValuesDto> getCompanyCostValues(@RequestBody CompanyCostValuesRequestDto dto) {
 		try {
 			CompanyCostValuesDto ret = companyService.getCompanyCostValues(dto);
 			if (ret == null) {
@@ -86,6 +87,7 @@ public class OrganizationalResource {
 				return ResponseEntity.ok(ret);
 			}
 		} catch (Exception e) {
+			log.error(" getCompanyCostValues Errors - DTO: "+dto , e);
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
@@ -96,6 +98,7 @@ public class OrganizationalResource {
 			companyService.register(register);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			log.error(" register Errors - DTO: "+register , e);
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
@@ -106,6 +109,7 @@ public class OrganizationalResource {
 			RegisterCheckDto dto = companyService.registerCheck(identificationNo, username);
 			return ResponseEntity.ok().body(dto);
 		} catch (Exception e) {
+			log.error(" registerCheck Errors  " , e);
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}

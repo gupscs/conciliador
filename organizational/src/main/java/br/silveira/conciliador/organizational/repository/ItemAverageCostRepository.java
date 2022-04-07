@@ -14,7 +14,7 @@ public interface ItemAverageCostRepository extends MongoRepository<ItemAverageCo
 	
 	public List<ItemAverageCost> findByCompanyId(String companyId);
 	
-	public List<ItemAverageCost> findBySku(List<String> sku);
+	public List<ItemAverageCost> findByCompanyIdAndSku(String companyId, List<String> sku);
 	
 	public Optional<ItemAverageCost> findByCompanyIdAndSkuAndStartDateAndEnable(String companyId, String sku, Date startDate, Boolean enable);
 

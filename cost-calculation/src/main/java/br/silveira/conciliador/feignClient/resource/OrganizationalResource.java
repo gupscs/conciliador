@@ -1,9 +1,8 @@
 package br.silveira.conciliador.feignClient.resource;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
@@ -15,8 +14,8 @@ public interface OrganizationalResource {
 	
 	
 	@PostMapping("/organizational/saveCompany")
-	public void saveCompany(CompanyDto companyDto);
+	public void saveCompany(@RequestBody CompanyDto companyDto);
 	
-	@GetMapping("/organizational/getCompanyCostValues")
-	public CompanyCostValuesDto getCompanyCostValues(CompanyCostValuesRequestDto dto);
+	@PostMapping("/organizational/getCompanyCostValues")
+	public CompanyCostValuesDto getCompanyCostValues(@RequestBody CompanyCostValuesRequestDto dto);
 }

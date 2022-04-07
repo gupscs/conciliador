@@ -55,7 +55,7 @@ public class MercadoLivreOrderDtoMapper {
 			d.setCurrency(i.getCurrency_id());
 			d.setQuantity(i.getQuantity());
 			d.setSaleFee(i.getSale_fee());
-			d.setSku(i.getItem().getSeller_sku());
+			d.setSku(i.getItem().getSeller_sku() == null ? i.getItem().getSeller_custom_field() : i.getItem().getSeller_sku() );
 			d.setTitle(i.getItem().getTitle());
 			d.setTotalPrice(i.getFull_unit_price());
 			d.setFeeTypeId(i.getListing_type_id());

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import br.silveira.conciliador.costcalc.dto.CalculationDto;
 import br.silveira.conciliador.costcalc.dto.FixedCostDto;
@@ -21,6 +22,7 @@ import br.silveira.conciliador.feignClient.dto.MercadoLivreShipmentCostDto;
 import br.silveira.conciliador.feignClient.dto.MktPlaceFeeDto;
 import br.silveira.conciliador.feignClient.resource.MercadoLivreResource;
 
+@Service("mktPlaceCostCalculationMercadoLivreServiceImpl")
 public class MktPlaceCostCalculationMercadoLivreServiceImpl implements MktPlaceCostCalculationService {
 
 	private static final Logger log = LogManager.getLogger(MktPlaceCostCalculationMercadoLivreServiceImpl.class);
@@ -52,6 +54,17 @@ public class MktPlaceCostCalculationMercadoLivreServiceImpl implements MktPlaceC
 	}
 
 	private CalculationDto calculationShippingCost(OrderCalculationValuesDto dto) {
+		
+		CalculationDto retMockup = new CalculationDto();
+
+		retMockup.setCalculationName(SHIPPING_NAME);
+		retMockup.setCalculationDetail("mockup");
+		retMockup.setValue(100.00);
+		
+		return retMockup;
+		
+		/**
+		
 		// TODO TESTAR OS VALORES SE TEM % DE DESCONTO PELA REPUTAÇÃO , VALIDAR OS PEDIDOS COM FRETE GRATIS
 		Double shippingCostCalculation = 0.0;
 		for (ItemCalculationValuesDto item : dto.getItemCalculationValuesDto()) {
@@ -78,6 +91,7 @@ public class MktPlaceCostCalculationMercadoLivreServiceImpl implements MktPlaceC
 		}
 		ret.setValue(DoubleUtil.round2decimals(shippingCostCalculation));
 		return ret;
+		**/
 	}
 
 	private List<CalculationDto> calculationFixedCost(OrderCalculationValuesDto dto) {
