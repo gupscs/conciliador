@@ -109,15 +109,7 @@ public class OrderMapper {
 	}
 
 	private static List<ItemCostDetailDto> mapperItemCostDetail(OrderCalculationResultDto calRes) {
-		List<ItemCostDetailDto> itemCostDetail = new ArrayList<ItemCostDetailDto>();
-		for (br.silveira.conciliador.costcalc.dto.ItemCostDetailDto it : calRes.getItemCostDetail()) {
-			ItemCostDetailDto item = new ItemCostDetailDto();
-			item.setCost(it.getCost());
-			item.setSku(it.getSku());
-			item.setTitle(it.getTitle());
-			itemCostDetail.add(item);
-		}
-		return itemCostDetail;
+		return calRes.getItemCostDetail().stream().map(o -> mapper.map(o, ItemCostDetailDto.class)).collect(Collectors.toList());
 	}
 
 	private static List<FixedCostDetailDto> mapperFixedCostDetail(OrderCalculationResultDto calRes) {

@@ -26,11 +26,6 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	
 	private static final String MSG_CALCULATION_ORDER_SUCESS = "Order Id: %s calculate sucessfully"; 
 	
-	private static final String TAX_NAME = "TAX";
-	
-	private static final String SHIPPING_NAME = "SHIPPING";
-	
-	private static final Double LIMIT_FOR_FREE_SHIPMENT = 79.0;
 	
 	@Autowired
 	private OrderResource orderResource ;
@@ -61,7 +56,7 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		
 		OrderCostCalcuation orderSaved = orderCostCalculationRepository.save(OrderMapper.mapperToOrderCostCalculationEntity(calculationRes));
 		
-		criar um serviço ou nova classe para comparação dos valores (criar novos campos)
+		//criar um serviço ou nova classe para comparação dos valores (criar novos campos)
 		
 		OrderCostCalculatedDto orderCost = OrderMapper.mapperToOrderCostDto(calculationRes);
 		orderCost.setOrderCostCalcuationId(orderSaved.getId());
