@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
-import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
+import br.silveira.conciliador.costcalc.entity.OrderCostCalculation;
 import br.silveira.conciliador.costcalc.factories.MktPlaceCostCalculationFactory;
 import br.silveira.conciliador.costcalc.mapper.OrderMapper;
 import br.silveira.conciliador.costcalc.repository.OrderCostCalculationRepository;
@@ -54,7 +54,7 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		OrderCalculationValuesDto calculationDto = OrderMapper.mapperToOrderCalculationValuesDto(orderValues, companyCostValues);
 		OrderCalculationResultDto calculationRes = mktPlaceCostCalculationFactory.getImpl(orderValues.getMktPlace()).calculateOrder(calculationDto);
 		
-		OrderCostCalcuation orderSaved = orderCostCalculationRepository.save(OrderMapper.mapperToOrderCostCalculationEntity(calculationRes));
+		OrderCostCalculation orderSaved = orderCostCalculationRepository.save(OrderMapper.mapperToOrderCostCalculationEntity(calculationRes));
 		
 		//criar um serviço ou nova classe para comparação dos valores (criar novos campos)
 		

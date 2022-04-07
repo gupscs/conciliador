@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
 import br.silveira.conciliador.costcalc.dto.CalculationDto;
 import br.silveira.conciliador.costcalc.dto.FixedCostDto;
 import br.silveira.conciliador.costcalc.dto.ItemCalculationValuesDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationResultDto;
 import br.silveira.conciliador.costcalc.dto.OrderCalculationValuesDto;
-import br.silveira.conciliador.costcalc.entity.OrderCostCalcuation;
+import br.silveira.conciliador.costcalc.entity.OrderCostCalculation;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesDto;
 import br.silveira.conciliador.feignClient.dto.CompanyCostValuesRequestDto;
 import br.silveira.conciliador.feignClient.dto.FixedCostDetailDto;
@@ -123,8 +124,9 @@ public class OrderMapper {
 		return fixedCostDetail;
 	}
 
-	public static OrderCostCalcuation mapperToOrderCostCalculationEntity(OrderCalculationResultDto calculationRes) {
-		return mapper.map(calculationRes, OrderCostCalcuation.class);
+	public static OrderCostCalculation mapperToOrderCostCalculationEntity(OrderCalculationResultDto calculationRes) {
+		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		return mapper.map(calculationRes, OrderCostCalculation.class);
 	}
 
 }

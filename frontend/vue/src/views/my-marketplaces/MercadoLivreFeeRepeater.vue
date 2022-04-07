@@ -50,7 +50,6 @@
                 id="item-feeType"
                 type="text"
                 placeholder="Tipo da comissão do ML"
-                :formatter="formatterUpperCase"
                 v-model="item.feeType"
               />
             </b-form-group>
@@ -190,9 +189,6 @@ export default {
     window.removeEventListener("resize", this.initTrHeight);
   },
   methods: {
-    formatterUpperCase(value) {
-      return value.toUpperCase();
-    },
     repeateAgain() {
       this.items.push({
         itemId: (this.nextTodoId += this.nextTodoId),

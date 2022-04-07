@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Document
-public class OrderCostCalcuation {
+public class OrderCostCalculation {
 
 	@Id
 	private String id;

@@ -119,7 +119,7 @@ public class MktPlaceCostCalculationMercadoLivreServiceImpl implements MktPlaceC
 
 	private List<ItemCostDetailDto> calculateItemCost(OrderCalculationValuesDto dto, CalculationDto shippingCost) {
 		Double fixedFeeCost = 5.00;
-		if (shippingCost.getValue().compareTo(0.0) < 0) {
+		if (shippingCost.getValue().compareTo(0.0) < 0) { //TODO VERIFICAR SE É KIT (TENTAR DESCOBRIR COMO FAZER)
 			fixedFeeCost = 0.00;
 		}
 
