@@ -6,6 +6,8 @@ import lombok.Data;
 public class ItemCostDetailDto {
 	
 	private String sku;
+	
+	private String mktPlaceItemId;
 
 	private String title;
 	
@@ -14,7 +16,5 @@ public class ItemCostDetailDto {
 	private Double cost;
 	
 	private Double mktPlaceFeeCost;
-	
-	
 
 }

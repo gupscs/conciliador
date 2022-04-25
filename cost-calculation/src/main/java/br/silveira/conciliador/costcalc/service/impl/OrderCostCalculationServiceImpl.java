@@ -41,8 +41,15 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 	
 	@Override
 	public void calculateReturnOrder(OrderCalculationDto dto) {
+		/**
+		No mercado livre o valor da compra retorna, porém se foi culpa do vendedor, tem o custo do frete de retorno
+		Melhor criar um campo de return e o de shippingReturn
+				
+		returnShippingCost = valor do frete se tiver ou não
+		salesMoneyBack = valor da compra com o menos
 		
-		
+		Criar outra classe so para calculo de retorno
+		**/
 	}
 
 	@Override

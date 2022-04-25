@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 // Routes
 import { canNavigate } from '@/libs/acl/routeProtection'
 import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
@@ -10,6 +9,7 @@ import examples from './routes/examples'
 import myAccount from './routes/my-account'
 import sales from './routes/sales'
 import system from './routes/system'
+
 
 Vue.use(VueRouter)
 
@@ -31,6 +31,21 @@ const router = new VueRouter({
       redirect: 'error-404',
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = isUserLoggedIn()
+  if( to.meta.resource === 'Auth'){
+    next()
+  }else if(!isLoggedIn){
+    next('/login')
+  }else  if(canNavigate(to) || to.meta.redirectIfLoggedIn ){
+    next()
+  }else if(!canNavigate(to)){
+    next('/not-authorized')
+  }else{
+    console.log("!! Error !! - Error to generate route")
+  }
 })
 
 // ? For splash screen

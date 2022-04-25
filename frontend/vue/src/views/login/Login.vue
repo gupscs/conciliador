@@ -264,7 +264,8 @@ export default {
                 .then((response) => {
                   const userData = response.data;
                   localStorage.setItem("userData", JSON.stringify(userData));
-                  //this.$ability.update(userData.ability)
+                  localStorage.setItem("companyId", userData.companyId);
+                  this.$ability.update(userData.ability)
                   this.$router.replace(getHomeRouteForLoggedInUser(userData.role))
                     .then(() => {
                       this.$toast({

@@ -36,7 +36,7 @@ public class MapperUtil<T,X> {
 		dto.setAvatar("@/assets/images/avatars/13-small.png");
 		dto.setRole(getRole(user));
 		for (RoleEnum roleEnum : user.getRoles()) {
-			dto.addAbility(roleEnum.toString(), "all");
+			dto.addAbility("all",roleEnum.toString());
 		}
 		return dto;
 	}

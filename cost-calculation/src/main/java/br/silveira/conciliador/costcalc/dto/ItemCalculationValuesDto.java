@@ -12,6 +12,8 @@ public class ItemCalculationValuesDto {
 	
 	private String sku;
 	
+	private String title;
+	
 	private Double averageCost;
 	
 	private String currency;

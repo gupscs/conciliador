@@ -131,6 +131,8 @@ public class MktPlaceCostCalculationMercadoLivreServiceImpl implements MktPlaceC
 		List<ItemCostDetailDto> ret = new ArrayList<ItemCostDetailDto>();
 		for (ItemCalculationValuesDto item : dto.getItemCalculationValuesDto()) {
 			ItemCostDetailDto d = new ItemCostDetailDto();
+			d.setMktPlaceItemId(  item.getMktPlaceItemId());
+			d.setTitle(item.getTitle());
 			d.setSku(item.getSku());
 			d.setCost(item.getAverageCost());
 			

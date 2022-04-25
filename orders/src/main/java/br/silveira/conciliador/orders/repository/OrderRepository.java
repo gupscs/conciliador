@@ -1,5 +1,6 @@
 package br.silveira.conciliador.orders.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -18,4 +19,6 @@ public interface OrderRepository extends MongoRepository<Order, String>{
 	
 	@Query(value="{ id : ?0 }", fields="{ id : 1 , companyId : 1 , seller : 1 ,  totalAmount : 1  , mktPlace : 1 , mktPlaceStatus : 1 , feeType : 1 , orderStatus : 1, orderItems : 1 , shippingCost : 1 , shippingMethodId : 1 , receiverZipcode : 1 , orderItems : 1}")
 	public Optional<Order> getValuesById(String orderId);
+
+	public List<Order> findByCompanyId(String companyId);
 }

@@ -5,6 +5,7 @@ export default [
     component: () => import('@/views/login/Login.vue'),
     meta: {
       layout: 'full',
+      resource: 'Auth',
     },
   },
   {
@@ -13,6 +14,7 @@ export default [
     component: () => import('@/views/register/Register.vue'),
     meta: {
       layout: 'full',
+      resource: 'Auth',
     },
   },
   {
@@ -21,16 +23,19 @@ export default [
     component: () => import('@/views/error/Error404.vue'),
     meta: {
       layout: 'full',
+      resource: 'Auth',
     },
   },
   {
-    path: '/mercado-livre/authorizationRedirect',
-    name: 'mercado-livre-authorization-redirect',
-    component: () => import('@/views/my-marketplaces/mercado-livre/AuthorizationRedirect.vue'),
+    path: '/not-authorized',
+    name: 'misc-not-authorized',
+    component: () => import('@/views/error/NotAuthorized.vue'),
     meta: {
       layout: 'full',
+      redirectIfLoggedIn: true
     },
   },
+  
   {
     path: '*',
     redirect: 'error-404',

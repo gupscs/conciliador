@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import br.silveira.conciliador.common.enums.OrderStatusEnum;
 import br.silveira.conciliador.feignClient.dto.OrderDto;
 import br.silveira.conciliador.feignClient.resource.OrderResource;
 import br.silveira.conciliador.integrator.dto.OrderProcessDto;
@@ -20,6 +21,7 @@ import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreOrderDto.Payment;
 import br.silveira.conciliador.integrator.mercadolivre.dto.MercadoLivreShipmentDto;
 import br.silveira.conciliador.integrator.mercadolivre.mapper.MercadoLivreOrderDtoMapper;
+import br.silveira.conciliador.integrator.mercadolivre.service.MercadoLivreRestService;
 import br.silveira.conciliador.integrator.mercadolivre.service.ShipmentMercadoLivreService;
 import br.silveira.conciliador.integrator.repository.MktPlaceIntegrationConfigRepository;
 import br.silveira.conciliador.integrator.service.OrderService;
@@ -68,6 +70,9 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 	@Autowired
 	private QueueOrderService queueOrderService;
 	
+	@Autowired
+	private MercadoLivreRestService mercadoLivreRestService;
+	
 	//TODO REFATORAR PARA ELIMINAR O DTO QueueDto E MANTER APENAS O OrderProcessDto , para isso encontrar um modo de fazer update em um campo especifico do mongodb
 	
 	@Override
@@ -106,7 +111,7 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 			}
 			
 			MercadoLivreOrderDto order = (MercadoLivreOrderDto) orderProcessDto.getDocumentOriginalData();
-			MercadoLivreShipmentDto shipment = shipmentMercadoLivreService.getShipmentByCompanyIdAndMktPlaceAndShipmentId(orderProcessDto.getCompanyId(), orderProcessDto.getMarketPlace(),  String.valueOf(order.getShipping().getId()));
+			MercadoLivreShipmentDto shipment = mercadoLivreRestService.getShipment(orderProcessDto.getApiToken(), String.valueOf(order.getShipping().getId()));
 			
 			if(shipment != null) {
 				OrderDto orderDto = convertMercadoLivreOrderDtoToOrderDto(order, shipment, dto);				
@@ -184,10 +189,21 @@ public class OrderMercadoLivreServiceImpl extends MercadoLivreServiceCommon impl
 		ret.setMktPlaceFeeCost(totalFeeCost);
 		ret.setMktPlaceFeeType(finalFeeType);
 		
+		statusMapping(ret, order);
+		
 		return ret;
 	}
 	
 	
+
+	private void statusMapping(OrderDto ret, MercadoLivreOrderDto order) {
+		if("".equals(order.getStatus())){
+			ret.setOrderStatus(OrderStatusEnum.DELIVERIED);
+		}else {
+			ret.setOrderStatus(OrderStatusEnum.PROCESSING);
+		}
+	}
+
 
 	private QueueDto validateAndMapperToDto(OrderProcessDto orderProcessDto) {
 		if (orderProcessDto == null) {

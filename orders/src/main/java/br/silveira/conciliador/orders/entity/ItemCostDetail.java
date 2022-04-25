@@ -6,6 +6,8 @@ import lombok.Data;
 public class ItemCostDetail {
 	
 	private String sku;
+	
+	private String mktPlaceItemId;
 
 	private String title;
 	

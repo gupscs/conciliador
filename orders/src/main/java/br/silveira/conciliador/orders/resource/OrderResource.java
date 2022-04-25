@@ -1,9 +1,12 @@
 package br.silveira.conciliador.orders.resource;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,8 @@ import br.silveira.conciliador.common.constant.RestTagConstant;
 import br.silveira.conciliador.orders.dto.OrderCostCalculatedDto;
 import br.silveira.conciliador.orders.dto.OrderDto;
 import br.silveira.conciliador.orders.dto.OrderValuesDto;
+import br.silveira.conciliador.orders.entity.Order;
+import br.silveira.conciliador.orders.repository.OrderRepository;
 import br.silveira.conciliador.orders.service.OrderService;
 
 @RestController
@@ -26,6 +31,9 @@ public class OrderResource {
 
 	@Autowired
 	private OrderService orderService;
+
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@PostMapping("/saveOrder")
 	public ResponseEntity<Void> saveOrder(@RequestBody OrderDto orderDto) {
@@ -63,4 +71,20 @@ public class OrderResource {
 			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
 		}
 	}
+
+	@GetMapping("/getOrderByCompanyId/{companyId}")
+	public ResponseEntity<List<Order>> getOrderByCompanyId(@PathVariable String companyId) {
+		try {
+			List<Order> orders = orderRepository.findByCompanyId(companyId);
+			if (CollectionUtils.isEmpty(orders)) {
+				return ResponseEntity.notFound().build();
+			} else {
+				return ResponseEntity.ok(orders);
+			}
+		} catch (Exception e) {
+			log.error("Error getOrderByCompanyId - CompanyId: " + companyId, e);
+			return ResponseEntity.badRequest().header(RestTagConstant.HD_ERROR_MSG_TAG, e.getMessage()).build();
+		}
+	}
+
 }

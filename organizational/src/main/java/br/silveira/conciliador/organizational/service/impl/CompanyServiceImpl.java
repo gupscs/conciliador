@@ -109,7 +109,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	private List<RoleEnum> getRegisterRoles() {
 		List<RoleEnum> ret = new ArrayList<RoleEnum>();
-		ret.add(RoleEnum.CUSTOMER_ADMIN);
+		ret.add(RoleEnum.CUSTOMER);
 		return ret;
 	}
 

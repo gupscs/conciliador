@@ -47,8 +47,6 @@ public class OrderDto {
 	
 	private Double totalAmount;
 	
-	private String status;
-	
 	private Double shippingCost;
 	
 	private Integer shippingMethodId;

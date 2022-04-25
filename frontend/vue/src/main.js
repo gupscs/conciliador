@@ -17,6 +17,7 @@ import '@/libs/clipboard'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
 import '@/libs/tour'
+import '@/libs/acl'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)

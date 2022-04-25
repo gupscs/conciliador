@@ -4,6 +4,8 @@ export default [
         name: 'my-info',
         component: () => import('@/views/my-info/MyInfo.vue'),
         meta: {
+          resource: 'CUSTOMER',
+          action: 'all',
           pageTitle: 'Meus Dados',
           breadcrumb: [
             {
@@ -21,6 +23,8 @@ export default [
         name: 'my-marketplaces',
         component: () => import('@/views/my-marketplaces/MyMarketplaces.vue'),
         meta: {
+          resource: 'CUSTOMER',
+          action: 'all',
           pageTitle: 'Meus Marketplaces',
           breadcrumb: [
             {
@@ -38,6 +42,8 @@ export default [
         name: 'fixed-cost',
         component: () => import('@/views/fixed-cost/FixedCost.vue'),
         meta: {
+          resource: 'CUSTOMER',
+          action: 'all',
           pageTitle: 'Custos Fixos',
           breadcrumb: [
             {
@@ -55,6 +61,8 @@ export default [
         name: 'item-cost',
         component: () => import('@/views/item-cost/ItemCost.vue'),
         meta: {
+          resource: 'CUSTOMER',
+          action: 'all',
           pageTitle: 'Custos dos Produtos',
           breadcrumb: [
             {
@@ -65,6 +73,16 @@ export default [
               active: true,
             },
           ],
+        },
+      },
+      {
+        path: '/mercado-livre/authorizationRedirect',
+        name: 'mercado-livre-authorization-redirect',
+        component: () => import('@/views/my-marketplaces/mercado-livre/AuthorizationRedirect.vue'),
+        meta: {
+          layout: 'full',
+          resource: 'CUSTOMER',
+          action: 'all',
         },
       }
 ]
