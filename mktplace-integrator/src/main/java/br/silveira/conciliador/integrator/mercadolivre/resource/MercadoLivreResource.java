@@ -67,7 +67,7 @@ public class MercadoLivreResource {
 
 	//https://developers.mercadolivre.com.br/pt_br/produto-receba-notificacoes?nocache=true#Teste-suas-notificacoes
 	
-	@PostMapping("/notif")
+	@PostMapping("/notification")
 	public ResponseEntity<?> notification(@RequestBody MercadoLivreNotificationDto notificationDto) {
 		QueueDto dto = QueueDtoMapper.mapperFromMercadoLivreNotification(notificationDto);
 		try {

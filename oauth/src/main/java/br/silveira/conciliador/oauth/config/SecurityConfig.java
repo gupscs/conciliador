@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		//liberação para a url do google app engine que faz o health check (/_ah/**)
-		http.authorizeRequests((requests) -> requests.antMatchers(HttpMethod.GET, "/_ah/**", "/").permitAll().anyRequest().authenticated());
+		http.authorizeRequests((requests) -> requests.antMatchers(HttpMethod.GET, "/_ah/**", "/", "/actuator/health").permitAll().anyRequest().authenticated());
 		http.formLogin();
 		http.httpBasic();
 	}

@@ -19,9 +19,9 @@ public class SecurityConfig {
 	@Value("${cors.allowedOrigins}")
 	private String[] ALLOWED_ORIGINS;
 
-	// TODO PASSAR PARA CONFIGURAÇÕES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
+	// TODO PASSAR PARA CONFIGURAÃ‡Ã•ES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
 	// ACESSO) - Cadastro de ROLE x URL e outro de Grupos x ROLE
-	private static final String[] PUBLIC = { "/","/_ah/**","/oauth/**", "/oauth/check_token", "/actuator/**" , "/organizational/register**", "/mktplace-integrator/**"};
+	private static final String[] PUBLIC = { "/","/_ah/**","/oauth/**", "/oauth/check_token"};
 
 	private static final String[] CUSTOMER_ADMIN = { "/sysadmin/**", "/orders/**", "/organizational/**" };
 
@@ -36,11 +36,9 @@ public class SecurityConfig {
 //		http.authorizeExchange(exchanges -> exchanges.anyExchange().authenticated()).oauth2ResourceServer().opaqueToken();
 		// TODO IMPLEMENTAR O CORS
 		http.csrf().disable().authorizeExchange().pathMatchers(PUBLIC).permitAll()
-		.pathMatchers(CUSTOMER_ADMIN).permitAll()//TODO CORRIGIR PROBLEMA DE AUTENTICAÇAO PELAS ROLES.hasAnyRole("CUSTOMER_ADMIN")
-				.pathMatchers(CUSTOMER_MANAGER).hasAnyRole("CUSTOMER_MANAGER")
-				.pathMatchers(CUSTOMER_VIEW).hasAnyRole("CUSTOMER_VIEW")
-				.pathMatchers(SUPER_USER).hasAnyRole("SUPER_USER").anyExchange().authenticated().and().oauth2ResourceServer().opaqueToken();
+		.pathMatchers("/**").authenticated().and().oauth2ResourceServer().opaqueToken();
 		http.cors().configurationSource(corsConfigurationSource());
+		http.redirectToHttps();
 		return http.build();
 	}
 

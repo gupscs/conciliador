@@ -46,7 +46,7 @@ public class OrderCostCalculationServiceImpl implements OrderCostCalculationServ
 		Melhor criar um campo de return e o de shippingReturn
 				
 		returnShippingCost = valor do frete se tiver ou não
-		salesMoneyBack = valor da compra com o menos
+		salesMoneyBack = valor da compra com o menos (retorna integral ???)
 		
 		Criar outra classe so para calculo de retorno
 		**/
