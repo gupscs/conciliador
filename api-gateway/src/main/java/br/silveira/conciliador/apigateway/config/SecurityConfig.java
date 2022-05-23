@@ -21,7 +21,7 @@ public class SecurityConfig {
 
 	// TODO PASSAR PARA CONFIGURAÃ‡Ã•ES DINAMICAS PUXANDO DO SERVICO SYSADMIN (ROLE X
 	// ACESSO) - Cadastro de ROLE x URL e outro de Grupos x ROLE
-	private static final String[] PUBLIC = { "/","/_ah/**","/oauth/**", "/oauth/check_token"};
+	private static final String[] PUBLIC = { "/","/_ah/**","/oauth/**", "/oauth/check_token , /**"};
 
 	private static final String[] CUSTOMER_ADMIN = { "/sysadmin/**", "/orders/**", "/organizational/**" };
 
