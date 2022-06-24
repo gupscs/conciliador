@@ -52,9 +52,7 @@ public class UserDetailsDto implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		if(grants == null) {
-			if (getRoles() == null) {
-				return null;
-			} else {
+			if (getRoles() != null) {
 				grants = getRoles().stream().map(r -> new SimpleGrantedAuthority(r.toString())).collect(Collectors.toList());
 			}
 		}

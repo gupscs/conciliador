@@ -1,4 +1,5 @@
 package br.silveira.conciliador.apigateway.config;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -8,13 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RouterValidator {
 
-    public static final List<String> openApiEndpoints = List.of(
-            "/oauth/oauth/token",
-            "/organizational/organizational/registerCheck/",
-            "/organizational/organizational/register",
-            "/oauth/check_token",
-            "/_ah/**"
-            
+    public static final List<String> openApiEndpoints= List.of(
+    		"/_ah/"
+    		,"/oauth/oauth/token"
+    		,"/oauth/token" 
     );
 
     public Predicate<ServerHttpRequest> isSecured =

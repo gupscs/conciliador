@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.jwt.crypto.sign.RsaSigner;
+import org.springframework.security.jwt.crypto.sign.Signer;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -11,7 +13,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 public class AppConfig {
 	
 	
-	//TODO COLOCAR A CHAVE EM VARIAVEL DE AMBIENTE
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 	
