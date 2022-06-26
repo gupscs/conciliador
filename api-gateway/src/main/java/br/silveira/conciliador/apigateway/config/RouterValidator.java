@@ -11,8 +11,8 @@ public class RouterValidator {
 
     public static final List<String> openApiEndpoints= List.of(
     		"/_ah/"
-    		,"/oauth/oauth/token"
-    		,"/oauth/token" 
+    		,"/oauth/token"
+    		,"/mktplace-integrator/mercado-livre/notification" 
     );
 
     public Predicate<ServerHttpRequest> isSecured =
