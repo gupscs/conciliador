@@ -9,8 +9,8 @@ const axiosIns = axios.create({
   // baseURL: 'https://some-domain.com/api/',
   // timeout: 1000,
   // headers: {'X-Custom-Header': 'foobar'}
-  baseURL: 'http://localhost:8090',
-  //baseURL: 'https://vps39242.publiccloud.com.br',
+  //baseURL: 'http://localhost:8090',
+  baseURL: 'https://vps39840.publiccloud.com.br',
   timeout: 100000,
   
 })

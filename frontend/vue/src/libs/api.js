@@ -2,8 +2,8 @@ import axios from "axios";
 import useJwt from '@/auth/jwt/useJwt';
 
 const api = axios.create({
-    baseURL: "http://localhost:8090",
-    //baseURL: "https://vps39242.publiccloud.com.br",
+    //baseURL: "http://localhost:8090",
+    baseURL: "https://vps39840.publiccloud.com.br",
     timeout: 10000,
     headers: { 'Authorization': 'Basic bXlhcHA6MTIz' }
 });
