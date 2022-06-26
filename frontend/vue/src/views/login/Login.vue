@@ -247,7 +247,7 @@ export default {
           });
           var config = {
             method: "post",
-            url: "/oauth/oauth/token",
+            url: "/oauth/token",
             headers: {
               Authorization: "Basic bXlhcHA6MTIz",
               "Content-Type": "application/x-www-form-urlencoded",
@@ -259,7 +259,7 @@ export default {
               useJwt.setToken(response.data.access_token);
               api
                 .get(
-                  `/sysadmin/sysadmin/findUserFrontModelByUsername/${this.userEmail}`
+                  `/sysadmin/findUserFrontModelByUsername/${this.userEmail}`
                 )
                 .then((response) => {
                   const userData = response.data;

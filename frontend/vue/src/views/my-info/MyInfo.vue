@@ -380,7 +380,7 @@ export default {
       const userData = JSON.parse(localStorage.getItem("userData"));
       api
         .get(
-          `/organizational/organizational/getCompanyInfo/${userData.companyId}`
+          `/organizational/getCompanyInfo/${userData.companyId}`
         )
         .then((response) => {
           if (response.status == 204) {

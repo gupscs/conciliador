@@ -203,7 +203,7 @@ export default {
           this.itemInfo.companyId = userData.companyId;
           api
             .post(
-              "/organizational/organizational/saveItemAverageCost",
+              "/organizational/saveItemAverageCost",
               this.itemInfo
             )
             .then((response) => {

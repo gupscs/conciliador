@@ -395,7 +395,7 @@ export default {
           // TODO: VALIDAR O CNPJ CORRETAMENTE E TAMBÉM CPF
           api
             .get(
-              `/organizational/organizational/registerCheck/${this.register.identificationNo}/${this.register.email}`
+              `/organizational/registerCheck/${this.register.identificationNo}/${this.register.email}`
             )
             .then((response) => {
               this.checkRegister = response.data;
@@ -407,7 +407,7 @@ export default {
                 useJwt.setToken("");
                 api
                   .post(
-                    "/organizational/organizational/register",
+                    "/organizational/register",
                     this.register
                   )
                   .then((response) => {

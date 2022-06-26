@@ -93,7 +93,7 @@ export default {
       this.codeSave.insertId = userData.username;
       api
         .post(
-          "/mktplace-integrator/mktplace-integrator/createMktPlaceIntegrationConfigMercadoLivre",
+          "/mktplace-integrator/createMktPlaceIntegrationConfigMercadoLivre",
           this.codeSave
         )
         .then((response) => {

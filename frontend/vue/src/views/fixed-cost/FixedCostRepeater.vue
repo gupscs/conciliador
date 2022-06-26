@@ -147,7 +147,7 @@ export default {
     this.companyId = userData.companyId;
     api
       .get(
-        `/organizational/organizational/getFixedCostByCompanyId/${userData.companyId}`
+        `/organizational/getFixedCostByCompanyId/${userData.companyId}`
       )
       .then((response) => {
         const listGetItem = response.data;
@@ -218,7 +218,7 @@ export default {
             if (this.items[index].id) {
               api
                 .delete(
-                  `/organizational/organizational/deleteFixedCost/${this.items[index].id}`
+                  `/organizational/deleteFixedCost/${this.items[index].id}`
                 )
                 .then((response) => {
                   this.items.splice(index, 1);
@@ -238,7 +238,7 @@ export default {
     saveItem(index) {
       this.items[index].updateId = this.username;
       api
-        .post("/organizational/organizational/saveFixedCost", this.items[index])
+        .post("/organizational/saveFixedCost", this.items[index])
         .then((response) => {
           this.items[index].id = response.data.id;
           this.items[index].insertDate = response.data.insertDate;

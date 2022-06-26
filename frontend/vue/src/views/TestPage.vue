@@ -118,7 +118,7 @@ export default {
     const userData = JSON.parse(localStorage.getItem("userData"));
     api
       .get(
-        `/mktplace-integrator/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`
+        `/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`
       )
       .then((response) => {
         this.items = response.data;

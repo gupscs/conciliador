@@ -82,7 +82,7 @@ export default {
     const userData = JSON.parse(localStorage.getItem("userData"));
     api
       .get(
-        `/organizational/organizational/getItemAverageCost/${userData.companyId}`
+        `/organizational/getItemAverageCost/${userData.companyId}`
       )
       .then((response) => {
         this.items = response.data;

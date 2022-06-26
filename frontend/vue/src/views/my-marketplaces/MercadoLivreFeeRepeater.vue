@@ -144,7 +144,7 @@ export default {
     this.companyId = userData.companyId;
     api
       .get(
-        `/organizational/organizational/getMktPlaceFee/${userData.companyId}/MERCADO_LIVRE`
+        `/organizational/getMktPlaceFee/${userData.companyId}/MERCADO_LIVRE`
       )
       .then((response) => {
         const listGetItem = response.data;
@@ -215,7 +215,7 @@ export default {
             if (this.items[index].id) {
               api
                 .delete(
-                  `/organizational/organizational/deleteMktPlaceFee/${this.items[index].id}`
+                  `/organizational/deleteMktPlaceFee/${this.items[index].id}`
                 )
                 .then((response) => {
                   this.items.splice(index, 1);
@@ -235,7 +235,7 @@ export default {
     saveItem(index) {
       this.items[index].updateId = this.username;
       api
-        .post("/organizational/organizational/saveMktPlaceFee", this.items[index])
+        .post("/organizational/saveMktPlaceFee", this.items[index])
         .then((response) => {
           this.items[index].id = response.data.id;
           this.items[index].insertDate = response.data.insertDate;

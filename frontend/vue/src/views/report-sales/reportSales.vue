@@ -70,7 +70,7 @@ export default {
     const userData = JSON.parse(localStorage.getItem("userData"));
     api
       .get(
-        `/orders/orders/getOrderByCompanyId/${userData.companyId}`
+        `/orders/getOrderByCompanyId/${userData.companyId}`
       )
       .then((response) => {
         this.items = response.data;

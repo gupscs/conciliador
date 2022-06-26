@@ -133,7 +133,7 @@ export default {
     const userData = JSON.parse(localStorage.getItem("userData"));
     api
       .get(
-        `/mktplace-integrator/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`
+        `/mktplace-integrator/getMktPlaceIntegrationConfigUsers/${userData.companyId}/MERCADO_LIVRE`
       )
       .then((response) => {
         this.items = response.data;
@@ -167,7 +167,7 @@ export default {
         if (result.value) {
           api
             .get(
-              "/mktplace-integrator/mktplace-integrator/mercado-livre/getAppIdAndRedirectUrl"
+              "/mktplace-integrator/mercado-livre/getAppIdAndRedirectUrl"
             )
             .then((response) => {
               const appId = response.data.appId;
